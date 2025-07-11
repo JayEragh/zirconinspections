@@ -30,7 +30,7 @@ class InspectorController extends Controller
         
         // Get assigned service requests
         $assignedRequests = ServiceRequest::where('inspector_id', $inspector->id)
-            ->with(['client', 'report'])
+            ->with(['client', 'reports'])
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
@@ -81,7 +81,7 @@ class InspectorController extends Controller
         }
         
         $serviceRequests = ServiceRequest::where('inspector_id', $inspector->id)
-            ->with(['client', 'report'])
+            ->with(['client', 'reports'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
         
@@ -99,7 +99,7 @@ class InspectorController extends Controller
         
         $serviceRequest = ServiceRequest::where('id', $id)
             ->where('inspector_id', $inspector->id)
-            ->with(['client', 'report', 'inspector'])
+            ->with(['client', 'reports', 'inspector'])
             ->firstOrFail();
         
         return view('inspector.service-request-detail', compact('serviceRequest'));
