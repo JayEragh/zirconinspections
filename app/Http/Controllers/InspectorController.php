@@ -230,6 +230,7 @@ class InspectorController extends Controller
         $report = Report::create([
             'service_request_id' => $serviceRequest->id,
             'inspector_id' => $inspector->id,
+            'client_id' => $serviceRequest->client_id,
             'title' => $request->title,
             'content' => $request->content,
             'findings' => $request->findings,
