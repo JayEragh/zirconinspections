@@ -12,6 +12,11 @@ class Report extends Model
     protected $fillable = [
         'service_request_id',
         'inspector_id',
+        'client_id',
+        'title',
+        'content',
+        'findings',
+        'recommendations',
         'inspection_date',
         'inspection_time',
         'tank_number',
@@ -28,7 +33,6 @@ class Report extends Model
         'gov',
         'gsv',
         'mt_air',
-        'comments',
         'supporting_file',
         'status',
         'submitted_at',
@@ -69,6 +73,14 @@ class Report extends Model
     public function inspector()
     {
         return $this->belongsTo(Inspector::class);
+    }
+
+    /**
+     * Get the client that owns the report.
+     */
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
     }
 
     /**
