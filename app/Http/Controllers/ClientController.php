@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Report;
-use Barryvdh\DomPDF\Facade\Pdf;
+use PDF;
 
 class ClientController extends Controller
 {
@@ -161,7 +161,7 @@ class ClientController extends Controller
 
         $report->load(['serviceRequest.client.user', 'inspector.user']);
         
-        $pdf = Pdf::loadView('reports.pdf', compact('report'));
+        $pdf = PDF::loadView('reports.pdf', compact('report'));
         return $pdf->download('report-' . $report->id . '.pdf');
     }
 }
