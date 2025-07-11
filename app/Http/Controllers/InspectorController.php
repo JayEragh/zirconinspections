@@ -8,6 +8,7 @@ use App\Models\Report;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\Client;
+use App\Models\Inspector;
 use Illuminate\Support\Facades\Auth;
 
 class InspectorController extends Controller
