@@ -38,6 +38,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/client/service-requests/create', [App\Http\Controllers\ClientController::class, 'createServiceRequest'])->name('client.service-requests.create');
         Route::post('/client/service-requests', [App\Http\Controllers\ClientController::class, 'storeServiceRequest'])->name('client.service-requests.store');
         Route::get('/client/reports', [App\Http\Controllers\ClientController::class, 'reports'])->name('client.reports');
+        Route::get('/client/reports/{report}', [App\Http\Controllers\ClientController::class, 'showReport'])->name('client.reports.show');
+        Route::get('/client/reports/{report}/pdf', [App\Http\Controllers\ClientController::class, 'exportReportPDF'])->name('client.reports.pdf');
         Route::get('/client/invoices', [App\Http\Controllers\ClientController::class, 'invoices'])->name('client.invoices');
         Route::get('/client/messages', [App\Http\Controllers\ClientController::class, 'messages'])->name('client.messages');
     });
@@ -95,6 +97,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/operations/reports', [App\Http\Controllers\OperationsController::class, 'reports'])->name('operations.reports');
         Route::get('/operations/reports/{report}', [App\Http\Controllers\OperationsController::class, 'showReport'])->name('operations.reports.show');
         Route::post('/operations/reports/{report}/approve', [App\Http\Controllers\OperationsController::class, 'approveReport'])->name('operations.reports.approve');
+        Route::post('/operations/reports/{report}/send-to-client', [App\Http\Controllers\OperationsController::class, 'sendToClient'])->name('operations.reports.send-to-client');
         
         // Invoices
         Route::get('/operations/invoices', [App\Http\Controllers\OperationsController::class, 'invoices'])->name('operations.invoices');

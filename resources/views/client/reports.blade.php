@@ -43,13 +43,13 @@
                                     @foreach($reports as $report)
                                     <tr>
                                         <td>
-                                            <strong>{{ $report->report_id }}</strong>
+                                            <strong>{{ $report->id }}</strong>
                                         </td>
-                                        <td>{{ $report->serviceRequest->service_id }}</td>
+                                        <td>{{ $report->serviceRequest->service_id ?? 'N/A' }}</td>
                                         <td>{{ $report->inspector->user->name ?? 'N/A' }}</td>
                                         <td>
                                             <span class="badge bg-info">
-                                                {{ ucwords(str_replace('_', ' ', $report->report_type)) }}
+                                                {{ ucfirst($report->serviceRequest->service_type ?? 'Inspection') }}
                                             </span>
                                         </td>
                                         <td>
@@ -59,12 +59,14 @@
                                         </td>
                                         <td>{{ $report->created_at->format('M d, Y') }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-outline-primary" title="View Report">
+                                            <a href="{{ route('client.reports.show', $report->id) }}" class="btn btn-sm btn-outline-primary" title="View Report">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="#" class="btn btn-sm btn-outline-success" title="Download PDF">
+                                            @if($report->status === 'approved')
+                                            <a href="{{ route('client.reports.pdf', $report->id) }}" class="btn btn-sm btn-outline-success" title="Download PDF">
                                                 <i class="fas fa-download"></i>
                                             </a>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach

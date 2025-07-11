@@ -12,10 +12,16 @@
                     Report Details
                 </h2>
                 <div>
-                    <a href="{{ route('operations.reports') }}" class="btn btn-secondary">
+                    <a href="{{ route('client.reports') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left me-2"></i>
                         Back to Reports
                     </a>
+                    @if($report->status === 'approved')
+                    <a href="{{ route('client.reports.pdf', $report->id) }}" class="btn btn-success">
+                        <i class="fas fa-download me-2"></i>
+                        Download PDF
+                    </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -76,6 +82,7 @@
             </div>
 
             <!-- Technical Inspection Data -->
+            @if($report->inspection_date || $report->tank_number || $report->product_gauge)
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Technical Inspection Data</h6>
@@ -142,6 +149,7 @@
                     @endif
                 </div>
             </div>
+            @endif
         </div>
 
         <div class="col-lg-4">
@@ -161,22 +169,6 @@
                             {{ ucfirst(str_replace('_', ' ', $report->serviceRequest->status)) }}
                         </span>
                     </p>
-                    <a href="{{ route('operations.service-requests.show', $report->serviceRequest->id) }}" class="btn btn-sm btn-info">
-                        View Service Request
-                    </a>
-                </div>
-            </div>
-
-            <!-- Client Information -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Client Information</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Name:</strong> {{ $report->client->user->name }}</p>
-                    <p><strong>Email:</strong> {{ $report->client->user->email }}</p>
-                    <p><strong>Phone:</strong> {{ $report->client->phone }}</p>
-                    <p><strong>Address:</strong> {{ $report->client->address }}</p>
                 </div>
             </div>
 
@@ -190,50 +182,28 @@
                     <p><strong>Email:</strong> {{ $report->inspector->user->email }}</p>
                     <p><strong>Phone:</strong> {{ $report->inspector->phone }}</p>
                     <p><strong>Specialization:</strong> {{ $report->inspector->specialization }}</p>
-                    <a href="{{ route('operations.inspectors.show', $report->inspector->id) }}" class="btn btn-sm btn-info">
-                        View Inspector Details
-                    </a>
                 </div>
             </div>
 
-            <!-- Report Actions -->
+            <!-- Approval Information -->
+            @if($report->status === 'approved')
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-info">Actions</h6>
+                    <h6 class="m-0 font-weight-bold text-success">Approval Information</h6>
                 </div>
                 <div class="card-body">
-                    <div class="d-grid gap-2">
-                        @if($report->status === 'submitted')
-                        <form action="{{ route('operations.reports.approve', $report->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-success w-100" onclick="return confirm('Are you sure you want to approve this report?')">
-                                <i class="fas fa-check me-2"></i>
-                                Approve Report
-                            </button>
-                        </form>
-                        @elseif($report->status === 'approved')
-                        <div class="alert alert-success">
-                            <i class="fas fa-check-circle me-2"></i>
-                            Report Approved on {{ $report->approved_at->format('M d, Y H:i') }}
-                        </div>
-                        
-                        <!-- Send to Client Button -->
-                        <form action="{{ route('operations.reports.send-to-client', $report->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-primary w-100" onclick="return confirm('Send this approved report notification to the client?')">
-                                <i class="fas fa-paper-plane me-2"></i>
-                                Send to Client
-                            </button>
-                        </form>
-                        @else
-                        <div class="alert alert-secondary">
-                            <i class="fas fa-clock me-2"></i>
-                            Report is in draft status
-                        </div>
-                        @endif
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Report Approved</strong><br>
+                        Approved on {{ $report->approved_at->format('M d, Y H:i') }}
                     </div>
+                    <p class="text-muted small">
+                        This report has been reviewed and approved by our operations team. 
+                        You can download the PDF version for your records.
+                    </p>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>

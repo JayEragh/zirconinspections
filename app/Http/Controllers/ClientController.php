@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Report;
 
 class ClientController extends Controller
 {
@@ -85,7 +86,12 @@ class ClientController extends Controller
     public function reports()
     {
         $user = Auth::user();
-        $reports = $user->client->serviceRequests()->with('reports')->get()->pluck('reports')->flatten();
+        $reports = $user->client->serviceRequests()
+            ->with(['reports.inspector.user', 'reports.serviceRequest'])
+            ->get()
+            ->pluck('reports')
+            ->flatten()
+            ->sortByDesc('created_at');
         
         return view('client.reports', compact('reports'));
     }
@@ -110,5 +116,51 @@ class ClientController extends Controller
         $messages = $user->messages()->latest()->paginate(20);
         
         return view('client.messages', compact('messages'));
+    }
+
+    /**
+     * Show a specific report.
+     */
+    public function showReport(Report $report)
+    {
+        // Ensure the client can only view their own reports
+        $user = Auth::user();
+        $clientReports = $user->client->serviceRequests()
+            ->with('reports')
+            ->get()
+            ->pluck('reports')
+            ->flatten()
+            ->pluck('id');
+
+        if (!$clientReports->contains($report->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $report->load(['serviceRequest.client.user', 'inspector.user']);
+        return view('client.report-details', compact('report'));
+    }
+
+    /**
+     * Export report as PDF.
+     */
+    public function exportReportPDF(Report $report)
+    {
+        // Ensure the client can only download their own reports
+        $user = Auth::user();
+        $clientReports = $user->client->serviceRequests()
+            ->with('reports')
+            ->get()
+            ->pluck('reports')
+            ->flatten()
+            ->pluck('id');
+
+        if (!$clientReports->contains($report->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $report->load(['serviceRequest.client.user', 'inspector.user']);
+        
+        $pdf = \PDF::loadView('reports.pdf', compact('report'));
+        return $pdf->download('report-' . $report->id . '.pdf');
     }
 }

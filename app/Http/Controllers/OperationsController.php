@@ -211,6 +211,41 @@ class OperationsController extends Controller
     }
 
     /**
+     * Send approved report notification to client.
+     */
+    public function sendToClient(Report $report)
+    {
+        // Ensure report is approved
+        if ($report->status !== 'approved') {
+            return back()->with('error', 'Only approved reports can be sent to clients.');
+        }
+
+        // Create notification message for client
+        $message = Message::create([
+            'sender_id' => Auth::id(), // Operations user
+            'recipient_id' => $report->client->user_id,
+            'subject' => 'Report Approved - Service Request #' . $report->serviceRequest->id,
+            'content' => "Dear " . $report->client->user->name . ",\n\n" .
+                        "Your inspection report for Service Request #" . $report->serviceRequest->id . " has been approved and is ready for review.\n\n" .
+                        "Report Details:\n" .
+                        "- Report #: " . $report->id . "\n" .
+                        "- Service Type: " . ucfirst($report->serviceRequest->service_type) . "\n" .
+                        "- Depot: " . $report->serviceRequest->depot . "\n" .
+                        "- Product: " . $report->serviceRequest->product . "\n" .
+                        "- Inspector: " . $report->inspector->user->name . "\n\n" .
+                        "You can view the complete report in your client portal.\n\n" .
+                        "Thank you for choosing Zircon Inspections.\n\n" .
+                        "Best regards,\n" .
+                        "Operations Team\n" .
+                        "Zircon Inspections",
+            'service_request_id' => $report->serviceRequest->id,
+            'read' => false,
+        ]);
+
+        return back()->with('success', 'Report notification sent to client successfully!');
+    }
+
+    /**
      * Show all invoices.
      */
     public function invoices()
