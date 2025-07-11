@@ -130,7 +130,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3 mb-3">
-                            <a href="{{ route('client.create-service-request') }}" class="btn btn-primary w-100">
+                            <a href="{{ route('client.service-requests.create') }}" class="btn btn-primary w-100">
                                 <i class="fas fa-plus me-2"></i>
                                 New Service Request
                             </a>
@@ -208,7 +208,7 @@
                             <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
                             <h5 class="text-muted">No service requests yet</h5>
                             <p class="text-muted">Create your first service request to get started.</p>
-                            <a href="{{ route('client.create-service-request') }}" class="btn btn-primary">
+                            <a href="{{ route('client.service-requests.create') }}" class="btn btn-primary">
                                 <i class="fas fa-plus me-2"></i>
                                 Create Service Request
                             </a>
