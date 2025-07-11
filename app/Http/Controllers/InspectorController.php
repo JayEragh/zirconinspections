@@ -201,17 +201,57 @@ class InspectorController extends Controller
             'findings' => 'required|string',
             'recommendations' => 'required|string',
             'status' => 'required|in:draft,submitted,approved',
+            'tank_number' => 'required|string|max:50',
+            'product_gauge' => 'required|numeric|min:0',
+            'h20_gauge' => 'required|numeric|min:0',
+            'temperature' => 'required|numeric',
+            'roof' => 'required|in:yes,no',
+            'roof_weight' => 'nullable|numeric|min:0',
+            'density' => 'required|numeric|min:0',
+            'vcf' => 'required|numeric|min:0',
+            'tov' => 'required|numeric|min:0',
+            'water_vol' => 'required|numeric|min:0',
+            'roof_vol' => 'nullable|numeric',
+            'gov' => 'nullable|numeric',
+            'gsv' => 'nullable|numeric',
+            'mt_air' => 'nullable|numeric',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
         ]);
-        
+
+        // Handle file upload
+        $supportingFile = null;
+        if ($request->hasFile('file_upload')) {
+            $file = $request->file('file_upload');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('reports', $fileName, 'public');
+            $supportingFile = $fileName;
+        }
+
         $report = Report::create([
             'service_request_id' => $serviceRequest->id,
             'inspector_id' => $inspector->id,
-            'client_id' => $serviceRequest->client_id,
             'title' => $request->title,
             'content' => $request->content,
             'findings' => $request->findings,
             'recommendations' => $request->recommendations,
             'status' => $request->status,
+            'inspection_date' => now()->toDateString(),
+            'inspection_time' => now(),
+            'tank_number' => $request->tank_number,
+            'product_gauge' => $request->product_gauge,
+            'water_gauge' => $request->h20_gauge,
+            'temperature' => $request->temperature,
+            'has_roof' => $request->roof === 'yes',
+            'roof_weight' => $request->roof === 'yes' ? $request->roof_weight : null,
+            'density' => $request->density,
+            'vcf' => $request->vcf,
+            'tov' => $request->tov,
+            'water_volume' => $request->water_vol,
+            'roof_volume' => $request->roof_vol,
+            'gov' => $request->gov,
+            'gsv' => $request->gsv,
+            'mt_air' => $request->mt_air,
+            'supporting_file' => $supportingFile,
         ]);
         
         // Update service request status if report is submitted
@@ -258,7 +298,31 @@ class InspectorController extends Controller
             'findings' => 'required|string',
             'recommendations' => 'required|string',
             'status' => 'required|in:draft,submitted,approved',
+            'tank_number' => 'required|string|max:50',
+            'product_gauge' => 'required|numeric|min:0',
+            'h20_gauge' => 'required|numeric|min:0',
+            'temperature' => 'required|numeric',
+            'roof' => 'required|in:yes,no',
+            'roof_weight' => 'nullable|numeric|min:0',
+            'density' => 'required|numeric|min:0',
+            'vcf' => 'required|numeric|min:0',
+            'tov' => 'required|numeric|min:0',
+            'water_vol' => 'required|numeric|min:0',
+            'roof_vol' => 'nullable|numeric',
+            'gov' => 'nullable|numeric',
+            'gsv' => 'nullable|numeric',
+            'mt_air' => 'nullable|numeric',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
         ]);
+
+        // Handle file upload
+        $supportingFile = $report->supporting_file;
+        if ($request->hasFile('file_upload')) {
+            $file = $request->file('file_upload');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('reports', $fileName, 'public');
+            $supportingFile = $fileName;
+        }
         
         $report->update([
             'title' => $request->title,
@@ -266,6 +330,21 @@ class InspectorController extends Controller
             'findings' => $request->findings,
             'recommendations' => $request->recommendations,
             'status' => $request->status,
+            'tank_number' => $request->tank_number,
+            'product_gauge' => $request->product_gauge,
+            'water_gauge' => $request->h20_gauge,
+            'temperature' => $request->temperature,
+            'has_roof' => $request->roof === 'yes',
+            'roof_weight' => $request->roof === 'yes' ? $request->roof_weight : null,
+            'density' => $request->density,
+            'vcf' => $request->vcf,
+            'tov' => $request->tov,
+            'water_volume' => $request->water_vol,
+            'roof_volume' => $request->roof_vol,
+            'gov' => $request->gov,
+            'gsv' => $request->gsv,
+            'mt_air' => $request->mt_air,
+            'supporting_file' => $supportingFile,
         ]);
         
         return redirect()->route('inspector.reports')->with('success', 'Report updated successfully.');
