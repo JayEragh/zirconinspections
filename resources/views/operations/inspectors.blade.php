@@ -52,6 +52,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($inspectors as $inspector)
+                                    <!-- Debug: Inspector ID: {{ $inspector->id }}, Name: {{ $inspector->name }}, User: {{ $inspector->user ? $inspector->user->name : 'No user' }} -->
                                     <tr>
                                         <td>
                                             <strong>{{ $inspector->user->name }}</strong>
@@ -65,7 +66,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info">{{ $inspector->serviceRequests->count() }}</span>
+                                            <span class="badge bg-info">{{ $inspector->serviceRequests ? $inspector->serviceRequests->count() : 0 }}</span>
                                         </td>
                                         <td>{{ $inspector->created_at->format('M d, Y') }}</td>
                                         <td>

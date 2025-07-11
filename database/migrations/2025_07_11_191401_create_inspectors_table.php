@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('certification_number')->nullable();
             $table->date('certification_expiry')->nullable();
+            $table->string('specialization')->nullable();
             $table->string('status')->default('active');
             $table->boolean('is_active')->default(true);
             $table->timestamps();

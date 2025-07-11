@@ -65,7 +65,7 @@ class OperationsController extends Controller
      */
     public function inspectors()
     {
-        $inspectors = Inspector::with('user')->paginate(15);
+        $inspectors = Inspector::with(['user', 'serviceRequests'])->paginate(15);
         return view('operations.inspectors', compact('inspectors'));
     }
 
@@ -112,10 +112,12 @@ class OperationsController extends Controller
         // Create inspector profile
         Inspector::create([
             'user_id' => $user->id,
+            'name' => $request->name,
+            'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
+            'certification_number' => $request->license_number,
             'specialization' => $request->specialization,
-            'license_number' => $request->license_number,
         ]);
 
         return redirect()->route('operations.inspectors')->with('success', 'Inspector created successfully!');

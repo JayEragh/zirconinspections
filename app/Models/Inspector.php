@@ -11,11 +11,14 @@ class Inspector extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
+        'email',
         'employee_id',
         'phone',
         'address',
         'certification_number',
         'certification_expiry',
+        'specialization',
         'is_active',
     ];
 
