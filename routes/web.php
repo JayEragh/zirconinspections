@@ -44,10 +44,33 @@ Route::middleware(['auth'])->group(function () {
     // Inspector routes
     Route::middleware(['role:inspector'])->group(function () {
         Route::get('/inspector/dashboard', [App\Http\Controllers\InspectorController::class, 'dashboard'])->name('inspector.dashboard');
-        Route::get('/inspector/jobs', [App\Http\Controllers\InspectorController::class, 'jobs'])->name('inspector.jobs');
-        Route::get('/inspector/jobs/{serviceRequest}', [App\Http\Controllers\InspectorController::class, 'showJob'])->name('inspector.jobs.show');
-        Route::post('/inspector/jobs/{serviceRequest}/report', [App\Http\Controllers\InspectorController::class, 'submitReport'])->name('inspector.jobs.report');
-        Route::get('/inspector/history', [App\Http\Controllers\InspectorController::class, 'history'])->name('inspector.history');
+        
+        // Service requests
+        Route::get('/inspector/service-requests', [App\Http\Controllers\InspectorController::class, 'serviceRequests'])->name('inspector.service-requests');
+        Route::get('/inspector/service-requests/{id}', [App\Http\Controllers\InspectorController::class, 'showServiceRequest'])->name('inspector.service-requests.show');
+        Route::put('/inspector/service-requests/{id}', [App\Http\Controllers\InspectorController::class, 'updateServiceRequest'])->name('inspector.service-requests.update');
+        
+        // Reports
+        Route::get('/inspector/reports', [App\Http\Controllers\InspectorController::class, 'reports'])->name('inspector.reports');
+        Route::get('/inspector/reports/{id}', [App\Http\Controllers\InspectorController::class, 'showReport'])->name('inspector.reports.show');
+        Route::get('/inspector/reports/create/{serviceRequestId}', [App\Http\Controllers\InspectorController::class, 'createReport'])->name('inspector.reports.create');
+        Route::post('/inspector/reports/{serviceRequestId}', [App\Http\Controllers\InspectorController::class, 'storeReport'])->name('inspector.reports.store');
+        Route::get('/inspector/reports/{id}/edit', [App\Http\Controllers\InspectorController::class, 'editReport'])->name('inspector.reports.edit');
+        Route::put('/inspector/reports/{id}', [App\Http\Controllers\InspectorController::class, 'updateReport'])->name('inspector.reports.update');
+        
+        // Invoices
+        Route::get('/inspector/invoices', [App\Http\Controllers\InspectorController::class, 'invoices'])->name('inspector.invoices');
+        Route::get('/inspector/invoices/{id}', [App\Http\Controllers\InspectorController::class, 'showInvoice'])->name('inspector.invoices.show');
+        
+        // Messages
+        Route::get('/inspector/messages', [App\Http\Controllers\InspectorController::class, 'messages'])->name('inspector.messages');
+        Route::get('/inspector/messages/{id}', [App\Http\Controllers\InspectorController::class, 'showMessage'])->name('inspector.messages.show');
+        Route::get('/inspector/messages/create', [App\Http\Controllers\InspectorController::class, 'createMessage'])->name('inspector.messages.create');
+        Route::post('/inspector/messages', [App\Http\Controllers\InspectorController::class, 'storeMessage'])->name('inspector.messages.store');
+        
+        // Profile
+        Route::get('/inspector/profile', [App\Http\Controllers\InspectorController::class, 'profile'])->name('inspector.profile');
+        Route::put('/inspector/profile', [App\Http\Controllers\InspectorController::class, 'updateProfile'])->name('inspector.profile.update');
     });
 
     // Operations routes
