@@ -53,12 +53,31 @@ Route::middleware(['auth'])->group(function () {
     // Operations routes
     Route::middleware(['role:operations'])->group(function () {
         Route::get('/operations/dashboard', [App\Http\Controllers\OperationsController::class, 'dashboard'])->name('operations.dashboard');
-        Route::resource('/operations/clients', App\Http\Controllers\OperationsController::class, ['as' => 'operations']);
-        Route::resource('/operations/inspectors', App\Http\Controllers\OperationsController::class, ['as' => 'operations']);
-        Route::resource('/operations/service-requests', App\Http\Controllers\ServiceRequestController::class, ['as' => 'operations']);
-        Route::resource('/operations/reports', App\Http\Controllers\ReportController::class, ['as' => 'operations']);
-        Route::resource('/operations/invoices', App\Http\Controllers\InvoiceController::class, ['as' => 'operations']);
+        
+        // Client management
+        Route::get('/operations/clients', [App\Http\Controllers\OperationsController::class, 'clients'])->name('operations.clients');
+        Route::get('/operations/clients/{client}', [App\Http\Controllers\OperationsController::class, 'showClient'])->name('operations.clients.show');
+        
+        // Inspector management
+        Route::get('/operations/inspectors', [App\Http\Controllers\OperationsController::class, 'inspectors'])->name('operations.inspectors');
+        Route::get('/operations/inspectors/{inspector}', [App\Http\Controllers\OperationsController::class, 'showInspector'])->name('operations.inspectors.show');
+        
+        // Service requests
+        Route::get('/operations/service-requests', [App\Http\Controllers\OperationsController::class, 'serviceRequests'])->name('operations.service-requests');
+        Route::get('/operations/service-requests/{serviceRequest}', [App\Http\Controllers\OperationsController::class, 'showServiceRequest'])->name('operations.service-requests.show');
         Route::post('/operations/service-requests/{serviceRequest}/assign', [App\Http\Controllers\OperationsController::class, 'assignInspector'])->name('operations.service-requests.assign');
+        
+        // Reports
+        Route::get('/operations/reports', [App\Http\Controllers\OperationsController::class, 'reports'])->name('operations.reports');
+        Route::get('/operations/reports/{report}', [App\Http\Controllers\OperationsController::class, 'showReport'])->name('operations.reports.show');
         Route::post('/operations/reports/{report}/approve', [App\Http\Controllers\OperationsController::class, 'approveReport'])->name('operations.reports.approve');
+        
+        // Invoices
+        Route::get('/operations/invoices', [App\Http\Controllers\OperationsController::class, 'invoices'])->name('operations.invoices');
+        Route::get('/operations/invoices/{invoice}', [App\Http\Controllers\OperationsController::class, 'showInvoice'])->name('operations.invoices.show');
+        
+        // Messages
+        Route::get('/operations/messages', [App\Http\Controllers\OperationsController::class, 'messages'])->name('operations.messages');
+        Route::get('/operations/messages/{message}', [App\Http\Controllers\OperationsController::class, 'showMessage'])->name('operations.messages.show');
     });
 });
