@@ -451,4 +451,23 @@ class InspectorController extends Controller
         
         return redirect()->back()->with('success', 'Profile updated successfully.');
     }
+
+    public function exportReportPDF($id)
+    {
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
+        
+        $report = Report::where('id', $id)
+            ->where('inspector_id', $inspector->id)
+            ->with(['serviceRequest', 'client', 'inspector'])
+            ->firstOrFail();
+        
+        $pdf = \PDF::loadView('inspector.report-pdf', compact('report'));
+        
+        return $pdf->download('report-' . $report->id . '-' . now()->format('Y-m-d') . '.pdf');
+    }
 }

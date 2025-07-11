@@ -195,6 +195,10 @@
                             <i class="fas fa-edit me-2"></i>
                             Edit Report
                         </a>
+                        <a href="{{ route('inspector.reports.pdf', $report->id) }}" class="btn btn-danger">
+                            <i class="fas fa-file-pdf me-2"></i>
+                            Export to PDF
+                        </a>
                         @if($report->status === 'draft')
                         <form action="{{ route('inspector.reports.update', $report->id) }}" method="POST" class="d-inline">
                             @csrf

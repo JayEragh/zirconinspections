@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/inspector/reports/{serviceRequestId}', [App\Http\Controllers\InspectorController::class, 'storeReport'])->name('inspector.reports.store');
         Route::get('/inspector/reports/{id}/edit', [App\Http\Controllers\InspectorController::class, 'editReport'])->name('inspector.reports.edit');
         Route::put('/inspector/reports/{id}', [App\Http\Controllers\InspectorController::class, 'updateReport'])->name('inspector.reports.update');
+        Route::get('/inspector/reports/{id}/pdf', [App\Http\Controllers\InspectorController::class, 'exportReportPDF'])->name('inspector.reports.pdf');
         
         // Messages
         Route::get('/inspector/messages', [App\Http\Controllers\InspectorController::class, 'messages'])->name('inspector.messages');
