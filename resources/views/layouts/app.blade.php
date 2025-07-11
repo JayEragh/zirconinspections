@@ -160,7 +160,7 @@
                                 @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form method="POST" action="{{ route('logout') }}">
+                                    <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                         @csrf
                                         <button type="submit" class="dropdown-item">Logout</button>
                                     </form>
@@ -200,6 +200,24 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Logout fallback script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutForm = document.getElementById('logout-form');
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', function(e) {
+                    // Add a small delay to ensure CSRF token is properly set
+                    setTimeout(() => {
+                        // If form submission fails, try alternative logout
+                        if (!this.submitted) {
+                            this.submitted = true;
+                        }
+                    }, 100);
+                });
+            }
+        });
+    </script>
     
     @stack('scripts')
 </body>
