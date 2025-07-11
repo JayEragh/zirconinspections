@@ -8,30 +8,33 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             color: #333;
+            font-size: 10px;
+            line-height: 1.3;
         }
         .header {
             text-align: center;
             border-bottom: 2px solid #007bff;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
         .company-name {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             color: #007bff;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         .report-title {
-            font-size: 18px;
+            font-size: 14px;
             color: #666;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         .report-info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
+            gap: 10px;
         }
         .info-section {
             flex: 1;
@@ -39,55 +42,62 @@
         .info-section h3 {
             color: #007bff;
             border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+            padding-bottom: 3px;
+            margin-bottom: 5px;
+            font-size: 11px;
         }
         .info-item {
-            margin-bottom: 8px;
+            margin-bottom: 3px;
+            font-size: 9px;
         }
         .info-label {
             font-weight: bold;
             color: #555;
         }
         .content-section {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
         }
         .content-section h3 {
             color: #007bff;
             border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
+            padding-bottom: 3px;
+            margin-bottom: 8px;
+            font-size: 11px;
         }
         .content-text {
-            line-height: 1.6;
+            line-height: 1.4;
             text-align: justify;
+            font-size: 9px;
+            margin-bottom: 8px;
         }
         .technical-data {
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .technical-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
         }
         .technical-item {
             background: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 8px;
         }
         .footer {
-            margin-top: 40px;
+            margin-top: 15px;
             text-align: center;
             border-top: 1px solid #ddd;
-            padding-top: 20px;
+            padding-top: 8px;
             color: #666;
+            font-size: 8px;
         }
         .status-badge {
             display: inline-block;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 8px;
             font-weight: bold;
             text-transform: uppercase;
         }
@@ -101,6 +111,14 @@
         }
         .page-break {
             page-break-before: always;
+        }
+        .compact-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+        .compact-section {
+            flex: 1;
         }
     </style>
 </head>
@@ -169,17 +187,23 @@
         </div>
     </div>
 
-    <div class="content-section">
-        <h3>Report Content</h3>
-        <div class="content-text">
-            {!! nl2br(e($report->content)) !!}
+    <div class="compact-row">
+        <div class="compact-section">
+            <div class="content-section">
+                <h3>Report Content</h3>
+                <div class="content-text">
+                    {!! nl2br(e($report->content)) !!}
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="content-section">
-        <h3>Findings</h3>
-        <div class="content-text">
-            {!! nl2br(e($report->findings)) !!}
+        <div class="compact-section">
+            <div class="content-section">
+                <h3>Findings</h3>
+                <div class="content-text">
+                    {!! nl2br(e($report->findings)) !!}
+                </div>
+            </div>
         </div>
     </div>
 
