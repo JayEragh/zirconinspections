@@ -1,30 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Report #{{ $report->id }} - {{ $report->title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspection Report #{{ $report->id }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.4;
+            margin: 0;
+            padding: 10px;
             color: #333;
+            font-size: 10px;
+            line-height: 1.3;
         }
         .header {
-            text-align: center;
-            border-bottom: 2px solid #333;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+        .logo {
+            width: 60px;
+            height: auto;
+            margin-right: 15px;
+        }
+        .header-text {
+            flex: 1;
         }
         .company-name {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        .report-title {
             font-size: 18px;
             font-weight: bold;
-            margin: 10px 0;
+            color: #007bff;
+            margin-bottom: 3px;
+        }
+        .report-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
         }
         .section {
             margin-bottom: 20px;
@@ -99,9 +112,12 @@
 </head>
 <body>
     <div class="header">
-        <div class="company-name">Zircon Inspections</div>
-        <div>Professional Tank Inspection Services</div>
-        <div>Report #{{ $report->id }}</div>
+        <img src="{{ public_path('images/logo.png') }}" alt="Zircon Inspections Logo" class="logo">
+        <div class="header-text">
+            <div class="company-name">Zircon Inspections</div>
+            <div class="report-title">Inspection Report</div>
+            <div>Report #{{ $report->id }}</div>
+        </div>
     </div>
 
     <div class="section">

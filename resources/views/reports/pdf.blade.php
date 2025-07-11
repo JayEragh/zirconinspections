@@ -14,10 +14,19 @@
             line-height: 1.3;
         }
         .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
             border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
             margin-bottom: 15px;
+        }
+        .logo {
+            width: 60px;
+            height: auto;
+            margin-right: 15px;
+        }
+        .header-text {
+            flex: 1;
         }
         .company-name {
             font-size: 18px;
@@ -124,9 +133,12 @@
 </head>
 <body>
     <div class="header">
-        <div class="company-name">Zircon Inspections</div>
-        <div class="report-title">Inspection Report</div>
-        <div>Report #{{ $report->id }}</div>
+        <img src="{{ public_path('images/logo.png') }}" alt="Zircon Inspections Logo" class="logo">
+        <div class="header-text">
+            <div class="company-name">Zircon Inspections</div>
+            <div class="report-title">Inspection Report</div>
+            <div>Report #{{ $report->id }}</div>
+        </div>
     </div>
 
     <div class="report-info">

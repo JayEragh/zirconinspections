@@ -104,7 +104,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <i class="fas fa-shield-alt me-2"></i>
+                <img src="/images/logo.png" alt="Zircon Inspections Logo" style="height:36px; margin-right:10px; vertical-align:middle;">
                 Zircon Inspections
             </a>
             
