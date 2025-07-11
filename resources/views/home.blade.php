@@ -81,6 +81,70 @@
         </div>
     </section>
 
+    <!-- Portal Access Section -->
+    <section id="portals" class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-3">Access Your Portal</h2>
+                    <p class="lead text-muted">
+                        Login to your dedicated portal to manage your services and view reports
+                    </p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card portal-card h-100 text-center p-4">
+                        <div class="portal-icon mb-3">
+                            <i class="fas fa-user-tie text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4>Client Portal</h4>
+                        <p class="text-muted mb-4">
+                            Access your service requests, view reports, manage invoices, and communicate with our team.
+                        </p>
+                        <a href="{{ route('login') }}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Client Login
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card portal-card h-100 text-center p-4">
+                        <div class="portal-icon mb-3">
+                            <i class="fas fa-clipboard-check text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4>Inspector Portal</h4>
+                        <p class="text-muted mb-4">
+                            Manage assigned inspections, create reports, and track your work progress.
+                        </p>
+                        <a href="{{ route('login') }}" class="btn btn-success">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Inspector Login
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card portal-card h-100 text-center p-4">
+                        <div class="portal-icon mb-3">
+                            <i class="fas fa-cogs text-warning" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4>Operations Portal</h4>
+                        <p class="text-muted mb-4">
+                            Manage clients, inspectors, service requests, and oversee all operations.
+                        </p>
+                        <a href="{{ route('login') }}" class="btn btn-warning">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Operations Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Testimonials Section -->
     <section id="testimonials" class="py-5 bg-light">
         <div class="container">

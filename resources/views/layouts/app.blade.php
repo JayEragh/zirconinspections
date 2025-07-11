@@ -52,6 +52,26 @@
             margin-bottom: 1rem;
         }
         
+        .portal-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .portal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .portal-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .portal-card:hover .portal-icon {
+            transform: scale(1.1);
+        }
+        
         .testimonial-card {
             background: white;
             border-radius: 15px;
@@ -102,6 +122,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#portals">Portals</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#testimonials">Testimonials</a>
