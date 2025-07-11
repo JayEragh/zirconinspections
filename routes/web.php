@@ -58,10 +58,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/inspector/reports/{id}/edit', [App\Http\Controllers\InspectorController::class, 'editReport'])->name('inspector.reports.edit');
         Route::put('/inspector/reports/{id}', [App\Http\Controllers\InspectorController::class, 'updateReport'])->name('inspector.reports.update');
         
-        // Invoices
-        Route::get('/inspector/invoices', [App\Http\Controllers\InspectorController::class, 'invoices'])->name('inspector.invoices');
-        Route::get('/inspector/invoices/{id}', [App\Http\Controllers\InspectorController::class, 'showInvoice'])->name('inspector.invoices.show');
-        
         // Messages
         Route::get('/inspector/messages', [App\Http\Controllers\InspectorController::class, 'messages'])->name('inspector.messages');
         Route::get('/inspector/messages/{id}', [App\Http\Controllers\InspectorController::class, 'showMessage'])->name('inspector.messages.show');

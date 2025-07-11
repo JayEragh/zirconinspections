@@ -183,50 +183,6 @@
     </div>
 
     <div class="row">
-        <!-- Pending Invoices -->
-        <div class="col-xl-6 col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-warning">Pending Invoices</h6>
-                    <a href="{{ route('inspector.invoices') }}" class="btn btn-sm btn-warning">View All</a>
-                </div>
-                <div class="card-body">
-                    @if($pendingInvoices->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Invoice #</th>
-                                        <th>Client</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($pendingInvoices as $invoice)
-                                    <tr>
-                                        <td>#{{ $invoice->id }}</td>
-                                        <td>{{ $invoice->client->name }}</td>
-                                        <td>${{ number_format($invoice->amount, 2) }}</td>
-                                        <td>
-                                            <span class="badge badge-warning">{{ ucfirst($invoice->status) }}</span>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('inspector.invoices.show', $invoice->id) }}" class="btn btn-sm btn-info">View</a>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <p class="text-muted">No pending invoices.</p>
-                    @endif
-                </div>
-            </div>
-        </div>
-
         <!-- Unread Messages -->
         <div class="col-xl-6 col-lg-6">
             <div class="card shadow mb-4">

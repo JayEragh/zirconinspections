@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ServiceRequest;
 use App\Models\Report;
-use App\Models\Invoice;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\Client;
@@ -37,14 +36,6 @@ class InspectorController extends Controller
             ->take(5)
             ->get();
         
-        // Get pending invoices
-        $pendingInvoices = Invoice::where('inspector_id', $inspector->id)
-            ->where('status', 'pending')
-            ->with(['serviceRequest', 'client'])
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
-        
         // Get unread messages
         $unreadMessages = Message::where('recipient_id', $inspector->id)
             ->where('read', false)
@@ -66,7 +57,6 @@ class InspectorController extends Controller
         return view('inspector.dashboard', compact(
             'assignedRequests',
             'recentReports',
-            'pendingInvoices',
             'unreadMessages',
             'totalRequests',
             'completedRequests',
@@ -228,30 +218,6 @@ class InspectorController extends Controller
         ]);
         
         return redirect()->route('inspector.reports')->with('success', 'Report updated successfully.');
-    }
-
-    public function invoices()
-    {
-        $inspector = Auth::user();
-        
-        $invoices = Invoice::where('inspector_id', $inspector->id)
-            ->with(['serviceRequest', 'client'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-        
-        return view('inspector.invoices', compact('invoices'));
-    }
-
-    public function showInvoice($id)
-    {
-        $inspector = Auth::user();
-        
-        $invoice = Invoice::where('id', $id)
-            ->where('inspector_id', $inspector->id)
-            ->with(['serviceRequest', 'client', 'inspector'])
-            ->firstOrFail();
-        
-        return view('inspector.invoice-detail', compact('invoice'));
     }
 
     public function messages()
