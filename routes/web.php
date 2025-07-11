@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
         // Service requests
         Route::get('/operations/service-requests', [App\Http\Controllers\OperationsController::class, 'serviceRequests'])->name('operations.service-requests');
         Route::get('/operations/service-requests/{serviceRequest}', [App\Http\Controllers\OperationsController::class, 'showServiceRequest'])->name('operations.service-requests.show');
+        Route::put('/operations/service-requests/{serviceRequest}', [App\Http\Controllers\OperationsController::class, 'updateServiceRequest'])->name('operations.service-requests.update');
         Route::post('/operations/service-requests/{serviceRequest}/assign', [App\Http\Controllers\OperationsController::class, 'assignInspector'])->name('operations.service-requests.assign');
         
         // Reports

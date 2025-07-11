@@ -142,6 +142,22 @@ class OperationsController extends Controller
     }
 
     /**
+     * Update service request status.
+     */
+    public function updateServiceRequest(Request $request, ServiceRequest $serviceRequest)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,assigned,in_progress,completed,cancelled',
+        ]);
+
+        $serviceRequest->update([
+            'status' => $request->status,
+        ]);
+
+        return back()->with('success', 'Service request status updated successfully!');
+    }
+
+    /**
      * Assign inspector to service request.
      */
     public function assignInspector(Request $request, ServiceRequest $serviceRequest)
