@@ -16,11 +16,14 @@ return new class extends Migration
         Schema::create('inspectors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('employee_id')->unique();
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('employee_id')->nullable();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->string('certification_number')->nullable();
             $table->date('certification_expiry')->nullable();
+            $table->string('status')->default('active');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

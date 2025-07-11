@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('invoice_number')->unique();
             $table->foreignId('service_request_id')->constrained()->onDelete('cascade');
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('inspector_id')->nullable()->constrained()->onDelete('set null');
             $table->decimal('amount', 10, 2);
             $table->text('description');
             $table->enum('status', ['draft', 'sent', 'paid', 'overdue'])->default('draft');

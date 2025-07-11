@@ -16,11 +16,14 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('company_name');
+            $table->string('name'); // Company name
+            $table->string('company_name')->nullable();
+            $table->string('email')->nullable();
             $table->string('contact_person');
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->string('tax_id')->nullable();
+            $table->string('status')->default('active');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
