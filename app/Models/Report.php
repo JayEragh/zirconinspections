@@ -37,6 +37,7 @@ class Report extends Model
         'status',
         'submitted_at',
         'approved_at',
+        'sent_to_client_at',
     ];
 
     protected $casts = [
@@ -57,6 +58,7 @@ class Report extends Model
         'mt_air' => 'decimal:2',
         'submitted_at' => 'datetime',
         'approved_at' => 'datetime',
+        'sent_to_client_at' => 'datetime',
     ];
 
     /**

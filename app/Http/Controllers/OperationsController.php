@@ -242,6 +242,11 @@ class OperationsController extends Controller
             'read' => false,
         ]);
 
+        // Update report to mark as sent to client
+        $report->update([
+            'sent_to_client_at' => now(),
+        ]);
+
         return back()->with('success', 'Report notification sent to client successfully!');
     }
 

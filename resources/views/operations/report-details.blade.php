@@ -218,13 +218,21 @@
                         </div>
                         
                         <!-- Send to Client Button -->
-                        <form action="{{ route('operations.reports.send-to-client', $report->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-primary w-100" onclick="return confirm('Send this approved report notification to the client?')">
+                        @if($report->sent_to_client_at)
+                            <div class="alert alert-info">
                                 <i class="fas fa-paper-plane me-2"></i>
-                                Send to Client
-                            </button>
-                        </form>
+                                <strong>Sent to Client</strong><br>
+                                Sent on {{ $report->sent_to_client_at->format('M d, Y H:i') }}
+                            </div>
+                        @else
+                            <form action="{{ route('operations.reports.send-to-client', $report->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary w-100" onclick="return confirm('Send this approved report notification to the client?')">
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    Send to Client
+                                </button>
+                            </form>
+                        @endif
                         @else
                         <div class="alert alert-secondary">
                             <i class="fas fa-clock me-2"></i>
