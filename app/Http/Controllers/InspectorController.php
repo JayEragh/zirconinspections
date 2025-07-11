@@ -20,7 +20,12 @@ class InspectorController extends Controller
 
     public function dashboard()
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         // Get assigned service requests
         $assignedRequests = ServiceRequest::where('inspector_id', $inspector->id)
@@ -37,7 +42,7 @@ class InspectorController extends Controller
             ->get();
         
         // Get unread messages
-        $unreadMessages = Message::where('recipient_id', $inspector->id)
+        $unreadMessages = Message::where('recipient_id', $user->id)
             ->where('read', false)
             ->with(['sender', 'serviceRequest'])
             ->orderBy('created_at', 'desc')
@@ -67,7 +72,12 @@ class InspectorController extends Controller
 
     public function serviceRequests()
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $serviceRequests = ServiceRequest::where('inspector_id', $inspector->id)
             ->with(['client', 'report'])
@@ -79,7 +89,12 @@ class InspectorController extends Controller
 
     public function showServiceRequest($id)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $serviceRequest = ServiceRequest::where('id', $id)
             ->where('inspector_id', $inspector->id)
@@ -91,7 +106,12 @@ class InspectorController extends Controller
 
     public function updateServiceRequest(Request $request, $id)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $serviceRequest = ServiceRequest::where('id', $id)
             ->where('inspector_id', $inspector->id)
@@ -112,7 +132,12 @@ class InspectorController extends Controller
 
     public function reports()
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $reports = Report::where('inspector_id', $inspector->id)
             ->with(['serviceRequest', 'client'])
@@ -124,7 +149,12 @@ class InspectorController extends Controller
 
     public function showReport($id)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $report = Report::where('id', $id)
             ->where('inspector_id', $inspector->id)
@@ -136,7 +166,12 @@ class InspectorController extends Controller
 
     public function createReport($serviceRequestId)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $serviceRequest = ServiceRequest::where('id', $serviceRequestId)
             ->where('inspector_id', $inspector->id)
@@ -148,7 +183,12 @@ class InspectorController extends Controller
 
     public function storeReport(Request $request, $serviceRequestId)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $serviceRequest = ServiceRequest::where('id', $serviceRequestId)
             ->where('inspector_id', $inspector->id)
@@ -183,7 +223,12 @@ class InspectorController extends Controller
 
     public function editReport($id)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $report = Report::where('id', $id)
             ->where('inspector_id', $inspector->id)
@@ -195,7 +240,12 @@ class InspectorController extends Controller
 
     public function updateReport(Request $request, $id)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $report = Report::where('id', $id)
             ->where('inspector_id', $inspector->id)
@@ -222,10 +272,10 @@ class InspectorController extends Controller
 
     public function messages()
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
         
-        $messages = Message::where('recipient_id', $inspector->id)
-            ->orWhere('sender_id', $inspector->id)
+        $messages = Message::where('recipient_id', $user->id)
+            ->orWhere('sender_id', $user->id)
             ->with(['sender', 'recipient', 'serviceRequest'])
             ->orderBy('created_at', 'desc')
             ->paginate(15);
@@ -235,18 +285,18 @@ class InspectorController extends Controller
 
     public function showMessage($id)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
         
         $message = Message::where('id', $id)
-            ->where(function($query) use ($inspector) {
-                $query->where('sender_id', $inspector->id)
-                      ->orWhere('recipient_id', $inspector->id);
+            ->where(function($query) use ($user) {
+                $query->where('sender_id', $user->id)
+                      ->orWhere('recipient_id', $user->id);
             })
             ->with(['sender', 'recipient', 'serviceRequest'])
             ->firstOrFail();
         
         // Mark as read if recipient
-        if ($message->recipient_id === $inspector->id && !$message->read) {
+        if ($message->recipient_id === $user->id && !$message->read) {
             $message->update(['read' => true]);
         }
         
@@ -255,7 +305,12 @@ class InspectorController extends Controller
 
     public function createMessage()
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
+        $inspector = Inspector::where('user_id', $user->id)->first();
+        
+        if (!$inspector) {
+            abort(404, 'Inspector profile not found');
+        }
         
         $clients = Client::orderBy('name')->get();
         $serviceRequests = ServiceRequest::where('inspector_id', $inspector->id)
@@ -268,7 +323,7 @@ class InspectorController extends Controller
 
     public function storeMessage(Request $request)
     {
-        $inspector = Auth::user();
+        $user = Auth::user();
         
         $request->validate([
             'recipient_id' => 'required|exists:users,id',
@@ -278,7 +333,7 @@ class InspectorController extends Controller
         ]);
         
         Message::create([
-            'sender_id' => $inspector->id,
+            'sender_id' => $user->id,
             'recipient_id' => $request->recipient_id,
             'subject' => $request->subject,
             'content' => $request->content,
