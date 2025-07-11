@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Zircon Inspections') - Petroleum Stock Monitoring</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -104,7 +109,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="/images/logo.png" alt="Zircon Inspections Logo" style="height:36px; margin-right:10px; vertical-align:middle;">
+                <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" style="height:36px; margin-right:10px; vertical-align:middle;">
                 Zircon Inspections
             </a>
             
