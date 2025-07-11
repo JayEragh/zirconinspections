@@ -109,8 +109,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" style="height:36px; margin-right:10px; vertical-align:middle;">
-                Zircon Inspections
+                <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" style="height:36px; margin-right:10px; vertical-align:middle;" onerror="this.style.display='none'; this.nextSibling.style.display='inline';">
+                <span style="display:none; font-weight:bold; color:white;">Zircon Inspections</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
