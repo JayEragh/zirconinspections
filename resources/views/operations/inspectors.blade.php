@@ -11,10 +11,16 @@
                     <i class="fas fa-user-tie me-2"></i>
                     Inspectors Management
                 </h1>
-                <a href="{{ route('operations.dashboard') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>
-                    Back to Dashboard
-                </a>
+                <div>
+                    <a href="{{ route('operations.inspectors.create') }}" class="btn btn-primary me-2">
+                        <i class="fas fa-plus me-2"></i>
+                        Create Inspector
+                    </a>
+                    <a href="{{ route('operations.dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
             </div>
         </div>
     </div>

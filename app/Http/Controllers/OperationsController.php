@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Inspector;
@@ -75,6 +76,49 @@ class OperationsController extends Controller
     {
         $inspector->load(['user', 'serviceRequests.reports']);
         return view('operations.inspector-details', compact('inspector'));
+    }
+
+    /**
+     * Show the create inspector form.
+     */
+    public function createInspector()
+    {
+        return view('operations.create-inspector');
+    }
+
+    /**
+     * Store a new inspector.
+     */
+    public function storeInspector(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'specialization' => 'nullable|string|max:255',
+            'license_number' => 'nullable|string|max:50',
+        ]);
+
+        // Create user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'inspector',
+        ]);
+
+        // Create inspector profile
+        Inspector::create([
+            'user_id' => $user->id,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'specialization' => $request->specialization,
+            'license_number' => $request->license_number,
+        ]);
+
+        return redirect()->route('operations.inspectors')->with('success', 'Inspector created successfully!');
     }
 
     /**
@@ -185,6 +229,15 @@ class OperationsController extends Controller
     public function showMessage(Message $message)
     {
         $message->load(['sender', 'recipient', 'serviceRequest']);
+        
+        // Mark message as read if it hasn't been read yet
+        if (!$message->read) {
+            $message->update([
+                'read' => true,
+                'read_at' => now(),
+            ]);
+        }
+        
         return view('operations.message-details', compact('message'));
     }
 }

@@ -10,31 +10,41 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'from_user_id',
-        'to_user_id',
-        'message',
-        'is_read',
+        'sender_id',
+        'recipient_id',
+        'subject',
+        'content',
+        'service_request_id',
+        'read',
         'read_at',
     ];
 
     protected $casts = [
-        'is_read' => 'boolean',
+        'read' => 'boolean',
         'read_at' => 'datetime',
     ];
 
     /**
      * Get the user who sent the message.
      */
-    public function fromUser()
+    public function sender()
     {
-        return $this->belongsTo(User::class, 'from_user_id');
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
     /**
      * Get the user who received the message.
      */
-    public function toUser()
+    public function recipient()
     {
-        return $this->belongsTo(User::class, 'to_user_id');
+        return $this->belongsTo(User::class, 'recipient_id');
+    }
+
+    /**
+     * Get the service request associated with this message.
+     */
+    public function serviceRequest()
+    {
+        return $this->belongsTo(ServiceRequest::class);
     }
 }

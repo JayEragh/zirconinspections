@@ -83,6 +83,8 @@ Route::middleware(['auth'])->group(function () {
         
         // Inspector management
         Route::get('/operations/inspectors', [App\Http\Controllers\OperationsController::class, 'inspectors'])->name('operations.inspectors');
+        Route::get('/operations/inspectors/create', [App\Http\Controllers\OperationsController::class, 'createInspector'])->name('operations.inspectors.create');
+        Route::post('/operations/inspectors', [App\Http\Controllers\OperationsController::class, 'storeInspector'])->name('operations.inspectors.store');
         Route::get('/operations/inspectors/{inspector}', [App\Http\Controllers\OperationsController::class, 'showInspector'])->name('operations.inspectors.show');
         
         // Service requests

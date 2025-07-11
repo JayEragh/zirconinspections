@@ -52,12 +52,11 @@ class TestDataSeeder extends Seeder
         // Create client record
         $clientRecord = Client::create([
             'user_id' => $client->id,
-            'name' => 'ABC Company',
-            'email' => 'info@abc.com',
+            'company_name' => 'ABC Company',
+            'contact_person' => 'John Client',
             'phone' => '555-0101',
             'address' => '123 Business Street, City, State 12345',
-            'contact_person' => 'John Client',
-            'status' => 'active'
+            'tax_id' => 'TAX123456'
         ]);
 
         // Create inspector record
