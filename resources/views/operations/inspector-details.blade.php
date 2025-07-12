@@ -45,7 +45,7 @@
                         <dt class="col-sm-4">Specialization</dt>
                         <dd class="col-sm-8">{{ $inspector->specialization ?? 'N/A' }}</dd>
 
-                        <dt class="col-sm-4">Certification Number</dt>
+                        <dt class="col-sm-4">Employee ID</dt>
                         <dd class="col-sm-8">{{ $inspector->certification_number ?? 'N/A' }}</dd>
 
                         <dt class="col-sm-4">Status</dt>

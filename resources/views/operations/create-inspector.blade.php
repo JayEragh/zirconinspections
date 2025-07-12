@@ -86,15 +86,13 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="license_number" class="form-label">License Number</label>
-                                    <input type="text" class="form-control @error('license_number') is-invalid @enderror" 
-                                           id="license_number" name="license_number" value="{{ old('license_number') }}">
-                                    @error('license_number')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="employee_id" class="form-label">Employee ID</label>
+                                <input type="text" class="form-control @error('employee_id') is-invalid @enderror"
+                                       id="employee_id" name="employee_id" value="{{ old('employee_id') }}">
+                                @error('employee_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 

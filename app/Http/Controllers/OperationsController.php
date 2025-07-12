@@ -98,7 +98,7 @@ class OperationsController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'specialization' => 'nullable|string|max:255',
-            'license_number' => 'nullable|string|max:50',
+            'employee_id' => 'nullable|string|max:50',
         ]);
 
         // Create user
@@ -116,7 +116,7 @@ class OperationsController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
-            'certification_number' => $request->license_number,
+            'certification_number' => $request->employee_id,
             'specialization' => $request->specialization,
         ]);
 

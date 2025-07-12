@@ -40,13 +40,12 @@
                             <table class="table table-hover">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Inspector Name</th>
-                                        <th>Employee ID</th>
-                                        <th>Certification</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
                                         <th>Phone</th>
+                                        <th>Employee ID</th>
+                                        <th>Specialization</th>
                                         <th>Status</th>
-                                        <th>Assigned Jobs</th>
-                                        <th>Registered</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -57,18 +56,15 @@
                                         <td>
                                             <strong>{{ $inspector->user->name }}</strong>
                                         </td>
-                                        <td>{{ $inspector->employee_id }}</td>
-                                        <td>{{ $inspector->certification_number ?? 'N/A' }}</td>
+                                        <td>{{ $inspector->user->email }}</td>
                                         <td>{{ $inspector->phone ?? 'N/A' }}</td>
+                                        <td>{{ $inspector->certification_number ?? 'N/A' }}</td>
+                                        <td>{{ $inspector->specialization ?? 'N/A' }}</td>
                                         <td>
                                             <span class="badge bg-{{ $inspector->is_active ? 'success' : 'danger' }}">
                                                 {{ $inspector->is_active ? 'Active' : 'Inactive' }}
                                             </span>
                                         </td>
-                                        <td>
-                                            <span class="badge bg-info">{{ $inspector->serviceRequests ? $inspector->serviceRequests->count() : 0 }}</span>
-                                        </td>
-                                        <td>{{ $inspector->created_at->format('M d, Y') }}</td>
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <a href="{{ route('operations.inspectors.show', $inspector) }}" 

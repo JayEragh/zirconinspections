@@ -155,7 +155,7 @@
                                 <option value="">Choose an inspector...</option>
                                 @foreach(\App\Models\Inspector::where('is_active', true)->get() as $inspector)
                                     <option value="{{ $inspector->id }}">
-                                        {{ $inspector->user->name }} ({{ $inspector->certification_number }})
+                                        {{ $inspector->user->name }} ({{ $inspector->employee_id }})
                                     </option>
                                 @endforeach
                             </select>
