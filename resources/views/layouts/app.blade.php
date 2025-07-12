@@ -6,9 +6,9 @@
     <title>@yield('title', 'Zircon Inspections') - Petroleum Stock Monitoring</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.svg') }}">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -109,8 +109,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" style="height:36px; margin-right:10px; vertical-align:middle;" onerror="this.style.display='none'; this.nextSibling.style.display='inline';">
-                <span style="display:none; font-weight:bold; color:white;">Zircon Inspections</span>
+                <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" class="navbar-logo" style="height:48px; margin-right:14px; vertical-align:middle; background:transparent;">
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

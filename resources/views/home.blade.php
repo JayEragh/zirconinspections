@@ -22,8 +22,8 @@
                         Learn More
                     </a>
                 </div>
-                <div class="col-lg-6 text-center">
-                    <i class="fas fa-industry" style="font-size: 8rem; opacity: 0.3;"></i>
+                <div class="col-lg-6 d-flex align-items-center justify-content-center" style="min-height: 320px;">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" class="homepage-logo" style="max-width: 420px; width: 100%; height: auto; margin: 0 auto; display: block; background: transparent;">
                 </div>
             </div>
         </div>
@@ -292,3 +292,22 @@
         </div>
     </section>
 @endsection 
+
+@push('styles')
+<style>
+    .homepage-logo {
+        max-width: 420px;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+        background: transparent;
+        filter: drop-shadow(0 2px 8px rgba(30,58,138,0.08));
+    }
+    @media (max-width: 991px) {
+        .homepage-logo {
+            max-width: 260px;
+        }
+    }
+</style>
+@endpush 
