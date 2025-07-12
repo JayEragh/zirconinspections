@@ -11,10 +11,16 @@
                     <i class="fas fa-user me-2"></i>
                     Client Details
                 </h2>
-                <a href="{{ route('operations.clients') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>
-                    Back to Clients
-                </a>
+                <div>
+                    <a href="{{ route('operations.clients.edit', $client) }}" class="btn btn-warning me-2">
+                        <i class="fas fa-edit me-2"></i>
+                        Edit Client
+                    </a>
+                    <a href="{{ route('operations.clients') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Clients
+                    </a>
+                </div>
             </div>
         </div>
     </div>

@@ -185,6 +185,67 @@ class OperationsController extends Controller
     }
 
     /**
+     * Show the edit client form.
+     */
+    public function editClient(Client $client)
+    {
+        return view('operations.edit-client', compact('client'));
+    }
+
+    /**
+     * Update a client.
+     */
+    public function updateClient(Request $request, Client $client)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $client->user_id,
+            'company_name' => 'required|string|max:255',
+            'contact_person' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'is_active' => 'boolean',
+        ]);
+
+        // Update user
+        $client->user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        // Update client profile
+        $client->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'company_name' => $request->company_name,
+            'contact_person' => $request->contact_person,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'is_active' => $request->has('is_active'),
+        ]);
+
+        return redirect()->route('operations.clients')->with('success', 'Client updated successfully!');
+    }
+
+    /**
+     * Delete a client.
+     */
+    public function deleteClient(Client $client)
+    {
+        // Check if client has any service requests
+        if ($client->serviceRequests()->count() > 0) {
+            return redirect()->route('operations.clients')->with('error', 'Cannot delete client with existing service requests. Please handle the requests first.');
+        }
+
+        // Delete the user account
+        $client->user->delete();
+
+        // The client record will be deleted automatically due to cascade delete
+
+        return redirect()->route('operations.clients')->with('success', 'Client deleted successfully!');
+    }
+
+    /**
      * Show all service requests.
      */
     public function serviceRequests()

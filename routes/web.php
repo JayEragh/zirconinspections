@@ -92,6 +92,9 @@ Route::middleware(['auth'])->group(function () {
         // Client management
         Route::get('/operations/clients', [App\Http\Controllers\OperationsController::class, 'clients'])->name('operations.clients');
         Route::get('/operations/clients/{client}', [App\Http\Controllers\OperationsController::class, 'showClient'])->name('operations.clients.show');
+        Route::get('/operations/clients/{client}/edit', [App\Http\Controllers\OperationsController::class, 'editClient'])->name('operations.clients.edit');
+        Route::put('/operations/clients/{client}', [App\Http\Controllers\OperationsController::class, 'updateClient'])->name('operations.clients.update');
+        Route::delete('/operations/clients/{client}', [App\Http\Controllers\OperationsController::class, 'deleteClient'])->name('operations.clients.delete');
         
         // Inspector management
         Route::get('/operations/inspectors', [App\Http\Controllers\OperationsController::class, 'inspectors'])->name('operations.inspectors');
