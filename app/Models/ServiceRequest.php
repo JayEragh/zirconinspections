@@ -28,7 +28,7 @@ class ServiceRequest extends Model
     ];
 
     protected $casts = [
-        'quantity_gsv' => 'decimal:2',
+        'quantity_gsv' => 'decimal:3',
         'quantity_mt' => 'decimal:3',
         'assigned_at' => 'datetime',
         'completed_at' => 'datetime',

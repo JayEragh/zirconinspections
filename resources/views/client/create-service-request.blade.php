@@ -68,7 +68,7 @@
                             <div class="col-md-6 mb-3">
                                 <label for="quantity_gsv" class="form-label">Quantity (GSV) *</label>
                                 <div class="input-group">
-                                    <input type="number" step="0.01" class="form-control @error('quantity_gsv') is-invalid @enderror" 
+                                    <input type="number" step="0.001" class="form-control @error('quantity_gsv') is-invalid @enderror" 
                                            id="quantity_gsv" name="quantity_gsv" value="{{ old('quantity_gsv') }}" required>
                                     <span class="input-group-text">liters</span>
                                 </div>

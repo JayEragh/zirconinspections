@@ -131,15 +131,18 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label for="tank_number_{{ $index + 1 }}">Tank Number <span class="text-danger">*</span></label>
-                                                                <input type="text" class="form-control" 
-                                                                       id="tank_number_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][tank_number]" 
-                                                                       value="{{ old('data_sets.' . ($index + 1) . '.tank_number', $dataSet->tank_number) }}" required>
+                                                                <select class="form-control" id="tank_number_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][tank_number]" required>
+                                                                    <option value="">Select Tank</option>
+                                                                    @foreach($tankNumbers as $tank)
+                                                                        <option value="{{ $tank }}" {{ old('data_sets.' . ($index + 1) . '.tank_number', $dataSet->tank_number ?? '') == $tank ? 'selected' : '' }}>{{ $tank }}</option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label for="product_gauge_{{ $index + 1 }}">Product Gauge (m) <span class="text-danger">*</span></label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="product_gauge_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][product_gauge]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.product_gauge', $dataSet->product_gauge) }}" required>
                                                             </div>
@@ -150,7 +153,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="water_gauge_{{ $index + 1 }}">Water Gauge (m) <span class="text-danger">*</span></label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="water_gauge_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][water_gauge]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.water_gauge', $dataSet->water_gauge) }}" required>
                                                             </div>
@@ -158,7 +161,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="temperature_{{ $index + 1 }}">Temperature (°C) <span class="text-danger">*</span></label>
-                                                                <input type="number" step="0.1" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="temperature_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][temperature]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.temperature', $dataSet->temperature) }}" required>
                                                             </div>
@@ -166,7 +169,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="density_{{ $index + 1 }}">Density (@ 20°C) <span class="text-danger">*</span></label>
-                                                                <input type="number" step="0.0001" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="density_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][density]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.density', $dataSet->density) }}" required>
                                                             </div>
@@ -177,7 +180,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="vcf_{{ $index + 1 }}">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
-                                                                <input type="number" step="0.0001" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="vcf_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][vcf]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.vcf', $dataSet->vcf) }}" required>
                                                             </div>
@@ -185,7 +188,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="tov_{{ $index + 1 }}">TOV (m³) <span class="text-danger">*</span></label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="tov_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][tov]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.tov', $dataSet->tov) }}" required>
                                                             </div>
@@ -193,7 +196,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="water_volume_{{ $index + 1 }}">Water Volume (m³) <span class="text-danger">*</span></label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="water_volume_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][water_volume]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.water_volume', $dataSet->water_volume) }}" required>
                                                             </div>
@@ -221,7 +224,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label for="roof_weight_{{ $index + 1 }}">Roof Weight (kg)</label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="roof_weight_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][roof_weight]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.roof_weight', $dataSet->roof_weight) }}">
                                                             </div>
@@ -232,7 +235,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="roof_volume_{{ $index + 1 }}">Roof Volume (m³)</label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="roof_volume_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][roof_volume]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.roof_volume', $dataSet->roof_volume) }}">
                                                             </div>
@@ -240,7 +243,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="gov_{{ $index + 1 }}">GOV (m³)</label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="gov_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][gov]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.gov', $dataSet->gov) }}">
                                                             </div>
@@ -248,7 +251,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="gsv_{{ $index + 1 }}">GSV (m³)</label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="gsv_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][gsv]" 
                                                                        value="{{ old('data_sets.' . ($index + 1) . '.gsv', $dataSet->gsv) }}">
                                                             </div>
@@ -308,15 +311,18 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="tank_number_1">Tank Number <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" 
-                                                                   id="tank_number_1" name="data_sets[1][tank_number]" 
-                                                                   value="{{ old('data_sets.1.tank_number') }}" required>
+                                                            <select class="form-control" id="tank_number_1" name="data_sets[1][tank_number]" required>
+                                                                <option value="">Select Tank</option>
+                                                                @foreach($tankNumbers as $tank)
+                                                                    <option value="{{ $tank }}" {{ old('data_sets.1.tank_number') == $tank ? 'selected' : '' }}>{{ $tank }}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="product_gauge_1">Product Gauge (m) <span class="text-danger">*</span></label>
-                                                            <input type="number" step="0.01" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="product_gauge_1" name="data_sets[1][product_gauge]" 
                                                                    value="{{ old('data_sets.1.product_gauge') }}" required>
                                                         </div>
@@ -327,7 +333,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="water_gauge_1">Water Gauge (m) <span class="text-danger">*</span></label>
-                                                            <input type="number" step="0.01" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="water_gauge_1" name="data_sets[1][water_gauge]" 
                                                                    value="{{ old('data_sets.1.water_gauge') }}" required>
                                                         </div>
@@ -335,7 +341,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="temperature_1">Temperature (°C) <span class="text-danger">*</span></label>
-                                                            <input type="number" step="0.1" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="temperature_1" name="data_sets[1][temperature]" 
                                                                    value="{{ old('data_sets.1.temperature') }}" required>
                                                         </div>
@@ -343,7 +349,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="density_1">Density (@ 20°C) <span class="text-danger">*</span></label>
-                                                            <input type="number" step="0.0001" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="density_1" name="data_sets[1][density]" 
                                                                    value="{{ old('data_sets.1.density') }}" required>
                                                         </div>
@@ -354,7 +360,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="vcf_1">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
-                                                            <input type="number" step="0.0001" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="vcf_1" name="data_sets[1][vcf]" 
                                                                    value="{{ old('data_sets.1.vcf') }}" required>
                                                         </div>
@@ -362,7 +368,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="tov_1">TOV (m³) <span class="text-danger">*</span></label>
-                                                            <input type="number" step="0.01" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="tov_1" name="data_sets[1][tov]" 
                                                                    value="{{ old('data_sets.1.tov') }}" required>
                                                         </div>
@@ -370,7 +376,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="water_volume_1">Water Volume (m³) <span class="text-danger">*</span></label>
-                                                            <input type="number" step="0.01" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="water_volume_1" name="data_sets[1][water_volume]" 
                                                                    value="{{ old('data_sets.1.water_volume') }}" required>
                                                         </div>
@@ -398,7 +404,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="roof_weight_1">Roof Weight (kg)</label>
-                                                            <input type="number" step="0.01" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="roof_weight_1" name="data_sets[1][roof_weight]" 
                                                                    value="{{ old('data_sets.1.roof_weight') }}">
                                                         </div>
@@ -409,7 +415,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="roof_volume_1">Roof Volume (m³)</label>
-                                                            <input type="number" step="0.01" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="roof_volume_1" name="data_sets[1][roof_volume]" 
                                                                    value="{{ old('data_sets.1.roof_volume') }}">
                                                         </div>
@@ -417,7 +423,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="gov_1">GOV (m³)</label>
-                                                            <input type="number" step="0.01" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="gov_1" name="data_sets[1][gov]" 
                                                                    value="{{ old('data_sets.1.gov') }}">
                                                         </div>
@@ -425,8 +431,8 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="gsv_1">GSV (m³)</label>
-                                                            <input type="number" step="0.01" class="form-control" 
-                                                                   id="gsv_1" name="data_sets.1.gsv]" 
+                                                            <input type="number" step="0.001" class="form-control" 
+                                                                   id="gsv_1" name="data_sets[1][gsv]" 
                                                                    value="{{ old('data_sets.1.gsv') }}">
                                                         </div>
                                                     </div>
@@ -546,14 +552,18 @@ function addDataSet() {
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="tank_number_${dataSetCounter}">Tank Number <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" 
-                               id="tank_number_${dataSetCounter}" name="data_sets[${dataSetCounter}][tank_number]" required>
+                        <select class="form-control" id="tank_number_${dataSetCounter}" name="data_sets[${dataSetCounter}][tank_number]" required>
+                            <option value="">Select Tank</option>
+                            @foreach($tankNumbers as $tank)
+                                <option value="{{ $tank }}" {{ old('data_sets.' . ($dataSetCounter) . '.tank_number', '') == $tank ? 'selected' : '' }}>{{ $tank }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="product_gauge_${dataSetCounter}">Product Gauge (m) <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="product_gauge_${dataSetCounter}" name="data_sets[${dataSetCounter}][product_gauge]" required>
                     </div>
                 </div>
@@ -563,21 +573,21 @@ function addDataSet() {
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="water_gauge_${dataSetCounter}">Water Gauge (m) <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="water_gauge_${dataSetCounter}" name="data_sets[${dataSetCounter}][water_gauge]" required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="temperature_${dataSetCounter}">Temperature (°C) <span class="text-danger">*</span></label>
-                        <input type="number" step="0.1" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="temperature_${dataSetCounter}" name="data_sets[${dataSetCounter}][temperature]" required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="density_${dataSetCounter}">Density (@ 20°C) <span class="text-danger">*</span></label>
-                        <input type="number" step="0.0001" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="density_${dataSetCounter}" name="data_sets[${dataSetCounter}][density]" required>
                     </div>
                 </div>
@@ -587,21 +597,21 @@ function addDataSet() {
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="vcf_${dataSetCounter}">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
-                        <input type="number" step="0.0001" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="vcf_${dataSetCounter}" name="data_sets[${dataSetCounter}][vcf]" required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="tov_${dataSetCounter}">TOV (m³) <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="tov_${dataSetCounter}" name="data_sets[${dataSetCounter}][tov]" required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="water_volume_${dataSetCounter}">Water Volume (m³) <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="water_volume_${dataSetCounter}" name="data_sets[${dataSetCounter}][water_volume]" required>
                     </div>
                 </div>
@@ -626,7 +636,7 @@ function addDataSet() {
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="roof_weight_${dataSetCounter}">Roof Weight (kg)</label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="roof_weight_${dataSetCounter}" name="data_sets[${dataSetCounter}][roof_weight]">
                     </div>
                 </div>
@@ -636,21 +646,21 @@ function addDataSet() {
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="roof_volume_${dataSetCounter}">Roof Volume (m³)</label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="roof_volume_${dataSetCounter}" name="data_sets[${dataSetCounter}][roof_volume]">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="gov_${dataSetCounter}">GOV (m³)</label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="gov_${dataSetCounter}" name="data_sets[${dataSetCounter}][gov]">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="gsv_${dataSetCounter}">GSV (m³)</label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="gsv_${dataSetCounter}" name="data_sets[${dataSetCounter}][gsv]">
                     </div>
                 </div>
@@ -718,15 +728,15 @@ function calculateValues(dataSetId) {
     if (density > 0 && vcf > 0) {
         roofVolume = roofWeight / (density * vcf);
     }
-    document.getElementById(`roof_volume_${dataSetId}`).value = roofVolume.toFixed(2);
+    document.getElementById(`roof_volume_${dataSetId}`).value = roofVolume.toFixed(3);
 
     // Calculate GOV: TOV - Water Volume - Roof Volume
     const gov = tov - waterVolume - roofVolume;
-    document.getElementById(`gov_${dataSetId}`).value = gov.toFixed(2);
+    document.getElementById(`gov_${dataSetId}`).value = gov.toFixed(3);
 
     // Calculate GSV: GOV × VCF
     const gsv = gov * vcf;
-    document.getElementById(`gsv_${dataSetId}`).value = gsv.toFixed(2);
+    document.getElementById(`gsv_${dataSetId}`).value = gsv.toFixed(3);
 
     // Calculate MT Air: GSV × (Density - 0.0011)
     const mtAir = gsv * (density - 0.0011);

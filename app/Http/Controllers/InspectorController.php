@@ -169,17 +169,15 @@ class InspectorController extends Controller
     {
         $user = Auth::user();
         $inspector = Inspector::where('user_id', $user->id)->first();
-        
         if (!$inspector) {
             abort(404, 'Inspector profile not found');
         }
-        
         $serviceRequest = ServiceRequest::where('id', $serviceRequestId)
             ->where('inspector_id', $inspector->id)
             ->with(['client'])
             ->firstOrFail();
-        
-        return view('inspector.create-report', compact('serviceRequest'));
+        $tankNumbers = array_map('trim', explode(',', $serviceRequest->tank_numbers));
+        return view('inspector.create-report', compact('serviceRequest', 'tankNumbers'));
     }
 
     public function storeReport(Request $request, $serviceRequestId)
@@ -267,17 +265,15 @@ class InspectorController extends Controller
     {
         $user = Auth::user();
         $inspector = Inspector::where('user_id', $user->id)->first();
-        
         if (!$inspector) {
             abort(404, 'Inspector profile not found');
         }
-        
         $report = Report::where('id', $id)
             ->where('inspector_id', $inspector->id)
             ->with(['serviceRequest', 'client', 'inspectionDataSets'])
             ->firstOrFail();
-        
-        return view('inspector.edit-report', compact('report'));
+        $tankNumbers = array_map('trim', explode(',', $report->serviceRequest->tank_numbers));
+        return view('inspector.edit-report', compact('report', 'tankNumbers'));
     }
 
     public function updateReport(Request $request, $id)

@@ -105,8 +105,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="tank_number">Tank Number <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('tank_number') is-invalid @enderror" 
-                                                   id="tank_number" name="tank_number" value="{{ old('tank_number') }}" required>
+                                            <select class="form-control @error('tank_number') is-invalid @enderror" 
+                                                    id="tank_number" name="tank_number" required>
+                                                <option value="">Select Tank</option>
+                                                @foreach($tankNumbers as $tank)
+                                                    <option value="{{ $tank }}" {{ old('tank_number') == $tank ? 'selected' : '' }}>{{ $tank }}</option>
+                                                @endforeach
+                                            </select>
                                             @error('tank_number')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -118,7 +123,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="product_gauge">Product Gauge <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" class="form-control @error('product_gauge') is-invalid @enderror" 
+                                            <input type="number" step="0.001" class="form-control @error('product_gauge') is-invalid @enderror" 
                                                    id="product_gauge" name="product_gauge" value="{{ old('product_gauge') }}" required>
                                             @error('product_gauge')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -128,7 +133,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="h20_gauge">H20 Gauge <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" class="form-control @error('h20_gauge') is-invalid @enderror" 
+                                            <input type="number" step="0.001" class="form-control @error('h20_gauge') is-invalid @enderror" 
                                                    id="h20_gauge" name="h20_gauge" value="{{ old('h20_gauge') }}" required>
                                             @error('h20_gauge')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -138,7 +143,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="temperature">Temperature (°C) <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.1" class="form-control @error('temperature') is-invalid @enderror" 
+                                            <input type="number" step="0.001" class="form-control @error('temperature') is-invalid @enderror" 
                                                    id="temperature" name="temperature" value="{{ old('temperature') }}" required>
                                             @error('temperature')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -166,7 +171,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" id="roof_weight_group" style="display: none;">
                                             <label for="roof_weight">Roof Weight</label>
-                                            <input type="number" step="0.01" class="form-control" id="roof_weight" name="roof_weight" 
+                                            <input type="number" step="0.001" class="form-control" id="roof_weight" name="roof_weight" 
                                                    value="{{ old('roof_weight') }}">
                                         </div>
                                     </div>
@@ -186,7 +191,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="vcf">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.0001" class="form-control @error('vcf') is-invalid @enderror" 
+                                            <input type="number" step="0.001" class="form-control @error('vcf') is-invalid @enderror" 
                                                    id="vcf" name="vcf" value="{{ old('vcf') }}" required>
                                             @error('vcf')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -196,7 +201,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="tov">TOV <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" class="form-control @error('tov') is-invalid @enderror" 
+                                            <input type="number" step="0.001" class="form-control @error('tov') is-invalid @enderror" 
                                                    id="tov" name="tov" value="{{ old('tov') }}" required>
                                             @error('tov')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -209,7 +214,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="water_vol">Water Volume <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" class="form-control @error('water_vol') is-invalid @enderror" 
+                                            <input type="number" step="0.001" class="form-control @error('water_vol') is-invalid @enderror" 
                                                    id="water_vol" name="water_vol" value="{{ old('water_vol') }}" required>
                                             @error('water_vol')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -219,14 +224,14 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="roof_vol">Roof Volume (Calculated)</label>
-                                            <input type="number" step="0.01" class="form-control" id="roof_vol" name="roof_vol" readonly>
+                                            <input type="number" step="0.001" class="form-control" id="roof_vol" name="roof_vol" readonly>
                                             <small class="form-text text-muted">Roof weight ÷ (Density × VCF)</small>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="gov">GOV (Calculated)</label>
-                                            <input type="number" step="0.01" class="form-control" id="gov" name="gov" readonly>
+                                            <input type="number" step="0.001" class="form-control" id="gov" name="gov" readonly>
                                             <small class="form-text text-muted">TOV - Water Volume - Roof Volume</small>
                                         </div>
                                     </div>
@@ -236,7 +241,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="gsv">GSV (Calculated)</label>
-                                            <input type="number" step="0.01" class="form-control" id="gsv" name="gsv" readonly>
+                                            <input type="number" step="0.001" class="form-control" id="gsv" name="gsv" readonly>
                                             <small class="form-text text-muted">GOV × VCF</small>
                                         </div>
                                     </div>
@@ -381,15 +386,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (density > 0 && vcf > 0) {
             roofVol = roofWeight / (density * vcf);
         }
-        document.getElementById('roof_vol').value = roofVol.toFixed(2);
+        document.getElementById('roof_vol').value = roofVol.toFixed(3);
 
         // Calculate GOV: TOV - Water Volume - Roof Volume
         const gov = tov - waterVol - roofVol;
-        document.getElementById('gov').value = gov.toFixed(2);
+        document.getElementById('gov').value = gov.toFixed(3);
 
         // Calculate GSV: GOV × VCF
         const gsv = gov * vcf;
-        document.getElementById('gsv').value = gsv.toFixed(2);
+        document.getElementById('gsv').value = gsv.toFixed(3);
 
         // Calculate MT Air: GSV × (Density - 0.0011)
         const mtAir = gsv * (density - 0.0011);
