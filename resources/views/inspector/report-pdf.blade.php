@@ -178,7 +178,7 @@
             <div class="technical-grid">
                 <div class="technical-row">
                     <div class="technical-cell"><strong>Inspection Date:</strong></div>
-                    <div class="technical-cell">{{ $report->inspection_date ? $report->inspection_date->format('M d, Y') : 'N/A' }}</div>
+                    <div class="technical-cell">{{ $report->inspection_date && is_object($report->inspection_date) ? $report->inspection_date->format('M d, Y') : ($report->inspection_date ? $report->inspection_date : 'N/A') }}</div>
                     <div class="technical-cell"><strong>Inspection Time:</strong></div>
                     <div class="technical-cell">{{ $report->inspection_time ? $report->inspection_time->format('H:i') : 'N/A' }}</div>
                 </div>

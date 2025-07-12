@@ -82,8 +82,8 @@
                                 <tbody>
                                     @foreach($report->inspectionDataSets as $dataSet)
                                     <tr>
-                                        <td>{{ $dataSet->inspection_date->format('M d, Y') }}</td>
-                                        <td>{{ $dataSet->inspection_time->format('H:i') }}</td>
+                                        <td>{{ $dataSet->inspection_date && is_object($dataSet->inspection_date) ? $dataSet->inspection_date->format('M d, Y') : ($dataSet->inspection_date ? $dataSet->inspection_date : 'N/A') }}</td>
+                                        <td>{{ $dataSet->inspection_time && is_object($dataSet->inspection_time) ? $dataSet->inspection_time->format('H:i') : ($dataSet->inspection_time ? $dataSet->inspection_time : 'N/A') }}</td>
                                         <td>{{ $dataSet->tank_number }}</td>
                                         <td>{{ number_format($dataSet->product_gauge, 2) }}</td>
                                         <td>{{ number_format($dataSet->water_gauge, 2) }}</td>
@@ -177,8 +177,8 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Inspection Date:</strong> {{ $report->inspection_date ? $report->inspection_date->format('M d, Y') : 'N/A' }}</p>
-                            <p><strong>Inspection Time:</strong> {{ $report->inspection_time ? $report->inspection_time->format('H:i') : 'N/A' }}</p>
+                            <p><strong>Inspection Date:</strong> {{ $report->inspection_date && is_object($report->inspection_date) ? $report->inspection_date->format('M d, Y') : ($report->inspection_date ? $report->inspection_date : 'N/A') }}</p>
+                            <p><strong>Inspection Time:</strong> {{ $report->inspection_time && is_object($report->inspection_time) ? $report->inspection_time->format('H:i') : ($report->inspection_time ? $report->inspection_time : 'N/A') }}</p>
                             <p><strong>Tank Number:</strong> {{ $report->tank_number ?? 'N/A' }}</p>
                         </div>
                         <div class="col-md-6">

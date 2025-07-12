@@ -114,7 +114,7 @@
                                                                 <label for="inspection_date_{{ $index + 1 }}">Inspection Date <span class="text-danger">*</span></label>
                                                                 <input type="date" class="form-control" 
                                                                        id="inspection_date_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][inspection_date]" 
-                                                                       value="{{ old('data_sets.' . ($index + 1) . '.inspection_date', $dataSet->inspection_date ? $dataSet->inspection_date->format('Y-m-d') : date('Y-m-d')) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.inspection_date', $dataSet->inspection_date && is_object($dataSet->inspection_date) ? $dataSet->inspection_date->format('Y-m-d') : ($dataSet->inspection_date ? $dataSet->inspection_date : date('Y-m-d'))) }}" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -122,7 +122,7 @@
                                                                 <label for="inspection_time_{{ $index + 1 }}">Inspection Time <span class="text-danger">*</span></label>
                                                                 <input type="time" class="form-control" 
                                                                        id="inspection_time_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][inspection_time]" 
-                                                                       value="{{ old('data_sets.' . ($index + 1) . '.inspection_time', $dataSet->inspection_time ? $dataSet->inspection_time->format('H:i') : date('H:i')) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.inspection_time', $dataSet->inspection_time && is_object($dataSet->inspection_time) ? $dataSet->inspection_time->format('H:i') : ($dataSet->inspection_time ? $dataSet->inspection_time : date('H:i'))) }}" required>
                                                             </div>
                                                         </div>
                                                     </div>

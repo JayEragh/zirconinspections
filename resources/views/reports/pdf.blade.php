@@ -232,7 +232,7 @@
         <div class="technical-grid">
             <div class="technical-item">
                 <span class="info-label">Inspection Date:</span><br>
-                {{ $report->inspection_date ? $report->inspection_date->format('M d, Y') : 'N/A' }}
+                {{ $report->inspection_date && is_object($report->inspection_date) ? $report->inspection_date->format('M d, Y') : ($report->inspection_date ? $report->inspection_date : 'N/A') }}
             </div>
             <div class="technical-item">
                 <span class="info-label">Inspection Time:</span><br>
