@@ -397,7 +397,7 @@ class InspectorController extends Controller
         return view('inspector.message-detail', compact('message'));
     }
 
-    public function createMessage()
+    public function createMessage(Request $request)
     {
         $user = Auth::user();
         $inspector = Inspector::where('user_id', $user->id)->first();
@@ -412,7 +412,19 @@ class InspectorController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
         
-        return view('inspector.create-message', compact('clients', 'serviceRequests'));
+        // Handle reply functionality
+        $replyToMessage = null;
+        if ($request->has('reply_to')) {
+            $replyToMessage = Message::where('id', $request->reply_to)
+                ->where(function($query) use ($user) {
+                    $query->where('sender_id', $user->id)
+                          ->orWhere('recipient_id', $user->id);
+                })
+                ->with(['sender', 'recipient', 'serviceRequest'])
+                ->first();
+        }
+        
+        return view('inspector.create-message', compact('clients', 'serviceRequests', 'replyToMessage'));
     }
 
     public function storeMessage(Request $request)
