@@ -173,28 +173,6 @@
     </div>
 
     <div class="section">
-        <div class="section-title">Client Information</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">Name:</div>
-                <div class="info-value">{{ $report->client->name }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Email:</div>
-                <div class="info-value">{{ $report->client->email }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Phone:</div>
-                <div class="info-value">{{ $report->client->phone }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Address:</div>
-                <div class="info-value">{{ $report->client->address }}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
         <div class="section-title">Technical Inspection Data</div>
         <div class="technical-data">
             <div class="technical-grid">

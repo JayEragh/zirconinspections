@@ -171,18 +171,7 @@
                 </div>
             </div>
 
-            <!-- Client Information -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Client Information</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Name:</strong> {{ $report->client->name }}</p>
-                    <p><strong>Email:</strong> {{ $report->client->email }}</p>
-                    <p><strong>Phone:</strong> {{ $report->client->phone }}</p>
-                    <p><strong>Address:</strong> {{ $report->client->address }}</p>
-                </div>
-            </div>
+
 
             <!-- Report Actions -->
             <div class="card shadow mb-4">

@@ -89,19 +89,6 @@
         </div>
 
         <div class="col-lg-4">
-            <!-- Client Information -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Client Information</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Name:</strong> {{ $serviceRequest->client->name }}</p>
-                    <p><strong>Email:</strong> {{ $serviceRequest->client->email }}</p>
-                    <p><strong>Phone:</strong> {{ $serviceRequest->client->phone }}</p>
-                    <p><strong>Address:</strong> {{ $serviceRequest->client->address }}</p>
-                </div>
-            </div>
-
             <!-- Reports -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">

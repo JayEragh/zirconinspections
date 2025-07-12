@@ -26,7 +26,6 @@
                                 <thead>
                                     <tr>
                                         <th>Request #</th>
-                                        <th>Client</th>
                                         <th>Service Type</th>
                                         <th>Priority</th>
                                         <th>Status</th>
@@ -38,7 +37,6 @@
                                     @foreach($serviceRequests as $request)
                                     <tr>
                                         <td>#{{ $request->id }}</td>
-                                        <td>{{ $request->client->name }}</td>
                                         <td>{{ $request->service_type }}</td>
                                         <td>
                                             <span class="badge badge-{{ $request->priority === 'high' ? 'danger' : ($request->priority === 'medium' ? 'warning' : 'info') }}">

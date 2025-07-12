@@ -103,7 +103,6 @@
                                 <thead>
                                     <tr>
                                         <th>Request #</th>
-                                        <th>Client</th>
                                         <th>Status</th>
                                         <th>Date</th>
                                         <th>Action</th>
@@ -113,7 +112,6 @@
                                     @foreach($assignedRequests as $request)
                                     <tr>
                                         <td>#{{ $request->id }}</td>
-                                        <td>{{ $request->client->name }}</td>
                                         <td>
                                             <span class="badge badge-{{ $request->status === 'completed' ? 'success' : ($request->status === 'in_progress' ? 'warning' : 'secondary') }}">
                                                 {{ ucfirst(str_replace('_', ' ', $request->status)) }}

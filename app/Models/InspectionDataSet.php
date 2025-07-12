@@ -32,7 +32,7 @@ class InspectionDataSet extends Model
 
     protected $casts = [
         'inspection_date' => 'date',
-        'inspection_time' => 'datetime',
+        'inspection_time' => 'string',
         'product_gauge' => 'decimal:2',
         'water_gauge' => 'decimal:2',
         'temperature' => 'decimal:2',

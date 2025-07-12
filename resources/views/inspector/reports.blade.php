@@ -31,7 +31,6 @@
                                         <th>Report #</th>
                                         <th>Title</th>
                                         <th>Service Request</th>
-                                        <th>Client</th>
                                         <th>Status</th>
                                         <th>Created Date</th>
                                         <th>Actions</th>
@@ -43,7 +42,6 @@
                                         <td>#{{ $report->id }}</td>
                                         <td>{{ $report->title }}</td>
                                         <td>#{{ $report->serviceRequest->id }}</td>
-                                        <td>{{ $report->client->name }}</td>
                                         <td>
                                             <span class="badge badge-{{ $report->status === 'approved' ? 'success' : ($report->status === 'submitted' ? 'warning' : 'secondary') }}">
                                                 {{ ucfirst($report->status) }}
