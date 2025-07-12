@@ -88,6 +88,15 @@
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 </form>
+                                                <form action="{{ route('operations.reports.decline', $report) }}" 
+                                                      method="POST" class="d-inline ms-1">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                            title="Decline Report" 
+                                                            onclick="return confirm('Are you sure you want to decline this report and request amendment by the inspector?')">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
                                                 @endif
                                             </div>
                                         </td>

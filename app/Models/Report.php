@@ -38,6 +38,7 @@ class Report extends Model
         'submitted_at',
         'approved_at',
         'sent_to_client_at',
+        'declined_at',
     ];
 
     protected $casts = [
@@ -59,6 +60,7 @@ class Report extends Model
         'submitted_at' => 'datetime',
         'approved_at' => 'datetime',
         'sent_to_client_at' => 'datetime',
+        'declined_at' => 'datetime',
     ];
 
     /**

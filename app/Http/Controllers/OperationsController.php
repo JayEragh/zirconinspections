@@ -345,6 +345,41 @@ class OperationsController extends Controller
     }
 
     /**
+     * Decline a report for amendment.
+     */
+    public function declineReport(Report $report)
+    {
+        $report->update([
+            'status' => 'declined',
+            'declined_at' => now(),
+        ]);
+
+        // Create notification message for inspector
+        $message = Message::create([
+            'sender_id' => Auth::id(), // Operations user
+            'recipient_id' => $report->inspector->user_id,
+            'subject' => 'Report Declined - Requires Amendment - Report #' . $report->id,
+            'content' => "Dear " . $report->inspector->user->name . ",\n\n" .
+                        "Your report #" . $report->id . " for Service Request #" . $report->serviceRequest->id . " has been declined and requires amendment.\n\n" .
+                        "Report Details:\n" .
+                        "- Report #: " . $report->id . "\n" .
+                        "- Service Type: " . ucfirst($report->serviceRequest->service_type) . "\n" .
+                        "- Depot: " . $report->serviceRequest->depot . "\n" .
+                        "- Product: " . $report->serviceRequest->product . "\n" .
+                        "- Client: " . $report->serviceRequest->client->user->name . "\n\n" .
+                        "Please review the report and make the necessary amendments. You can edit the report from your inspector portal.\n\n" .
+                        "Thank you for your attention to this matter.\n\n" .
+                        "Best regards,\n" .
+                        "Operations Team\n" .
+                        "Zircon Inspections",
+            'service_request_id' => $report->serviceRequest->id,
+            'read' => false,
+        ]);
+
+        return back()->with('success', 'Report declined successfully! Inspector has been notified to make amendments.');
+    }
+
+    /**
      * Send approved report notification to client.
      */
     public function sendToClient(Report $report)
