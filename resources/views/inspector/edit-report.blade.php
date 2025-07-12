@@ -682,6 +682,9 @@ function addDataSet() {
     if (dataSets.length > 1) {
         dataSets[0].querySelector('.btn-danger').style.display = 'block';
     }
+    
+    // Add calculation listeners for the newly added data set
+    addCalculationListeners(dataSetCounter);
 }
 
 function removeDataSet(button) {
@@ -699,6 +702,95 @@ function removeDataSet(button) {
         const header = card.querySelector('.card-header h6');
         header.textContent = `Data Set #${index + 1}`;
         card.setAttribute('data-set-id', index + 1);
+    });
+}
+
+// Auto-calculation functions
+function calculateValues(dataSetId) {
+    const roofWeight = parseFloat(document.getElementById(`roof_weight_${dataSetId}`).value) || 0;
+    const density = parseFloat(document.getElementById(`density_${dataSetId}`).value) || 0;
+    const vcf = parseFloat(document.getElementById(`vcf_${dataSetId}`).value) || 0;
+    const tov = parseFloat(document.getElementById(`tov_${dataSetId}`).value) || 0;
+    const waterVolume = parseFloat(document.getElementById(`water_volume_${dataSetId}`).value) || 0;
+
+    // Calculate Roof Volume: Roof weight ÷ (Density × VCF)
+    let roofVolume = 0;
+    if (density > 0 && vcf > 0) {
+        roofVolume = roofWeight / (density * vcf);
+    }
+    document.getElementById(`roof_volume_${dataSetId}`).value = roofVolume.toFixed(2);
+
+    // Calculate GOV: TOV - Water Volume - Roof Volume
+    const gov = tov - waterVolume - roofVolume;
+    document.getElementById(`gov_${dataSetId}`).value = gov.toFixed(2);
+
+    // Calculate GSV: GOV × VCF
+    const gsv = gov * vcf;
+    document.getElementById(`gsv_${dataSetId}`).value = gsv.toFixed(2);
+
+    // Calculate MT Air: GSV × (Density - 0.0011)
+    const mtAir = gsv * (density - 0.0011);
+    document.getElementById(`mt_air_${dataSetId}`).value = mtAir.toFixed(3);
+}
+
+// Add event listeners to calculation fields for existing data sets
+document.addEventListener('DOMContentLoaded', function() {
+    const calculationFields = ['roof_weight', 'density', 'vcf', 'tov', 'water_volume'];
+    
+    // Add event listeners to existing data sets
+    document.querySelectorAll('.data-set-card').forEach(card => {
+        const dataSetId = card.getAttribute('data-set-id');
+        
+        calculationFields.forEach(fieldId => {
+            const field = document.getElementById(`${fieldId}_${dataSetId}`);
+            if (field) {
+                field.addEventListener('input', () => calculateValues(dataSetId));
+            }
+        });
+        
+        // Add event listeners for roof radio buttons
+        const roofRadios = card.querySelectorAll('input[name^="data_sets"][name$="[has_roof]"]');
+        const roofWeightField = document.getElementById(`roof_weight_${dataSetId}`);
+        
+        roofRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === '1') {
+                    roofWeightField.required = true;
+                } else {
+                    roofWeightField.required = false;
+                    roofWeightField.value = '';
+                }
+                calculateValues(dataSetId);
+            });
+        });
+    });
+});
+
+// Function to add event listeners to newly created data sets
+function addCalculationListeners(dataSetId) {
+    const calculationFields = ['roof_weight', 'density', 'vcf', 'tov', 'water_volume'];
+    
+    calculationFields.forEach(fieldId => {
+        const field = document.getElementById(`${fieldId}_${dataSetId}`);
+        if (field) {
+            field.addEventListener('input', () => calculateValues(dataSetId));
+        }
+    });
+    
+    // Add event listeners for roof radio buttons
+    const roofRadios = document.querySelectorAll(`input[name="data_sets[${dataSetId}][has_roof]"]`);
+    const roofWeightField = document.getElementById(`roof_weight_${dataSetId}`);
+    
+    roofRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === '1') {
+                roofWeightField.required = true;
+            } else {
+                roofWeightField.required = false;
+                roofWeightField.value = '';
+            }
+            calculateValues(dataSetId);
+        });
     });
 }
 </script>
