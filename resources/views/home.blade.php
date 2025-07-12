@@ -22,8 +22,8 @@
                         Learn More
                     </a>
                 </div>
-                <div class="col-lg-6 d-flex align-items-center justify-content-center" style="min-height: 320px;">
-                    <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" class="homepage-logo" style="max-width: 420px; width: 100%; height: auto; margin: 0 auto; display: block; background: transparent;">
+                <div class="col-lg-6 d-flex align-items-center justify-content-center" style="min-height: 280px;">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" class="homepage-logo" style="max-width: 280px; width: 100%; height: auto; margin: 0 auto; display: block; background: transparent;">
                 </div>
             </div>
         </div>
@@ -296,7 +296,7 @@
 @push('styles')
 <style>
     .homepage-logo {
-        max-width: 420px;
+        max-width: 280px;
         width: 100%;
         height: auto;
         margin: 0 auto;
@@ -306,7 +306,12 @@
     }
     @media (max-width: 991px) {
         .homepage-logo {
-            max-width: 260px;
+            max-width: 200px;
+        }
+    }
+    @media (max-width: 576px) {
+        .homepage-logo {
+            max-width: 160px;
         }
     }
 </style>
