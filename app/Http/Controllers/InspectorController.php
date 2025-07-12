@@ -274,7 +274,7 @@ class InspectorController extends Controller
         
         $report = Report::where('id', $id)
             ->where('inspector_id', $inspector->id)
-            ->with(['serviceRequest', 'client'])
+            ->with(['serviceRequest', 'client', 'inspectionDataSets'])
             ->firstOrFail();
         
         return view('inspector.edit-report', compact('report'));
@@ -299,56 +299,73 @@ class InspectorController extends Controller
             'findings' => 'required|string',
             'recommendations' => 'required|string',
             'status' => 'required|in:draft,submitted,approved',
-            'tank_number' => 'required|string|max:50',
-            'product_gauge' => 'required|numeric|min:0',
-            'h20_gauge' => 'required|numeric|min:0',
-            'temperature' => 'required|numeric',
-            'roof' => 'required|in:yes,no',
-            'roof_weight' => 'nullable|numeric|min:0',
-            'density' => 'required|numeric|min:0',
-            'vcf' => 'required|numeric|min:0',
-            'tov' => 'required|numeric|min:0',
-            'water_vol' => 'required|numeric|min:0',
-            'roof_vol' => 'nullable|numeric',
-            'gov' => 'nullable|numeric',
-            'gsv' => 'nullable|numeric',
-            'mt_air' => 'nullable|numeric',
-            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
+            'data_sets' => 'required|array|min:1',
+            'data_sets.*.inspection_date' => 'required|date',
+            'data_sets.*.inspection_time' => 'required',
+            'data_sets.*.tank_number' => 'required|string|max:50',
+            'data_sets.*.product_gauge' => 'required|numeric|min:0',
+            'data_sets.*.water_gauge' => 'required|numeric|min:0',
+            'data_sets.*.temperature' => 'required|numeric',
+            'data_sets.*.has_roof' => 'required|in:0,1',
+            'data_sets.*.roof_weight' => 'nullable|numeric|min:0',
+            'data_sets.*.density' => 'required|numeric|min:0',
+            'data_sets.*.vcf' => 'required|numeric|min:0',
+            'data_sets.*.tov' => 'required|numeric|min:0',
+            'data_sets.*.water_volume' => 'required|numeric|min:0',
+            'data_sets.*.roof_volume' => 'nullable|numeric',
+            'data_sets.*.gov' => 'nullable|numeric',
+            'data_sets.*.gsv' => 'nullable|numeric',
+            'data_sets.*.mt_air' => 'nullable|numeric',
+            'data_sets.*.notes' => 'nullable|string',
+            'supporting_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
         ]);
 
         // Handle file upload
         $supportingFile = $report->supporting_file;
-        if ($request->hasFile('file_upload')) {
-            $file = $request->file('file_upload');
+        if ($request->hasFile('supporting_file')) {
+            $file = $request->file('supporting_file');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->storeAs('reports', $fileName, 'public');
             $supportingFile = $fileName;
         }
         
+        // Update report basic information
         $report->update([
             'title' => $request->title,
             'content' => $request->content,
             'findings' => $request->findings,
             'recommendations' => $request->recommendations,
             'status' => $request->status,
-            'tank_number' => $request->tank_number,
-            'product_gauge' => $request->product_gauge,
-            'water_gauge' => $request->h20_gauge,
-            'temperature' => $request->temperature,
-            'has_roof' => $request->roof === 'yes',
-            'roof_weight' => $request->roof === 'yes' ? $request->roof_weight : null,
-            'density' => $request->density,
-            'vcf' => $request->vcf,
-            'tov' => $request->tov,
-            'water_volume' => $request->water_vol,
-            'roof_volume' => $request->roof_vol,
-            'gov' => $request->gov,
-            'gsv' => $request->gsv,
-            'mt_air' => $request->mt_air,
             'supporting_file' => $supportingFile,
         ]);
+
+        // Clear existing data sets and create new ones
+        $report->inspectionDataSets()->delete();
+
+        // Create new data sets
+        foreach ($request->data_sets as $dataSet) {
+            $report->inspectionDataSets()->create([
+                'inspection_date' => $dataSet['inspection_date'],
+                'inspection_time' => $dataSet['inspection_time'],
+                'tank_number' => $dataSet['tank_number'],
+                'product_gauge' => $dataSet['product_gauge'],
+                'water_gauge' => $dataSet['water_gauge'],
+                'temperature' => $dataSet['temperature'],
+                'has_roof' => $dataSet['has_roof'],
+                'roof_weight' => $dataSet['roof_weight'] ?? null,
+                'density' => $dataSet['density'],
+                'vcf' => $dataSet['vcf'],
+                'tov' => $dataSet['tov'],
+                'water_volume' => $dataSet['water_volume'],
+                'roof_volume' => $dataSet['roof_volume'] ?? null,
+                'gov' => $dataSet['gov'] ?? null,
+                'gsv' => $dataSet['gsv'] ?? null,
+                'mt_air' => $dataSet['mt_air'] ?? null,
+                'notes' => $dataSet['notes'] ?? null,
+            ]);
+        }
         
-        return redirect()->route('inspector.reports')->with('success', 'Report updated successfully.');
+        return redirect()->route('inspector.reports')->with('success', 'Report updated successfully with ' . count($request->data_sets) . ' data sets.');
     }
 
     public function messages()

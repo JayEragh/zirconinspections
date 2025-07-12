@@ -137,7 +137,7 @@ class ClientController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $report->load(['serviceRequest.client.user', 'inspector.user']);
+        $report->load(['serviceRequest.client.user', 'inspector.user', 'inspectionDataSets']);
         return view('client.report-details', compact('report'));
     }
 

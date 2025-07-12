@@ -88,183 +88,368 @@
                             @enderror
                         </div>
 
-                        <!-- Technical Inspection Data -->
+                        <!-- Multiple Data Sets Section -->
                         <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Technical Inspection Data</h6>
+                            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 font-weight-bold text-primary">Inspection Data Sets</h6>
+                                <button type="button" class="btn btn-success btn-sm" onclick="addDataSet()">
+                                    <i class="fas fa-plus me-2"></i>Add Data Set
+                                </button>
                             </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="date_time">Date/Time</label>
-                                            <input type="datetime-local" class="form-control" id="date_time" name="date_time" 
-                                                   value="{{ old('date_time', $report->inspection_time ? $report->inspection_time->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" readonly>
-                                            <small class="form-text text-muted">Auto-generated</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="tank_number">Tank Number <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control @error('tank_number') is-invalid @enderror" 
-                                                   id="tank_number" name="tank_number" value="{{ old('tank_number', $report->tank_number) }}" required>
-                                            @error('tank_number')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
+                                <div id="data-sets-container">
+                                    @if($report->inspectionDataSets->count() > 0)
+                                        @foreach($report->inspectionDataSets as $index => $dataSet)
+                                            <div class="data-set-card card mb-3" data-set-id="{{ $index + 1 }}">
+                                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                    <h6 class="mb-0">Data Set #{{ $index + 1 }}</h6>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeDataSet(this)" {{ $index === 0 && $report->inspectionDataSets->count() === 1 ? 'style=display:none;' : '' }}>
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="inspection_date_{{ $index + 1 }}">Inspection Date <span class="text-danger">*</span></label>
+                                                                <input type="date" class="form-control" 
+                                                                       id="inspection_date_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][inspection_date]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.inspection_date", $dataSet->inspection_date->format('Y-m-d')) }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="inspection_time_{{ $index + 1 }}">Inspection Time <span class="text-danger">*</span></label>
+                                                                <input type="time" class="form-control" 
+                                                                       id="inspection_time_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][inspection_time]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.inspection_time", $dataSet->inspection_time->format('H:i')) }}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="product_gauge">Product Gauge <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" class="form-control @error('product_gauge') is-invalid @enderror" 
-                                                   id="product_gauge" name="product_gauge" value="{{ old('product_gauge', $report->product_gauge) }}" required>
-                                            @error('product_gauge')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="h20_gauge">H20 Gauge <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" class="form-control @error('h20_gauge') is-invalid @enderror" 
-                                                   id="h20_gauge" name="h20_gauge" value="{{ old('h20_gauge', $report->water_gauge) }}" required>
-                                            @error('h20_gauge')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="temperature">Temperature (°C) <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.1" class="form-control @error('temperature') is-invalid @enderror" 
-                                                   id="temperature" name="temperature" value="{{ old('temperature', $report->temperature) }}" required>
-                                            @error('temperature')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="tank_number_{{ $index + 1 }}">Tank Number <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" 
+                                                                       id="tank_number_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][tank_number]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.tank_number", $dataSet->tank_number) }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="product_gauge_{{ $index + 1 }}">Product Gauge (m) <span class="text-danger">*</span></label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="product_gauge_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][product_gauge]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.product_gauge", $dataSet->product_gauge) }}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Roof</label>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="roof" id="roof_yes" value="yes" 
-                                                       {{ old('roof', $report->has_roof ? 'yes' : 'no') === 'yes' ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="roof_yes">Yes</label>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="water_gauge_{{ $index + 1 }}">Water Gauge (m) <span class="text-danger">*</span></label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="water_gauge_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][water_gauge]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.water_gauge", $dataSet->water_gauge) }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="temperature_{{ $index + 1 }}">Temperature (°C) <span class="text-danger">*</span></label>
+                                                                <input type="number" step="0.1" class="form-control" 
+                                                                       id="temperature_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][temperature]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.temperature", $dataSet->temperature) }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="density_{{ $index + 1 }}">Density (@ 20°C) <span class="text-danger">*</span></label>
+                                                                <input type="number" step="0.0001" class="form-control" 
+                                                                       id="density_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][density]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.density", $dataSet->density) }}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="vcf_{{ $index + 1 }}">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
+                                                                <input type="number" step="0.0001" class="form-control" 
+                                                                       id="vcf_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][vcf]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.vcf", $dataSet->vcf) }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="tov_{{ $index + 1 }}">TOV (m³) <span class="text-danger">*</span></label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="tov_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][tov]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.tov", $dataSet->tov) }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="water_volume_{{ $index + 1 }}">Water Volume (m³) <span class="text-danger">*</span></label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="water_volume_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][water_volume]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.water_volume", $dataSet->water_volume) }}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Roof</label>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="data_sets[{{ $index + 1 }}][has_roof]" 
+                                                                           id="has_roof_yes_{{ $index + 1 }}" value="1" 
+                                                                           {{ old("data_sets.{$index + 1}.has_roof", $dataSet->has_roof ? '1' : '0') === '1' ? 'checked' : '' }}>
+                                                                    <label class="form-check-label" for="has_roof_yes_{{ $index + 1 }}">Yes</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="data_sets[{{ $index + 1 }}][has_roof]" 
+                                                                           id="has_roof_no_{{ $index + 1 }}" value="0" 
+                                                                           {{ old("data_sets.{$index + 1}.has_roof", $dataSet->has_roof ? '1' : '0') === '0' ? 'checked' : '' }}>
+                                                                    <label class="form-check-label" for="has_roof_no_{{ $index + 1 }}">No</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="roof_weight_{{ $index + 1 }}">Roof Weight (kg)</label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="roof_weight_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][roof_weight]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.roof_weight", $dataSet->roof_weight) }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="roof_volume_{{ $index + 1 }}">Roof Volume (m³)</label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="roof_volume_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][roof_volume]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.roof_volume", $dataSet->roof_volume) }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="gov_{{ $index + 1 }}">GOV (m³)</label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="gov_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][gov]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.gov", $dataSet->gov) }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="gsv_{{ $index + 1 }}">GSV (m³)</label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="gsv_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][gsv]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.gsv", $dataSet->gsv) }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="mt_air_{{ $index + 1 }}">MT Air (tonnes)</label>
+                                                                <input type="number" step="0.01" class="form-control" 
+                                                                       id="mt_air_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][mt_air]" 
+                                                                       value="{{ old("data_sets.{$index + 1}.mt_air", $dataSet->mt_air) }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="notes_{{ $index + 1 }}">Notes</label>
+                                                                <textarea class="form-control" id="notes_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][notes]" 
+                                                                          rows="2" placeholder="Additional notes for this data set...">{{ old("data_sets.{$index + 1}.notes", $dataSet->notes) }}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="roof" id="roof_no" value="no" 
-                                                       {{ old('roof', $report->has_roof ? 'yes' : 'no') === 'no' ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="roof_no">No</label>
+                                        @endforeach
+                                    @else
+                                        <!-- Initial Data Set -->
+                                        <div class="data-set-card card mb-3" data-set-id="1">
+                                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0">Data Set #1</h6>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="removeDataSet(this)" style="display: none;">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group" id="roof_weight_group" style="display: {{ $report->has_roof ? 'block' : 'none' }};">
-                                            <label for="roof_weight">Roof Weight</label>
-                                            <input type="number" step="0.01" class="form-control" id="roof_weight" name="roof_weight" 
-                                                   value="{{ old('roof_weight', $report->roof_weight) }}">
-                                        </div>
-                                    </div>
-                                </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="inspection_date_1">Inspection Date <span class="text-danger">*</span></label>
+                                                            <input type="date" class="form-control" 
+                                                                   id="inspection_date_1" name="data_sets[1][inspection_date]" 
+                                                                   value="{{ old('data_sets.1.inspection_date', date('Y-m-d')) }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="inspection_time_1">Inspection Time <span class="text-danger">*</span></label>
+                                                            <input type="time" class="form-control" 
+                                                                   id="inspection_time_1" name="data_sets[1][inspection_time]" 
+                                                                   value="{{ old('data_sets.1.inspection_time', date('H:i')) }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="density">Density (@ 20°C) <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.001" class="form-control @error('density') is-invalid @enderror" 
-                                                   id="density" name="density" value="{{ old('density', $report->density) }}" required>
-                                            @error('density')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="vcf">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.0001" class="form-control @error('vcf') is-invalid @enderror" 
-                                                   id="vcf" name="vcf" value="{{ old('vcf', $report->vcf) }}" required>
-                                            @error('vcf')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="tov">TOV <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" class="form-control @error('tov') is-invalid @enderror" 
-                                                   id="tov" name="tov" value="{{ old('tov', $report->tov) }}" required>
-                                            @error('tov')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="tank_number_1">Tank Number <span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" 
+                                                                   id="tank_number_1" name="data_sets[1][tank_number]" 
+                                                                   value="{{ old('data_sets.1.tank_number') }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="product_gauge_1">Product Gauge (m) <span class="text-danger">*</span></label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="product_gauge_1" name="data_sets[1][product_gauge]" 
+                                                                   value="{{ old('data_sets.1.product_gauge') }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="water_vol">Water Volume <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" class="form-control @error('water_vol') is-invalid @enderror" 
-                                                   id="water_vol" name="water_vol" value="{{ old('water_vol', $report->water_volume) }}" required>
-                                            @error('water_vol')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="roof_vol">Roof Volume (Calculated)</label>
-                                            <input type="number" step="0.01" class="form-control" id="roof_vol" name="roof_vol" 
-                                                   value="{{ old('roof_vol', $report->roof_volume) }}" readonly>
-                                            <small class="form-text text-muted">Roof weight ÷ (Density × VCF)</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="gov">GOV (Calculated)</label>
-                                            <input type="number" step="0.01" class="form-control" id="gov" name="gov" 
-                                                   value="{{ old('gov', $report->gov) }}" readonly>
-                                            <small class="form-text text-muted">TOV - Water Volume - Roof Volume</small>
-                                        </div>
-                                    </div>
-                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="water_gauge_1">Water Gauge (m) <span class="text-danger">*</span></label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="water_gauge_1" name="data_sets[1][water_gauge]" 
+                                                                   value="{{ old('data_sets.1.water_gauge') }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="temperature_1">Temperature (°C) <span class="text-danger">*</span></label>
+                                                            <input type="number" step="0.1" class="form-control" 
+                                                                   id="temperature_1" name="data_sets[1][temperature]" 
+                                                                   value="{{ old('data_sets.1.temperature') }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="density_1">Density (@ 20°C) <span class="text-danger">*</span></label>
+                                                            <input type="number" step="0.0001" class="form-control" 
+                                                                   id="density_1" name="data_sets[1][density]" 
+                                                                   value="{{ old('data_sets.1.density') }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="gsv">GSV (Calculated)</label>
-                                            <input type="number" step="0.01" class="form-control" id="gsv" name="gsv" 
-                                                   value="{{ old('gsv', $report->gsv) }}" readonly>
-                                            <small class="form-text text-muted">GOV × VCF</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="mt_air">MT Air (Calculated)</label>
-                                            <input type="number" step="0.01" class="form-control" id="mt_air" name="mt_air" 
-                                                   value="{{ old('mt_air', $report->mt_air) }}" readonly>
-                                            <small class="form-text text-muted">GSV × (Density - 0.0011)</small>
-                                        </div>
-                                    </div>
-                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="vcf_1">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
+                                                            <input type="number" step="0.0001" class="form-control" 
+                                                                   id="vcf_1" name="data_sets[1][vcf]" 
+                                                                   value="{{ old('data_sets.1.vcf') }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="tov_1">TOV (m³) <span class="text-danger">*</span></label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="tov_1" name="data_sets[1][tov]" 
+                                                                   value="{{ old('data_sets.1.tov') }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="water_volume_1">Water Volume (m³) <span class="text-danger">*</span></label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="water_volume_1" name="data_sets[1][water_volume]" 
+                                                                   value="{{ old('data_sets.1.water_volume') }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                <div class="form-group">
-                                    <label for="file_upload">File Upload</label>
-                                    <input type="file" class="form-control @error('file_upload') is-invalid @enderror" 
-                                           id="file_upload" name="file_upload" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
-                                    <small class="form-text text-muted">Accepted formats: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG</small>
-                                    @error('file_upload')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    @if($report->supporting_file)
-                                        <div class="mt-2">
-                                            <small class="text-muted">Current file: {{ $report->supporting_file }}</small>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Roof</label>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="data_sets[1][has_roof]" 
+                                                                       id="has_roof_yes_1" value="1" 
+                                                                       {{ old('data_sets.1.has_roof') === '1' ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="has_roof_yes_1">Yes</label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="data_sets[1][has_roof]" 
+                                                                       id="has_roof_no_1" value="0" 
+                                                                       {{ old('data_sets.1.has_roof') === '0' ? 'checked' : '' }} checked>
+                                                                <label class="form-check-label" for="has_roof_no_1">No</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="roof_weight_1">Roof Weight (kg)</label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="roof_weight_1" name="data_sets[1][roof_weight]" 
+                                                                   value="{{ old('data_sets.1.roof_weight') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="roof_volume_1">Roof Volume (m³)</label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="roof_volume_1" name="data_sets[1][roof_volume]" 
+                                                                   value="{{ old('data_sets.1.roof_volume') }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="gov_1">GOV (m³)</label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="gov_1" name="data_sets[1][gov]" 
+                                                                   value="{{ old('data_sets.1.gov') }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="gsv_1">GSV (m³)</label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="gsv_1" name="data_sets.1.gsv]" 
+                                                                   value="{{ old('data_sets.1.gsv') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="mt_air_1">MT Air (tonnes)</label>
+                                                            <input type="number" step="0.01" class="form-control" 
+                                                                   id="mt_air_1" name="data_sets[1][mt_air]" 
+                                                                   value="{{ old('data_sets.1.mt_air') }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="notes_1">Notes</label>
+                                                            <textarea class="form-control" id="notes_1" name="data_sets[1][notes]" 
+                                                                      rows="2" placeholder="Additional notes for this data set...">{{ old('data_sets.1.notes') }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
@@ -272,11 +457,18 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="supporting_file">Supporting File</label>
+                            <input type="file" class="form-control" id="supporting_file" name="supporting_file">
+                            @if($report->supporting_file)
+                                <small class="form-text text-muted">Current file: {{ $report->supporting_file }}</small>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-2"></i>
                                 Update Report
                             </button>
-                            <a href="{{ route('inspector.reports.show', $report->id) }}" class="btn btn-secondary ml-2">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -284,77 +476,27 @@
         </div>
 
         <div class="col-lg-4">
-            <!-- Report Information -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Report Information</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Report #:</strong> {{ $report->id }}</p>
-                    <p><strong>Created:</strong> {{ $report->created_at->format('M d, Y H:i') }}</p>
-                    <p><strong>Last Updated:</strong> {{ $report->updated_at->format('M d, Y H:i') }}</p>
-                    <p><strong>Current Status:</strong> 
-                        <span class="badge badge-{{ $report->status === 'approved' ? 'success' : ($report->status === 'submitted' ? 'warning' : 'secondary') }}">
-                            {{ ucfirst($report->status) }}
-                        </span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Service Request Information -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Service Request Details</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Request #:</strong> {{ $report->serviceRequest->id }}</p>
-                    <p><strong>Service ID:</strong> {{ $report->serviceRequest->service_id }}</p>
-                    <p><strong>Service Type:</strong> {{ ucfirst($report->serviceRequest->service_type) }}</p>
-                    <p><strong>Depot:</strong> {{ $report->serviceRequest->depot }}</p>
-                    <p><strong>Product:</strong> {{ $report->serviceRequest->product }}</p>
-                    <p><strong>Status:</strong> 
-                        <span class="badge badge-{{ $report->serviceRequest->status === 'completed' ? 'success' : ($report->serviceRequest->status === 'in_progress' ? 'warning' : 'secondary') }}">
-                            {{ ucfirst(str_replace('_', ' ', $report->serviceRequest->status)) }}
-                        </span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Client Information -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Client Information</h6>
-                </div>
-                <div class="card-body">
-                    <p><strong>Name:</strong> {{ $report->client->name }}</p>
-                    <p><strong>Email:</strong> {{ $report->client->email }}</p>
-                    <p><strong>Phone:</strong> {{ $report->client->phone }}</p>
-                    <p><strong>Address:</strong> {{ $report->client->address }}</p>
-                </div>
-            </div>
-
-            <!-- Editing Guidelines -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-info">Editing Guidelines</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Instructions</h6>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <i class="fas fa-info-circle text-info me-2"></i>
-                            You can edit draft reports freely
+                            <i class="fas fa-info-circle text-primary me-2"></i>
+                            You can add multiple data sets for the same service request
                         </li>
                         <li class="mb-2">
-                            <i class="fas fa-info-circle text-info me-2"></i>
-                            Submitted reports may have limited editing
+                            <i class="fas fa-calendar text-success me-2"></i>
+                            Each data set represents a different inspection time
                         </li>
                         <li class="mb-2">
-                            <i class="fas fa-info-circle text-info me-2"></i>
-                            Approved reports cannot be edited
+                            <i class="fas fa-calculator text-warning me-2"></i>
+                            Calculations (GOV, GSV, MT Air) will be computed automatically
                         </li>
                         <li class="mb-2">
-                            <i class="fas fa-info-circle text-info me-2"></i>
-                            Changes are tracked and logged
+                            <i class="fas fa-chart-line text-info me-2"></i>
+                            Multiple data sets enable time series analysis
                         </li>
                     </ul>
                 </div>
@@ -364,79 +506,200 @@
 </div>
 
 <script>
-// Auto-resize textareas
-document.addEventListener('DOMContentLoaded', function() {
-    const textareas = document.querySelectorAll('textarea');
-    textareas.forEach(textarea => {
-        textarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = this.scrollHeight + 'px';
-        });
-        // Trigger initial resize
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-    });
+let dataSetCounter = {{ $report->inspectionDataSets->count() > 0 ? $report->inspectionDataSets->count() : 1 }};
 
-    // Roof weight field toggle
-    const roofRadios = document.querySelectorAll('input[name="roof"]');
-    const roofWeightGroup = document.getElementById('roof_weight_group');
-    const roofWeightInput = document.getElementById('roof_weight');
+function addDataSet() {
+    dataSetCounter++;
+    const container = document.getElementById('data-sets-container');
+    const newDataSet = document.createElement('div');
+    newDataSet.className = 'data-set-card card mb-3';
+    newDataSet.setAttribute('data-set-id', dataSetCounter);
+    
+    newDataSet.innerHTML = `
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">Data Set #${dataSetCounter}</h6>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeDataSet(this)">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="inspection_date_${dataSetCounter}">Inspection Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" 
+                               id="inspection_date_${dataSetCounter}" name="data_sets[${dataSetCounter}][inspection_date]" 
+                               value="${new Date().toISOString().split('T')[0]}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="inspection_time_${dataSetCounter}">Inspection Time <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control" 
+                               id="inspection_time_${dataSetCounter}" name="data_sets[${dataSetCounter}][inspection_time]" 
+                               value="${new Date().toTimeString().slice(0,5)}" required>
+                    </div>
+                </div>
+            </div>
 
-    roofRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (this.value === 'yes') {
-                roofWeightGroup.style.display = 'block';
-                roofWeightInput.required = true;
-            } else {
-                roofWeightGroup.style.display = 'none';
-                roofWeightInput.required = false;
-                roofWeightInput.value = '';
-            }
-            calculateValues();
-        });
-    });
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="tank_number_${dataSetCounter}">Tank Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" 
+                               id="tank_number_${dataSetCounter}" name="data_sets[${dataSetCounter}][tank_number]" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="product_gauge_${dataSetCounter}">Product Gauge (m) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="product_gauge_${dataSetCounter}" name="data_sets[${dataSetCounter}][product_gauge]" required>
+                    </div>
+                </div>
+            </div>
 
-    // Auto-calculation fields
-    const calculationFields = [
-        'roof_weight', 'density', 'vcf', 'tov', 'water_vol'
-    ];
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="water_gauge_${dataSetCounter}">Water Gauge (m) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="water_gauge_${dataSetCounter}" name="data_sets[${dataSetCounter}][water_gauge]" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="temperature_${dataSetCounter}">Temperature (°C) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.1" class="form-control" 
+                               id="temperature_${dataSetCounter}" name="data_sets[${dataSetCounter}][temperature]" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="density_${dataSetCounter}">Density (@ 20°C) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.0001" class="form-control" 
+                               id="density_${dataSetCounter}" name="data_sets[${dataSetCounter}][density]" required>
+                    </div>
+                </div>
+            </div>
 
-    calculationFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('input', calculateValues);
-        }
-    });
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="vcf_${dataSetCounter}">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.0001" class="form-control" 
+                               id="vcf_${dataSetCounter}" name="data_sets[${dataSetCounter}][vcf]" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="tov_${dataSetCounter}">TOV (m³) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="tov_${dataSetCounter}" name="data_sets[${dataSetCounter}][tov]" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="water_volume_${dataSetCounter}">Water Volume (m³) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="water_volume_${dataSetCounter}" name="data_sets[${dataSetCounter}][water_volume]" required>
+                    </div>
+                </div>
+            </div>
 
-    function calculateValues() {
-        const roofWeight = parseFloat(document.getElementById('roof_weight').value) || 0;
-        const density = parseFloat(document.getElementById('density').value) || 0;
-        const vcf = parseFloat(document.getElementById('vcf').value) || 0;
-        const tov = parseFloat(document.getElementById('tov').value) || 0;
-        const waterVol = parseFloat(document.getElementById('water_vol').value) || 0;
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Roof</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="data_sets[${dataSetCounter}][has_roof]" 
+                                   id="has_roof_yes_${dataSetCounter}" value="1">
+                            <label class="form-check-label" for="has_roof_yes_${dataSetCounter}">Yes</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="data_sets[${dataSetCounter}][has_roof]" 
+                                   id="has_roof_no_${dataSetCounter}" value="0" checked>
+                            <label class="form-check-label" for="has_roof_no_${dataSetCounter}">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="roof_weight_${dataSetCounter}">Roof Weight (kg)</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="roof_weight_${dataSetCounter}" name="data_sets[${dataSetCounter}][roof_weight]">
+                    </div>
+                </div>
+            </div>
 
-        // Calculate Roof Volume: Roof weight ÷ (Density × VCF)
-        let roofVol = 0;
-        if (density > 0 && vcf > 0) {
-            roofVol = roofWeight / (density * vcf);
-        }
-        document.getElementById('roof_vol').value = roofVol.toFixed(2);
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="roof_volume_${dataSetCounter}">Roof Volume (m³)</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="roof_volume_${dataSetCounter}" name="data_sets[${dataSetCounter}][roof_volume]">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="gov_${dataSetCounter}">GOV (m³)</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="gov_${dataSetCounter}" name="data_sets[${dataSetCounter}][gov]">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="gsv_${dataSetCounter}">GSV (m³)</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="gsv_${dataSetCounter}" name="data_sets[${dataSetCounter}][gsv]">
+                    </div>
+                </div>
+            </div>
 
-        // Calculate GOV: TOV - Water Volume - Roof Volume
-        const gov = tov - waterVol - roofVol;
-        document.getElementById('gov').value = gov.toFixed(2);
-
-        // Calculate GSV: GOV × VCF
-        const gsv = gov * vcf;
-        document.getElementById('gsv').value = gsv.toFixed(2);
-
-        // Calculate MT Air: GSV × (Density - 0.0011)
-        const mtAir = gsv * (density - 0.0011);
-        document.getElementById('mt_air').value = mtAir.toFixed(2);
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="mt_air_${dataSetCounter}">MT Air (tonnes)</label>
+                        <input type="number" step="0.01" class="form-control" 
+                               id="mt_air_${dataSetCounter}" name="data_sets[${dataSetCounter}][mt_air]">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="notes_${dataSetCounter}">Notes</label>
+                        <textarea class="form-control" id="notes_${dataSetCounter}" name="data_sets[${dataSetCounter}][notes]" 
+                                  rows="2" placeholder="Additional notes for this data set..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(newDataSet);
+    
+    // Show remove button for first data set if more than one exists
+    const dataSets = document.querySelectorAll('.data-set-card');
+    if (dataSets.length > 1) {
+        dataSets[0].querySelector('.btn-danger').style.display = 'block';
     }
+}
 
-    // Initialize calculations on page load
-    calculateValues();
-});
+function removeDataSet(button) {
+    const dataSetCard = button.closest('.data-set-card');
+    dataSetCard.remove();
+    
+    // Hide remove button for first data set if only one remains
+    const dataSets = document.querySelectorAll('.data-set-card');
+    if (dataSets.length === 1) {
+        dataSets[0].querySelector('.btn-danger').style.display = 'none';
+    }
+    
+    // Renumber the data sets
+    dataSets.forEach((card, index) => {
+        const header = card.querySelector('.card-header h6');
+        header.textContent = `Data Set #${index + 1}`;
+        card.setAttribute('data-set-id', index + 1);
+    });
+}
 </script>
 @endsection 

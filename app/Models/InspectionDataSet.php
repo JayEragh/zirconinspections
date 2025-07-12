@@ -5,18 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Report extends Model
+class InspectionDataSet extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'service_request_id',
-        'inspector_id',
-        'client_id',
-        'title',
-        'content',
-        'findings',
-        'recommendations',
+        'report_id',
         'inspection_date',
         'inspection_time',
         'tank_number',
@@ -33,11 +27,7 @@ class Report extends Model
         'gov',
         'gsv',
         'mt_air',
-        'supporting_file',
-        'status',
-        'submitted_at',
-        'approved_at',
-        'sent_to_client_at',
+        'notes',
     ];
 
     protected $casts = [
@@ -56,41 +46,14 @@ class Report extends Model
         'gov' => 'decimal:2',
         'gsv' => 'decimal:2',
         'mt_air' => 'decimal:2',
-        'submitted_at' => 'datetime',
-        'approved_at' => 'datetime',
-        'sent_to_client_at' => 'datetime',
     ];
 
     /**
-     * Get the service request that owns the report.
+     * Get the report that owns the data set.
      */
-    public function serviceRequest()
+    public function report()
     {
-        return $this->belongsTo(ServiceRequest::class);
-    }
-
-    /**
-     * Get the inspector that created the report.
-     */
-    public function inspector()
-    {
-        return $this->belongsTo(Inspector::class);
-    }
-
-    /**
-     * Get the client that owns the report.
-     */
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    }
-
-    /**
-     * Get the inspection data sets for the report.
-     */
-    public function inspectionDataSets()
-    {
-        return $this->hasMany(InspectionDataSet::class);
+        return $this->belongsTo(Report::class);
     }
 
     /**
