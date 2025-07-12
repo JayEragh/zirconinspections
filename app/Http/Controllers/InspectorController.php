@@ -469,6 +469,38 @@ class InspectorController extends Controller
         return redirect()->back()->with('success', 'Profile updated successfully.');
     }
 
+    public function settings()
+    {
+        $user = Auth::user();
+        
+        return view('inspector.settings', compact('user'));
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'password' => 'nullable|string|min:8|confirmed',
+            'notifications_email' => 'boolean',
+            'notifications_sms' => 'boolean',
+        ]);
+        
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+        }
+        
+        // Update notification preferences
+        $user->update([
+            'notifications_email' => $request->has('notifications_email'),
+            'notifications_sms' => $request->has('notifications_sms'),
+        ]);
+        
+        return redirect()->back()->with('success', 'Settings updated successfully.');
+    }
+
     public function exportReportPDF($id)
     {
         $user = Auth::user();

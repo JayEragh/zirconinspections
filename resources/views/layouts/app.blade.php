@@ -157,10 +157,16 @@
                             <ul class="dropdown-menu">
                                 @if(Auth::user()->isClient())
                                     <li><a class="dropdown-item" href="{{ route('client.dashboard') }}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('client.profile') }}">Profile</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('client.settings') }}">Settings</a></li>
                                 @elseif(Auth::user()->isInspector())
                                     <li><a class="dropdown-item" href="{{ route('inspector.dashboard') }}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('inspector.profile') }}">Profile</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('inspector.settings') }}">Settings</a></li>
                                 @elseif(Auth::user()->isOperations())
                                     <li><a class="dropdown-item" href="{{ route('operations.dashboard') }}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('operations.profile') }}">Profile</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('operations.settings') }}">Settings</a></li>
                                 @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>

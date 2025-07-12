@@ -310,4 +310,95 @@ class OperationsController extends Controller
         
         return view('operations.message-details', compact('message'));
     }
+
+    public function sendReportToClient($report)
+    {
+        $report = Report::with(['serviceRequest', 'client'])->findOrFail($report);
+        
+        // Create a message to notify the client
+        Message::create([
+            'sender_id' => Auth::id(),
+            'recipient_id' => $report->client->user_id,
+            'subject' => 'Report Available: ' . $report->title,
+            'content' => 'Your inspection report "' . $report->title . '" is now available for review. You can view and download it from your dashboard.',
+            'service_request_id' => $report->service_request_id,
+        ]);
+        
+        // Mark report as sent to client
+        $report->update(['sent_to_client' => true]);
+        
+        return redirect()->back()->with('success', 'Report sent to client successfully.');
+    }
+
+    /**
+     * Show the operations user's profile.
+     */
+    public function profile()
+    {
+        $user = Auth::user();
+        
+        return view('operations.profile', compact('user'));
+    }
+
+    /**
+     * Update the operations user's profile.
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+        ]);
+        
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+        ]);
+        
+        return redirect()->back()->with('success', 'Profile updated successfully.');
+    }
+
+    /**
+     * Show the operations user's settings.
+     */
+    public function settings()
+    {
+        $user = Auth::user();
+        
+        return view('operations.settings', compact('user'));
+    }
+
+    /**
+     * Update the operations user's settings.
+     */
+    public function updateSettings(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'password' => 'nullable|string|min:8|confirmed',
+            'notifications_email' => 'boolean',
+            'notifications_sms' => 'boolean',
+        ]);
+        
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+        }
+        
+        // Update notification preferences
+        $user->update([
+            'notifications_email' => $request->has('notifications_email'),
+            'notifications_sms' => $request->has('notifications_sms'),
+        ]);
+        
+        return redirect()->back()->with('success', 'Settings updated successfully.');
+    }
 }

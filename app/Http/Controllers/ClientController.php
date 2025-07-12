@@ -164,4 +164,77 @@ class ClientController extends Controller
         $pdf = PDF::loadView('reports.pdf', compact('report'));
         return $pdf->download('report-' . $report->id . '.pdf');
     }
+
+    /**
+     * Show the client's profile.
+     */
+    public function profile()
+    {
+        $user = Auth::user();
+        $client = $user->client;
+        
+        return view('client.profile', compact('user', 'client'));
+    }
+
+    /**
+     * Update the client's profile.
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+        ]);
+        
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+        ]);
+        
+        return redirect()->back()->with('success', 'Profile updated successfully.');
+    }
+
+    /**
+     * Show the client's settings.
+     */
+    public function settings()
+    {
+        $user = Auth::user();
+        
+        return view('client.settings', compact('user'));
+    }
+
+    /**
+     * Update the client's settings.
+     */
+    public function updateSettings(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'password' => 'nullable|string|min:8|confirmed',
+            'notifications_email' => 'boolean',
+            'notifications_sms' => 'boolean',
+        ]);
+        
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+        }
+        
+        // Update notification preferences
+        $user->update([
+            'notifications_email' => $request->has('notifications_email'),
+            'notifications_sms' => $request->has('notifications_sms'),
+        ]);
+        
+        return redirect()->back()->with('success', 'Settings updated successfully.');
+    }
 }

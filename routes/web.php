@@ -42,6 +42,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/client/reports/{report}/pdf', [App\Http\Controllers\ClientController::class, 'exportReportPDF'])->name('client.reports.pdf');
         Route::get('/client/invoices', [App\Http\Controllers\ClientController::class, 'invoices'])->name('client.invoices');
         Route::get('/client/messages', [App\Http\Controllers\ClientController::class, 'messages'])->name('client.messages');
+        
+        // Profile and Settings
+        Route::get('/client/profile', [App\Http\Controllers\ClientController::class, 'profile'])->name('client.profile');
+        Route::put('/client/profile', [App\Http\Controllers\ClientController::class, 'updateProfile'])->name('client.profile.update');
+        Route::get('/client/settings', [App\Http\Controllers\ClientController::class, 'settings'])->name('client.settings');
+        Route::put('/client/settings', [App\Http\Controllers\ClientController::class, 'updateSettings'])->name('client.settings.update');
     });
 
     // Inspector routes
@@ -68,9 +74,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/inspector/messages/create', [App\Http\Controllers\InspectorController::class, 'createMessage'])->name('inspector.messages.create');
         Route::post('/inspector/messages', [App\Http\Controllers\InspectorController::class, 'storeMessage'])->name('inspector.messages.store');
         
-        // Profile
+        // Profile and Settings
         Route::get('/inspector/profile', [App\Http\Controllers\InspectorController::class, 'profile'])->name('inspector.profile');
         Route::put('/inspector/profile', [App\Http\Controllers\InspectorController::class, 'updateProfile'])->name('inspector.profile.update');
+        Route::get('/inspector/settings', [App\Http\Controllers\InspectorController::class, 'settings'])->name('inspector.settings');
+        Route::put('/inspector/settings', [App\Http\Controllers\InspectorController::class, 'updateSettings'])->name('inspector.settings.update');
     });
 
     // Operations routes
@@ -90,15 +98,12 @@ Route::middleware(['auth'])->group(function () {
         // Service requests
         Route::get('/operations/service-requests', [App\Http\Controllers\OperationsController::class, 'serviceRequests'])->name('operations.service-requests');
         Route::get('/operations/service-requests/{serviceRequest}', [App\Http\Controllers\OperationsController::class, 'showServiceRequest'])->name('operations.service-requests.show');
-        Route::put('/operations/service-requests/{serviceRequest}', [App\Http\Controllers\OperationsController::class, 'updateServiceRequest'])->name('operations.service-requests.update');
-        Route::post('/operations/service-requests/{serviceRequest}/assign', [App\Http\Controllers\OperationsController::class, 'assignInspector'])->name('operations.service-requests.assign');
         Route::delete('/operations/service-requests/{serviceRequest}', [App\Http\Controllers\OperationsController::class, 'deleteServiceRequest'])->name('operations.service-requests.delete');
         
         // Reports
         Route::get('/operations/reports', [App\Http\Controllers\OperationsController::class, 'reports'])->name('operations.reports');
         Route::get('/operations/reports/{report}', [App\Http\Controllers\OperationsController::class, 'showReport'])->name('operations.reports.show');
-        Route::post('/operations/reports/{report}/approve', [App\Http\Controllers\OperationsController::class, 'approveReport'])->name('operations.reports.approve');
-        Route::post('/operations/reports/{report}/send-to-client', [App\Http\Controllers\OperationsController::class, 'sendToClient'])->name('operations.reports.send-to-client');
+        Route::post('/operations/reports/{report}/send-to-client', [App\Http\Controllers\OperationsController::class, 'sendReportToClient'])->name('operations.reports.send-to-client');
         
         // Invoices
         Route::get('/operations/invoices', [App\Http\Controllers\OperationsController::class, 'invoices'])->name('operations.invoices');
@@ -107,5 +112,11 @@ Route::middleware(['auth'])->group(function () {
         // Messages
         Route::get('/operations/messages', [App\Http\Controllers\OperationsController::class, 'messages'])->name('operations.messages');
         Route::get('/operations/messages/{message}', [App\Http\Controllers\OperationsController::class, 'showMessage'])->name('operations.messages.show');
+        
+        // Profile and Settings
+        Route::get('/operations/profile', [App\Http\Controllers\OperationsController::class, 'profile'])->name('operations.profile');
+        Route::put('/operations/profile', [App\Http\Controllers\OperationsController::class, 'updateProfile'])->name('operations.profile.update');
+        Route::get('/operations/settings', [App\Http\Controllers\OperationsController::class, 'settings'])->name('operations.settings');
+        Route::put('/operations/settings', [App\Http\Controllers\OperationsController::class, 'updateSettings'])->name('operations.settings.update');
     });
 });

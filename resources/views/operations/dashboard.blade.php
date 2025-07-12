@@ -17,8 +17,8 @@
                         {{ Auth::user()->name }}
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><a class="dropdown-item" href="{{ route('operations.profile') }}"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('operations.settings') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}" class="d-inline">
