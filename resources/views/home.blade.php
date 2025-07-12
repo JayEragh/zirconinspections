@@ -23,7 +23,7 @@
                     </a>
                 </div>
                 <div class="col-lg-6 d-flex align-items-center justify-content-center" style="min-height: 280px;">
-                    <img src="{{ asset('images/logo.svg') }}" alt="Zircon Inspections Logo" class="homepage-logo" style="max-width: 280px; width: 100%; height: auto; margin: 0 auto; display: block; background: transparent;">
+                    <img src="{{ asset('images/front logo.png') }}" alt="Zircon Inspections Logo" class="homepage-logo" style="max-width: 280px; width: 100%; height: auto; margin: 0 auto; display: block; background: transparent;">
                 </div>
             </div>
         </div>
