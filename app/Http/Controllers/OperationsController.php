@@ -124,6 +124,67 @@ class OperationsController extends Controller
     }
 
     /**
+     * Show the edit inspector form.
+     */
+    public function editInspector(Inspector $inspector)
+    {
+        return view('operations.edit-inspector', compact('inspector'));
+    }
+
+    /**
+     * Update an inspector.
+     */
+    public function updateInspector(Request $request, Inspector $inspector)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $inspector->user_id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'specialization' => 'nullable|string|max:255',
+            'employee_id' => 'nullable|string|max:50',
+            'is_active' => 'boolean',
+        ]);
+
+        // Update user
+        $inspector->user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        // Update inspector profile
+        $inspector->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'certification_number' => $request->employee_id,
+            'specialization' => $request->specialization,
+            'is_active' => $request->has('is_active'),
+        ]);
+
+        return redirect()->route('operations.inspectors')->with('success', 'Inspector updated successfully!');
+    }
+
+    /**
+     * Delete an inspector.
+     */
+    public function deleteInspector(Inspector $inspector)
+    {
+        // Check if inspector has any assigned service requests
+        if ($inspector->serviceRequests()->count() > 0) {
+            return redirect()->route('operations.inspectors')->with('error', 'Cannot delete inspector with assigned service requests. Please reassign or complete the requests first.');
+        }
+
+        // Delete the user account
+        $inspector->user->delete();
+
+        // The inspector record will be deleted automatically due to cascade delete
+
+        return redirect()->route('operations.inspectors')->with('success', 'Inspector deleted successfully!');
+    }
+
+    /**
      * Show all service requests.
      */
     public function serviceRequests()

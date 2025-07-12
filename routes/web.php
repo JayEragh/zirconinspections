@@ -98,6 +98,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/operations/inspectors/create', [App\Http\Controllers\OperationsController::class, 'createInspector'])->name('operations.inspectors.create');
         Route::post('/operations/inspectors', [App\Http\Controllers\OperationsController::class, 'storeInspector'])->name('operations.inspectors.store');
         Route::get('/operations/inspectors/{inspector}', [App\Http\Controllers\OperationsController::class, 'showInspector'])->name('operations.inspectors.show');
+        Route::get('/operations/inspectors/{inspector}/edit', [App\Http\Controllers\OperationsController::class, 'editInspector'])->name('operations.inspectors.edit');
+        Route::put('/operations/inspectors/{inspector}', [App\Http\Controllers\OperationsController::class, 'updateInspector'])->name('operations.inspectors.update');
+        Route::delete('/operations/inspectors/{inspector}', [App\Http\Controllers\OperationsController::class, 'deleteInspector'])->name('operations.inspectors.delete');
         
         // Service requests
         Route::get('/operations/service-requests', [App\Http\Controllers\OperationsController::class, 'serviceRequests'])->name('operations.service-requests');

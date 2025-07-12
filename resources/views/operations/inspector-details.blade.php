@@ -11,10 +11,16 @@
                     <i class="fas fa-user-tie me-2"></i>
                     Inspector Details
                 </h2>
-                <a href="{{ route('operations.inspectors') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>
-                    Back to Inspectors
-                </a>
+                <div>
+                    <a href="{{ route('operations.inspectors.edit', $inspector) }}" class="btn btn-warning me-2">
+                        <i class="fas fa-edit me-2"></i>
+                        Edit Inspector
+                    </a>
+                    <a href="{{ route('operations.inspectors') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Inspectors
+                    </a>
+                </div>
             </div>
         </div>
     </div>
