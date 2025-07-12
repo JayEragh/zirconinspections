@@ -114,7 +114,7 @@
                                                                 <label for="inspection_date_{{ $index + 1 }}">Inspection Date <span class="text-danger">*</span></label>
                                                                 <input type="date" class="form-control" 
                                                                        id="inspection_date_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][inspection_date]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.inspection_date", $dataSet->inspection_date ? $dataSet->inspection_date->format('Y-m-d') : date('Y-m-d')) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.inspection_date', $dataSet->inspection_date ? $dataSet->inspection_date->format('Y-m-d') : date('Y-m-d')) }}" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -122,7 +122,7 @@
                                                                 <label for="inspection_time_{{ $index + 1 }}">Inspection Time <span class="text-danger">*</span></label>
                                                                 <input type="time" class="form-control" 
                                                                        id="inspection_time_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][inspection_time]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.inspection_time", $dataSet->inspection_time ? $dataSet->inspection_time->format('H:i') : date('H:i')) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.inspection_time', $dataSet->inspection_time ? $dataSet->inspection_time->format('H:i') : date('H:i')) }}" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -133,7 +133,7 @@
                                                                 <label for="tank_number_{{ $index + 1 }}">Tank Number <span class="text-danger">*</span></label>
                                                                 <input type="text" class="form-control" 
                                                                        id="tank_number_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][tank_number]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.tank_number", $dataSet->tank_number) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.tank_number', $dataSet->tank_number) }}" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
@@ -141,7 +141,7 @@
                                                                 <label for="product_gauge_{{ $index + 1 }}">Product Gauge (m) <span class="text-danger">*</span></label>
                                                                 <input type="number" step="0.01" class="form-control" 
                                                                        id="product_gauge_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][product_gauge]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.product_gauge", $dataSet->product_gauge) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.product_gauge', $dataSet->product_gauge) }}" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -152,7 +152,7 @@
                                                                 <label for="water_gauge_{{ $index + 1 }}">Water Gauge (m) <span class="text-danger">*</span></label>
                                                                 <input type="number" step="0.01" class="form-control" 
                                                                        id="water_gauge_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][water_gauge]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.water_gauge", $dataSet->water_gauge) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.water_gauge', $dataSet->water_gauge) }}" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -160,7 +160,7 @@
                                                                 <label for="temperature_{{ $index + 1 }}">Temperature (°C) <span class="text-danger">*</span></label>
                                                                 <input type="number" step="0.1" class="form-control" 
                                                                        id="temperature_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][temperature]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.temperature", $dataSet->temperature) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.temperature', $dataSet->temperature) }}" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -168,7 +168,7 @@
                                                                 <label for="density_{{ $index + 1 }}">Density (@ 20°C) <span class="text-danger">*</span></label>
                                                                 <input type="number" step="0.0001" class="form-control" 
                                                                        id="density_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][density]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.density", $dataSet->density) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.density', $dataSet->density) }}" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -179,7 +179,7 @@
                                                                 <label for="vcf_{{ $index + 1 }}">VCF (ASTM 60 B) <span class="text-danger">*</span></label>
                                                                 <input type="number" step="0.0001" class="form-control" 
                                                                        id="vcf_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][vcf]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.vcf", $dataSet->vcf) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.vcf', $dataSet->vcf) }}" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -187,7 +187,7 @@
                                                                 <label for="tov_{{ $index + 1 }}">TOV (m³) <span class="text-danger">*</span></label>
                                                                 <input type="number" step="0.01" class="form-control" 
                                                                        id="tov_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][tov]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.tov", $dataSet->tov) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.tov', $dataSet->tov) }}" required>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -195,7 +195,7 @@
                                                                 <label for="water_volume_{{ $index + 1 }}">Water Volume (m³) <span class="text-danger">*</span></label>
                                                                 <input type="number" step="0.01" class="form-control" 
                                                                        id="water_volume_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][water_volume]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.water_volume", $dataSet->water_volume) }}" required>
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.water_volume', $dataSet->water_volume) }}" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -207,13 +207,13 @@
                                                                 <div class="form-check">
                                                                     <input class="form-check-input" type="radio" name="data_sets[{{ $index + 1 }}][has_roof]" 
                                                                            id="has_roof_yes_{{ $index + 1 }}" value="1" 
-                                                                           {{ old("data_sets.{$index + 1}.has_roof", $dataSet->has_roof ? '1' : '0') === '1' ? 'checked' : '' }}>
+                                                                           {{ old('data_sets.' . ($index + 1) . '.has_roof', $dataSet->has_roof ? '1' : '0') === '1' ? 'checked' : '' }}>
                                                                     <label class="form-check-label" for="has_roof_yes_{{ $index + 1 }}">Yes</label>
                                                                 </div>
                                                                 <div class="form-check">
                                                                     <input class="form-check-input" type="radio" name="data_sets[{{ $index + 1 }}][has_roof]" 
                                                                            id="has_roof_no_{{ $index + 1 }}" value="0" 
-                                                                           {{ old("data_sets.{$index + 1}.has_roof", $dataSet->has_roof ? '1' : '0') === '0' ? 'checked' : '' }}>
+                                                                           {{ old('data_sets.' . ($index + 1) . '.has_roof', $dataSet->has_roof ? '1' : '0') === '0' ? 'checked' : '' }}>
                                                                     <label class="form-check-label" for="has_roof_no_{{ $index + 1 }}">No</label>
                                                                 </div>
                                                             </div>
@@ -223,7 +223,7 @@
                                                                 <label for="roof_weight_{{ $index + 1 }}">Roof Weight (kg)</label>
                                                                 <input type="number" step="0.01" class="form-control" 
                                                                        id="roof_weight_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][roof_weight]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.roof_weight", $dataSet->roof_weight) }}">
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.roof_weight', $dataSet->roof_weight) }}">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -234,7 +234,7 @@
                                                                 <label for="roof_volume_{{ $index + 1 }}">Roof Volume (m³)</label>
                                                                 <input type="number" step="0.01" class="form-control" 
                                                                        id="roof_volume_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][roof_volume]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.roof_volume", $dataSet->roof_volume) }}">
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.roof_volume', $dataSet->roof_volume) }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -242,7 +242,7 @@
                                                                 <label for="gov_{{ $index + 1 }}">GOV (m³)</label>
                                                                 <input type="number" step="0.01" class="form-control" 
                                                                        id="gov_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][gov]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.gov", $dataSet->gov) }}">
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.gov', $dataSet->gov) }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -250,7 +250,7 @@
                                                                 <label for="gsv_{{ $index + 1 }}">GSV (m³)</label>
                                                                 <input type="number" step="0.01" class="form-control" 
                                                                        id="gsv_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][gsv]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.gsv", $dataSet->gsv) }}">
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.gsv', $dataSet->gsv) }}">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -261,14 +261,14 @@
                                                                 <label for="mt_air_{{ $index + 1 }}">MT Air (tonnes)</label>
                                                                 <input type="number" step="0.001" class="form-control" 
                                                                        id="mt_air_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][mt_air]" 
-                                                                       value="{{ old("data_sets.{$index + 1}.mt_air", $dataSet->mt_air) }}">
+                                                                       value="{{ old('data_sets.' . ($index + 1) . '.mt_air', $dataSet->mt_air) }}">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label for="notes_{{ $index + 1 }}">Notes</label>
                                                                 <textarea class="form-control" id="notes_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][notes]" 
-                                                                          rows="2" placeholder="Additional notes for this data set...">{{ old("data_sets.{$index + 1}.notes", $dataSet->notes) }}</textarea>
+                                                                          rows="2" placeholder="Additional notes for this data set...">{{ old('data_sets.' . ($index + 1) . '.notes', $dataSet->notes) }}</textarea>
                                                             </div>
                                                         </div>
                                                     </div>
