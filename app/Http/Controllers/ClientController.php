@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Report;
 use PDF;
 
@@ -79,6 +80,99 @@ class ClientController extends Controller
         }
 
         return redirect()->route('client.service-requests')->with('success', 'Service request created successfully!');
+    }
+
+    /**
+     * Show a specific service request.
+     */
+    public function showServiceRequest($serviceRequest)
+    {
+        $user = Auth::user();
+        $serviceRequest = $user->client->serviceRequests()->findOrFail($serviceRequest);
+        
+        return view('client.service-request-details', compact('serviceRequest'));
+    }
+
+    /**
+     * Show the form to edit a service request.
+     */
+    public function editServiceRequest($serviceRequest)
+    {
+        $user = Auth::user();
+        $serviceRequest = $user->client->serviceRequests()->findOrFail($serviceRequest);
+        
+        // Only allow editing if status is pending
+        if ($serviceRequest->status !== 'pending') {
+            return redirect()->route('client.service-requests')->with('error', 'Only pending service requests can be edited.');
+        }
+        
+        return view('client.edit-service-request', compact('serviceRequest'));
+    }
+
+    /**
+     * Update a service request.
+     */
+    public function updateServiceRequest(Request $request, $serviceRequest)
+    {
+        $user = Auth::user();
+        $serviceRequest = $user->client->serviceRequests()->findOrFail($serviceRequest);
+        
+        // Only allow updating if status is pending
+        if ($serviceRequest->status !== 'pending') {
+            return redirect()->route('client.service-requests')->with('error', 'Only pending service requests can be updated.');
+        }
+        
+        $request->validate([
+            'depot' => 'required|string|max:255',
+            'product' => 'required|string|max:255',
+            'quantity_gsv' => 'required|numeric|min:0',
+            'quantity_mt' => 'required|numeric|min:0',
+            'tank_numbers' => 'required|string',
+            'service_type' => 'required|string',
+            'specific_instructions' => 'nullable|string',
+            'outturn_file' => 'nullable|file|mimes:pdf|max:2048',
+            'quality_certificate_file' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        $serviceRequest->update([
+            'depot' => $request->depot,
+            'product' => $request->product,
+            'quantity_gsv' => $request->quantity_gsv,
+            'quantity_mt' => $request->quantity_mt,
+            'tank_numbers' => $request->tank_numbers,
+            'service_type' => $request->service_type,
+            'specific_instructions' => $request->specific_instructions,
+        ]);
+
+        if ($request->hasFile('outturn_file')) {
+            $serviceRequest->outturn_file = $request->file('outturn_file')->store('outturn_files', 'public');
+            $serviceRequest->save();
+        }
+
+        if ($request->hasFile('quality_certificate_file')) {
+            $serviceRequest->quality_certificate_file = $request->file('quality_certificate_file')->store('quality_certificates', 'public');
+            $serviceRequest->save();
+        }
+
+        return redirect()->route('client.service-requests')->with('success', 'Service request updated successfully!');
+    }
+
+    /**
+     * Delete a service request.
+     */
+    public function deleteServiceRequest($serviceRequest)
+    {
+        $user = Auth::user();
+        $serviceRequest = $user->client->serviceRequests()->findOrFail($serviceRequest);
+        
+        // Only allow deletion if status is pending
+        if ($serviceRequest->status !== 'pending') {
+            return redirect()->route('client.service-requests')->with('error', 'Only pending service requests can be deleted.');
+        }
+        
+        $serviceRequest->delete();
+        
+        return redirect()->route('client.service-requests')->with('success', 'Service request deleted successfully!');
     }
 
     /**

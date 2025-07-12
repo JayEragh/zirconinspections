@@ -87,16 +87,20 @@
                                         <td>{{ $request->created_at->format('M d, Y') }}</td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="#" class="btn btn-sm btn-outline-primary" title="View Details">
+                                                <a href="{{ route('client.service-requests.show', $request) }}" class="btn btn-sm btn-outline-primary" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 @if($request->status === 'pending')
-                                                <a href="#" class="btn btn-sm btn-outline-warning" title="Edit">
+                                                <a href="{{ route('client.service-requests.edit', $request) }}" class="btn btn-sm btn-outline-warning" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Cancel">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
+                                                <form method="POST" action="{{ route('client.service-requests.delete', $request) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this service request?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancel">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
                                                 @endif
                                             </div>
                                         </td>

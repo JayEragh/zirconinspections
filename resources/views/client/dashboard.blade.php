@@ -194,7 +194,7 @@
                                         </td>
                                         <td>{{ $request->created_at->format('M d, Y') }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ route('client.service-requests.show', $request) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                         </td>

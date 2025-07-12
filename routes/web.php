@@ -37,6 +37,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/client/service-requests', [App\Http\Controllers\ClientController::class, 'serviceRequests'])->name('client.service-requests');
         Route::get('/client/service-requests/create', [App\Http\Controllers\ClientController::class, 'createServiceRequest'])->name('client.service-requests.create');
         Route::post('/client/service-requests', [App\Http\Controllers\ClientController::class, 'storeServiceRequest'])->name('client.service-requests.store');
+        Route::get('/client/service-requests/{serviceRequest}', [App\Http\Controllers\ClientController::class, 'showServiceRequest'])->name('client.service-requests.show');
+        Route::get('/client/service-requests/{serviceRequest}/edit', [App\Http\Controllers\ClientController::class, 'editServiceRequest'])->name('client.service-requests.edit');
+        Route::put('/client/service-requests/{serviceRequest}', [App\Http\Controllers\ClientController::class, 'updateServiceRequest'])->name('client.service-requests.update');
+        Route::delete('/client/service-requests/{serviceRequest}', [App\Http\Controllers\ClientController::class, 'deleteServiceRequest'])->name('client.service-requests.delete');
         Route::get('/client/reports', [App\Http\Controllers\ClientController::class, 'reports'])->name('client.reports');
         Route::get('/client/reports/{report}', [App\Http\Controllers\ClientController::class, 'showReport'])->name('client.reports.show');
         Route::get('/client/reports/{report}/pdf', [App\Http\Controllers\ClientController::class, 'exportReportPDF'])->name('client.reports.pdf');
