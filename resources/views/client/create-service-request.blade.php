@@ -80,7 +80,7 @@
                             <div class="col-md-6 mb-3">
                                 <label for="quantity_mt" class="form-label">Quantity (MT) *</label>
                                 <div class="input-group">
-                                    <input type="number" step="0.01" class="form-control @error('quantity_mt') is-invalid @enderror" 
+                                    <input type="number" step="0.001" class="form-control @error('quantity_mt') is-invalid @enderror" 
                                            id="quantity_mt" name="quantity_mt" value="{{ old('quantity_mt') }}" required>
                                     <span class="input-group-text">MT</span>
                                 </div>

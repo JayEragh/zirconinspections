@@ -243,7 +243,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="mt_air">MT Air (Calculated)</label>
-                                            <input type="number" step="0.01" class="form-control" id="mt_air" name="mt_air" readonly>
+                                            <input type="number" step="0.001" class="form-control" id="mt_air" name="mt_air" readonly>
                                             <small class="form-text text-muted">GSV × (Density - 0.0011)</small>
                                         </div>
                                     </div>
@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Calculate MT Air: GSV × (Density - 0.0011)
         const mtAir = gsv * (density - 0.0011);
-        document.getElementById('mt_air').value = mtAir.toFixed(2);
+        document.getElementById('mt_air').value = mtAir.toFixed(3);
     }
 
     // Initialize calculations on page load

@@ -45,7 +45,7 @@ class InspectionDataSet extends Model
         'roof_volume' => 'decimal:2',
         'gov' => 'decimal:2',
         'gsv' => 'decimal:2',
-        'mt_air' => 'decimal:2',
+        'mt_air' => 'decimal:3',
     ];
 
     /**

@@ -259,7 +259,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label for="mt_air_{{ $index + 1 }}">MT Air (tonnes)</label>
-                                                                <input type="number" step="0.01" class="form-control" 
+                                                                <input type="number" step="0.001" class="form-control" 
                                                                        id="mt_air_{{ $index + 1 }}" name="data_sets[{{ $index + 1 }}][mt_air]" 
                                                                        value="{{ old("data_sets.{$index + 1}.mt_air", $dataSet->mt_air) }}">
                                                             </div>
@@ -436,7 +436,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="mt_air_1">MT Air (tonnes)</label>
-                                                            <input type="number" step="0.01" class="form-control" 
+                                                            <input type="number" step="0.001" class="form-control" 
                                                                    id="mt_air_1" name="data_sets[1][mt_air]" 
                                                                    value="{{ old('data_sets.1.mt_air') }}">
                                                         </div>
@@ -660,7 +660,7 @@ function addDataSet() {
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="mt_air_${dataSetCounter}">MT Air (tonnes)</label>
-                        <input type="number" step="0.01" class="form-control" 
+                        <input type="number" step="0.001" class="form-control" 
                                id="mt_air_${dataSetCounter}" name="data_sets[${dataSetCounter}][mt_air]">
                     </div>
                 </div>

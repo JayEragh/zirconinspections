@@ -35,7 +35,7 @@
                         </div>
                         <div class="col-md-6">
                             <p><strong>Quantity (GSV):</strong> {{ $serviceRequest->quantity_gsv }}</p>
-                            <p><strong>Quantity (MT):</strong> {{ $serviceRequest->quantity_mt }}</p>
+                            <p><strong>Quantity (MT):</strong> {{ number_format($serviceRequest->quantity_mt, 3) }}</p>
                             <p><strong>Tank Numbers:</strong> {{ $serviceRequest->tank_numbers }}</p>
                             <p><strong>Status:</strong> 
                                 <span class="badge badge-{{ $serviceRequest->status === 'completed' ? 'success' : ($serviceRequest->status === 'in_progress' ? 'warning' : 'secondary') }}">

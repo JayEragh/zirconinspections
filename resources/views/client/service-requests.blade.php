@@ -62,7 +62,7 @@
                                         <td>{{ $request->depot }}</td>
                                         <td>
                                             {{ number_format($request->quantity_gsv, 2) }} L<br>
-                                            <small class="text-muted">{{ number_format($request->quantity_mt, 2) }} MT</small>
+                                            <small class="text-muted">{{ number_format($request->quantity_mt, 3) }} MT</small>
                                         </td>
                                         <td>
                                             <span class="badge bg-info">
