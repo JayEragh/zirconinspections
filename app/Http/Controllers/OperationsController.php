@@ -160,6 +160,18 @@ class OperationsController extends Controller
     }
 
     /**
+     * Delete service request and all related data.
+     */
+    public function deleteServiceRequest(ServiceRequest $serviceRequest)
+    {
+        // Delete all related data
+        // This will cascade delete reports, inspection data sets, messages, and invoices
+        $serviceRequest->delete();
+
+        return redirect()->route('operations.service-requests')->with('success', 'Service request and all related data deleted successfully!');
+    }
+
+    /**
      * Assign inspector to service request.
      */
     public function assignInspector(Request $request, ServiceRequest $serviceRequest)

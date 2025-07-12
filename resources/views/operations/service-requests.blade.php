@@ -104,6 +104,12 @@
                                                     <i class="fas fa-user-plus"></i>
                                                 </button>
                                                 @endif
+                                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#deleteModal{{ $request->id }}" 
+                                                        title="Delete Service Request">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -167,5 +173,51 @@
         </div>
     </div>
     @endif
+@endforeach
+
+<!-- Delete Confirmation Modals -->
+@foreach($serviceRequests as $request)
+<div class="modal fade" id="deleteModal{{ $request->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $request->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel{{ $request->id }}">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Delete Service Request
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+                <p>Are you sure you want to delete the service request <strong>{{ $request->service_id }}</strong>?</p>
+                <p class="mb-0">This will permanently delete:</p>
+                <ul class="mb-0">
+                    <li>The service request</li>
+                    <li>All associated reports</li>
+                    <li>All inspection data sets</li>
+                    <li>All related messages</li>
+                    <li>All related invoices</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>
+                    Cancel
+                </button>
+                <form action="{{ route('operations.service-requests.delete', $request) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>
+                        Delete Permanently
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endforeach
 @endsection 
