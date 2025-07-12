@@ -513,6 +513,7 @@
 
 <script>
 let dataSetCounter = {{ $report->inspectionDataSets->count() > 0 ? $report->inspectionDataSets->count() : 1 }};
+const tankNumbers = @json($tankNumbers);
 
 function addDataSet() {
     dataSetCounter++;
@@ -520,6 +521,12 @@ function addDataSet() {
     const newDataSet = document.createElement('div');
     newDataSet.className = 'data-set-card card mb-3';
     newDataSet.setAttribute('data-set-id', dataSetCounter);
+    
+    // Generate tank options HTML
+    let tankOptionsHtml = '<option value="">Select Tank</option>';
+    tankNumbers.forEach(tank => {
+        tankOptionsHtml += `<option value="${tank}">${tank}</option>`;
+    });
     
     newDataSet.innerHTML = `
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
@@ -553,10 +560,7 @@ function addDataSet() {
                     <div class="form-group">
                         <label for="tank_number_${dataSetCounter}">Tank Number <span class="text-danger">*</span></label>
                         <select class="form-control" id="tank_number_${dataSetCounter}" name="data_sets[${dataSetCounter}][tank_number]" required>
-                            <option value="">Select Tank</option>
-                            @foreach($tankNumbers as $tank)
-                                <option value="{{ $tank }}" {{ old('data_sets.' . ($dataSetCounter) . '.tank_number', '') == $tank ? 'selected' : '' }}>{{ $tank }}</option>
-                            @endforeach
+                            ${tankOptionsHtml}
                         </select>
                     </div>
                 </div>
