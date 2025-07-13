@@ -268,21 +268,6 @@
             </tbody>
         </table>
     </div>
-
-    <div class="content-section">
-        <h3>GSV Time Series Analysis</h3>
-        <div style="text-align: center; margin: 15px 0; padding: 20px; border: 1px solid #dee2e6; background-color: #f8f9fa;">
-            <p style="font-size: 12px; color: #666; margin-bottom: 10px;"><strong>GSV vs Time Chart</strong></p>
-            <div style="font-size: 10px; color: #888;">
-                <p>Chart data points:</p>
-                @foreach($report->inspectionDataSets as $index => $dataSet)
-                    <span style="display: inline-block; margin: 2px 5px; padding: 2px 6px; background-color: #e9ecef; border-radius: 3px;">
-                        {{ $dataSet->inspection_date && is_object($dataSet->inspection_date) ? $dataSet->inspection_date->format('M d') : 'N/A' }}: {{ number_format($dataSet->gsv, 3) }} m³
-                    </span>
-                @endforeach
-            </div>
-        </div>
-    </div>
     @endif
 
     <div class="footer">

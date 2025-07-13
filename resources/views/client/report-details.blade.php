@@ -21,6 +21,12 @@
                         <i class="fas fa-download me-2"></i>
                         Download PDF
                     </a>
+                    @if($report->inspectionDataSets->count() > 0)
+                    <a href="{{ route('client.reports.excel', $report->id) }}" class="btn btn-info">
+                        <i class="fas fa-file-excel me-2"></i>
+                        Download Excel
+                    </a>
+                    @endif
                     @endif
                 </div>
             </div>

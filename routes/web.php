@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/client/reports', [App\Http\Controllers\ClientController::class, 'reports'])->name('client.reports');
         Route::get('/client/reports/{report}', [App\Http\Controllers\ClientController::class, 'showReport'])->name('client.reports.show');
         Route::get('/client/reports/{report}/pdf', [App\Http\Controllers\ClientController::class, 'exportReportPDF'])->name('client.reports.pdf');
+        Route::get('/client/reports/{report}/excel', [App\Http\Controllers\ClientController::class, 'exportReportExcel'])->name('client.reports.excel');
         Route::get('/client/invoices', [App\Http\Controllers\ClientController::class, 'invoices'])->name('client.invoices');
         Route::get('/client/messages', [App\Http\Controllers\ClientController::class, 'messages'])->name('client.messages');
         
