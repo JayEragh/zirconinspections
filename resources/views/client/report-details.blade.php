@@ -113,27 +113,13 @@
             @if($report->inspectionDataSets->count() > 0)
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Time Series Analysis</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">GSV Time Series Analysis</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <h6 class="text-center mb-3">Product Gauge vs Time</h6>
-                            <canvas id="productGaugeChart" width="400" height="200"></canvas>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <h6 class="text-center mb-3">Temperature vs Time</h6>
-                            <canvas id="temperatureChart" width="400" height="200"></canvas>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <div class="col-12">
                             <h6 class="text-center mb-3">GSV vs Time</h6>
-                            <canvas id="gsvChart" width="400" height="200"></canvas>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <h6 class="text-center mb-3">Water Volume vs Time</h6>
-                            <canvas id="waterVolumeChart" width="400" height="200"></canvas>
+                            <canvas id="gsvChart" width="800" height="400"></canvas>
                         </div>
                     </div>
                 </div>
@@ -303,56 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Use actual data from inspection data sets
         const dataSets = @json($report->inspectionDataSets);
         const dates = dataSets.map(ds => ds.inspection_date);
-        const productGaugeData = dataSets.map(ds => ds.product_gauge);
-        const temperatureData = dataSets.map(ds => ds.temperature);
         const gsvData = dataSets.map(ds => ds.gsv);
-        const waterVolumeData = dataSets.map(ds => ds.water_volume);
-
-        // Product Gauge Chart
-        new Chart(document.getElementById('productGaugeChart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Product Gauge (m)',
-                    data: productGaugeData,
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
-                }
-            }
-        });
-
-        // Temperature Chart
-        new Chart(document.getElementById('temperatureChart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Temperature (°C)',
-                    data: temperatureData,
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
-                }
-            }
-        });
 
         // GSV Chart
         new Chart(document.getElementById('gsvChart'), {
@@ -376,86 +313,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
-
-        // Water Volume Chart
-        new Chart(document.getElementById('waterVolumeChart'), {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Water Volume (m³)',
-                    data: waterVolumeData,
-                    borderColor: 'rgb(255, 205, 86)',
-                    backgroundColor: 'rgba(255, 205, 86, 0.2)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
-                }
-            }
-        });
     @else
         // No data available - show empty charts
-        const ctx1 = document.getElementById('productGaugeChart');
-        const ctx2 = document.getElementById('temperatureChart');
-        const ctx3 = document.getElementById('gsvChart');
-        const ctx4 = document.getElementById('waterVolumeChart');
+        const ctx1 = document.getElementById('gsvChart');
         
         if (ctx1) {
             new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Product Gauge (m)',
-                        data: [],
-                        borderColor: 'rgb(75, 192, 192)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
-        }
-        
-        if (ctx2) {
-            new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Temperature (°C)',
-                        data: [],
-                        borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
-        }
-        
-        if (ctx3) {
-            new Chart(ctx3, {
                 type: 'line',
                 data: {
                     labels: [],
@@ -464,30 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         data: [],
                         borderColor: 'rgb(54, 162, 235)',
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
-                }
-            });
-        }
-        
-        if (ctx4) {
-            new Chart(ctx4, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Water Volume (m³)',
-                        data: [],
-                        borderColor: 'rgb(255, 205, 86)',
-                        backgroundColor: 'rgba(255, 205, 86, 0.2)',
                         tension: 0.1
                     }]
                 },
