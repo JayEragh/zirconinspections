@@ -173,62 +173,6 @@
     </div>
 
     <div class="section">
-        <div class="section-title">Technical Inspection Data</div>
-        <div class="technical-data">
-            <div class="technical-grid">
-                <div class="technical-row">
-                    <div class="technical-cell"><strong>Inspection Date:</strong></div>
-                    <div class="technical-cell">{{ $report->inspection_date && is_object($report->inspection_date) ? $report->inspection_date->format('M d, Y') : ($report->inspection_date ? $report->inspection_date : 'N/A') }}</div>
-                    <div class="technical-cell"><strong>Inspection Time:</strong></div>
-                    <div class="technical-cell">{{ $report->inspection_time ? $report->inspection_time->format('H:i') : 'N/A' }}</div>
-                </div>
-                <div class="technical-row">
-                    <div class="technical-cell"><strong>Tank Number:</strong></div>
-                    <div class="technical-cell">{{ $report->tank_number ?? 'N/A' }}</div>
-                    <div class="technical-cell"><strong>Product Gauge:</strong></div>
-                    <div class="technical-cell">{{ $report->product_gauge ?? 'N/A' }}</div>
-                </div>
-                <div class="technical-row">
-                    <div class="technical-cell"><strong>H20 Gauge:</strong></div>
-                    <div class="technical-cell">{{ $report->water_gauge ?? 'N/A' }}</div>
-                    <div class="technical-cell"><strong>Temperature:</strong></div>
-                    <div class="technical-cell">{{ $report->temperature ? $report->temperature . '°C' : 'N/A' }}</div>
-                </div>
-                <div class="technical-row">
-                    <div class="technical-cell"><strong>Roof:</strong></div>
-                    <div class="technical-cell">{{ $report->has_roof ? 'Yes' : 'No' }}</div>
-                    <div class="technical-cell"><strong>Roof Weight:</strong></div>
-                    <div class="technical-cell">{{ $report->has_roof ? ($report->roof_weight ?? 'N/A') : 'N/A' }}</div>
-                </div>
-                <div class="technical-row">
-                    <div class="technical-cell"><strong>Density (@ 20°C):</strong></div>
-                    <div class="technical-cell">{{ $report->density ?? 'N/A' }}</div>
-                    <div class="technical-cell"><strong>VCF (ASTM 60 B):</strong></div>
-                    <div class="technical-cell">{{ $report->vcf ?? 'N/A' }}</div>
-                </div>
-                <div class="technical-row">
-                    <div class="technical-cell"><strong>TOV:</strong></div>
-                    <div class="technical-cell">{{ $report->tov ?? 'N/A' }}</div>
-                    <div class="technical-cell"><strong>Water Volume:</strong></div>
-                    <div class="technical-cell">{{ $report->water_volume ?? 'N/A' }}</div>
-                </div>
-                <div class="technical-row">
-                    <div class="technical-cell"><strong>Roof Volume:</strong></div>
-                    <div class="technical-cell">{{ $report->roof_volume ?? 'N/A' }}</div>
-                    <div class="technical-cell"><strong>GOV:</strong></div>
-                    <div class="technical-cell">{{ $report->gov ?? 'N/A' }}</div>
-                </div>
-                <div class="technical-row">
-                    <div class="technical-cell"><strong>GSV:</strong></div>
-                    <div class="technical-cell">{{ $report->gsv ?? 'N/A' }}</div>
-                    <div class="technical-cell"><strong>MT Air:</strong></div>
-                    <div class="technical-cell">{{ $report->mt_air ?? 'N/A' }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
         <div class="section-title">Report Content</div>
         <div class="content-box">
             <strong>Content:</strong><br>

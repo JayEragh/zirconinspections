@@ -75,73 +75,7 @@
                 </div>
             </div>
 
-            <!-- Technical Inspection Data -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Technical Inspection Data</h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Inspection Date:</strong> {{ $report->inspection_date && is_object($report->inspection_date) ? $report->inspection_date->format('M d, Y') : ($report->inspection_date ? $report->inspection_date : 'N/A') }}</p>
-                            <p><strong>Inspection Time:</strong> {{ $report->inspection_time ? $report->inspection_time->format('H:i') : 'N/A' }}</p>
-                            <p><strong>Tank Number:</strong> {{ $report->tank_number ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Product Gauge:</strong> {{ $report->product_gauge ?? 'N/A' }}</p>
-                            <p><strong>H20 Gauge:</strong> {{ $report->water_gauge ?? 'N/A' }}</p>
-                            <p><strong>Temperature:</strong> {{ $report->temperature ? $report->temperature . '°C' : 'N/A' }}</p>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Roof:</strong> {{ $report->has_roof ? 'Yes' : 'No' }}</p>
-                            @if($report->has_roof)
-                                <p><strong>Roof Weight:</strong> {{ $report->roof_weight ?? 'N/A' }}</p>
-                            @endif
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Density (@ 20°C):</strong> {{ $report->density ?? 'N/A' }}</p>
-                            <p><strong>VCF (ASTM 60 B):</strong> {{ $report->vcf ?? 'N/A' }}</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <p><strong>TOV:</strong> {{ $report->tov ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>Water Volume:</strong> {{ $report->water_volume ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>Roof Volume:</strong> {{ $report->roof_volume ?? 'N/A' }}</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <p><strong>GOV:</strong> {{ $report->gov ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>GSV:</strong> {{ $report->gsv ?? 'N/A' }}</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>MT Air:</strong> {{ $report->mt_air ?? 'N/A' }}</p>
-                        </div>
-                    </div>
-
-                    @if($report->supporting_file)
-                        <div class="mt-3">
-                            <h6><strong>Supporting File:</strong></h6>
-                            <p><a href="{{ asset('storage/reports/' . $report->supporting_file) }}" target="_blank" class="btn btn-sm btn-info">
-                                <i class="fas fa-download me-2"></i>
-                                Download File
-                            </a></p>
-                        </div>
-                    @endif
-                </div>
-            </div>
         </div>
 
         <div class="col-lg-4">
