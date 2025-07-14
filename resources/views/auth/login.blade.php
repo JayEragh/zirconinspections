@@ -14,6 +14,31 @@
                     </h4>
                 </div>
                 <div class="card-body p-4">
+                    <!-- Demo Account Credentials -->
+                    <div class="alert alert-info mb-4">
+                        <h6 class="alert-heading mb-2">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Demo Account Credentials
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Client:</strong><br>
+                                Email: client@demo.com<br>
+                                Password: password
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Inspector:</strong><br>
+                                Email: inspector@demo.com<br>
+                                Password: password
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Operations:</strong><br>
+                                Email: operations@demo.com<br>
+                                Password: password
+                            </div>
+                        </div>
+                    </div>
+
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">

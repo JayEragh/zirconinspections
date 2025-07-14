@@ -12,6 +12,7 @@ use App\Models\ServiceRequest;
 use App\Models\Report;
 use App\Models\Invoice;
 use App\Models\Message;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OperationsController extends Controller
 {
@@ -417,6 +418,77 @@ class OperationsController extends Controller
         ]);
 
         return back()->with('success', 'Report notification sent to client successfully!');
+    }
+
+    /**
+     * Export report as PDF.
+     */
+    public function exportReportPDF(Report $report)
+    {
+        $report->load(['serviceRequest.client.user', 'inspector.user', 'inspectionDataSets']);
+        
+        $pdf = PDF::loadView('reports.pdf', compact('report'));
+        return $pdf->download('report-' . $report->id . '.pdf');
+    }
+
+    /**
+     * Export report inspection data as Excel.
+     */
+    public function exportReportExcel(Report $report)
+    {
+        $report->load(['serviceRequest.client.user', 'inspector.user', 'inspectionDataSets']);
+
+        // Create CSV content (Excel-compatible)
+        $filename = 'inspection-data-report-' . $report->id . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($report) {
+            $file = fopen('php://output', 'w');
+            
+            // Add headers
+            fputcsv($file, [
+                'Date',
+                'Time', 
+                'Tank #',
+                'Product Gauge',
+                'Water Gauge',
+                'Temperature (°C)',
+                'Density',
+                'VCF',
+                'TOV',
+                'Water Vol',
+                'GOV',
+                'GSV',
+                'MT Air'
+            ]);
+            
+            // Add data rows
+            foreach ($report->inspectionDataSets as $dataSet) {
+                fputcsv($file, [
+                    $dataSet->inspection_date && is_object($dataSet->inspection_date) ? $dataSet->inspection_date->format('M d, Y') : ($dataSet->inspection_date ? $dataSet->inspection_date : 'N/A'),
+                    $dataSet->inspection_time && is_object($dataSet->inspection_time) ? $dataSet->inspection_time->format('H:i') : ($dataSet->inspection_time ? $dataSet->inspection_time : 'N/A'),
+                    $dataSet->tank_number,
+                    number_format($dataSet->product_gauge, 3),
+                    number_format($dataSet->water_gauge, 3),
+                    number_format($dataSet->temperature, 1),
+                    number_format($dataSet->density, 4),
+                    number_format($dataSet->vcf, 4),
+                    number_format($dataSet->tov, 3),
+                    number_format($dataSet->water_volume, 3),
+                    number_format($dataSet->gov, 3),
+                    number_format($dataSet->gsv, 3),
+                    number_format($dataSet->mt_air, 3)
+                ]);
+            }
+            
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**

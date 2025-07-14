@@ -116,6 +116,8 @@ Route::middleware(['auth'])->group(function () {
         // Reports
         Route::get('/operations/reports', [App\Http\Controllers\OperationsController::class, 'reports'])->name('operations.reports');
         Route::get('/operations/reports/{report}', [App\Http\Controllers\OperationsController::class, 'showReport'])->name('operations.reports.show');
+        Route::get('/operations/reports/{report}/pdf', [App\Http\Controllers\OperationsController::class, 'exportReportPDF'])->name('operations.reports.pdf');
+        Route::get('/operations/reports/{report}/excel', [App\Http\Controllers\OperationsController::class, 'exportReportExcel'])->name('operations.reports.excel');
         Route::post('/operations/reports/{report}/approve', [App\Http\Controllers\OperationsController::class, 'approveReport'])->name('operations.reports.approve');
         Route::post('/operations/reports/{report}/decline', [App\Http\Controllers\OperationsController::class, 'declineReport'])->name('operations.reports.decline');
         Route::post('/operations/reports/{report}/send-to-client', [App\Http\Controllers\OperationsController::class, 'sendReportToClient'])->name('operations.reports.send-to-client');

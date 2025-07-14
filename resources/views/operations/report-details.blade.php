@@ -16,6 +16,16 @@
                         <i class="fas fa-arrow-left me-2"></i>
                         Back to Reports
                     </a>
+                    <a href="{{ route('operations.reports.pdf', $report->id) }}" class="btn btn-success">
+                        <i class="fas fa-download me-2"></i>
+                        Download PDF
+                    </a>
+                    @if($report->inspectionDataSets->count() > 0)
+                    <a href="{{ route('operations.reports.excel', $report->id) }}" class="btn btn-info">
+                        <i class="fas fa-file-excel me-2"></i>
+                        Download Excel
+                    </a>
+                    @endif
                 </div>
             </div>
         </div>
