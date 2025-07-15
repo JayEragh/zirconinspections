@@ -147,5 +147,15 @@ Route::middleware(['auth'])->group(function () {
         
         // Audit logs
         Route::get('/operations/audit-logs', [App\Http\Controllers\OperationsController::class, 'auditLogs'])->name('operations.audit-logs');
+        
+        // Bulk operations
+        Route::post('/operations/bulk/assign-inspectors', [App\Http\Controllers\BulkOperationsController::class, 'bulkAssignInspectors'])->name('operations.bulk.assign-inspectors');
+        Route::post('/operations/bulk/approve-reports', [App\Http\Controllers\BulkOperationsController::class, 'bulkApproveReports'])->name('operations.bulk.approve-reports');
+        Route::post('/operations/bulk/decline-reports', [App\Http\Controllers\BulkOperationsController::class, 'bulkDeclineReports'])->name('operations.bulk.decline-reports');
+        Route::post('/operations/bulk/send-to-clients', [App\Http\Controllers\BulkOperationsController::class, 'bulkSendToClients'])->name('operations.bulk.send-to-clients');
+        Route::post('/operations/bulk/export-pdf', [App\Http\Controllers\BulkOperationsController::class, 'bulkExportPDF'])->name('operations.bulk.export-pdf');
+        Route::post('/operations/bulk/export-excel', [App\Http\Controllers\BulkOperationsController::class, 'bulkExportExcel'])->name('operations.bulk.export-excel');
+        Route::post('/operations/bulk/deactivate-users', [App\Http\Controllers\BulkOperationsController::class, 'bulkDeactivateUsers'])->name('operations.bulk.deactivate-users');
+        Route::post('/operations/bulk/activate-users', [App\Http\Controllers\BulkOperationsController::class, 'bulkActivateUsers'])->name('operations.bulk.activate-users');
     });
 });

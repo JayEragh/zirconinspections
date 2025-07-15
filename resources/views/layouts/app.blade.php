@@ -102,6 +102,179 @@
             background: var(--secondary-color);
             border-color: var(--secondary-color);
         }
+        
+        /* Mobile Responsive Improvements */
+        @media (max-width: 768px) {
+            .navbar-brand img {
+                height: 36px !important;
+                margin-right: 8px !important;
+            }
+            
+            .notification-dropdown {
+                width: 300px !important;
+                max-height: 350px !important;
+            }
+            
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            .table-responsive th,
+            .table-responsive td {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .btn {
+                font-size: 0.875rem;
+                padding: 0.375rem 0.75rem;
+            }
+            
+            .dropdown-menu {
+                font-size: 0.875rem;
+            }
+            
+            .hero-section {
+                padding: 60px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-section p {
+                font-size: 1rem;
+            }
+            
+            .service-card {
+                margin-bottom: 1.5rem;
+            }
+            
+            .portal-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar-brand img {
+                height: 32px !important;
+                margin-right: 6px !important;
+            }
+            
+            .notification-dropdown {
+                width: 280px !important;
+                max-height: 300px !important;
+            }
+            
+            .table-responsive {
+                font-size: 0.8rem;
+            }
+            
+            .table-responsive th,
+            .table-responsive td {
+                padding: 0.375rem 0.125rem;
+            }
+            
+            .card-body {
+                padding: 0.75rem;
+            }
+            
+            .btn {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .hero-section {
+                padding: 40px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.75rem;
+            }
+            
+            .hero-section p {
+                font-size: 0.9rem;
+            }
+            
+            .container {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+        }
+        
+        /* Improved table responsiveness */
+        .table-responsive {
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+        
+        .table-responsive .table {
+            margin-bottom: 0;
+        }
+        
+        /* Mobile-friendly forms */
+        @media (max-width: 768px) {
+            .form-control,
+            .form-select {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            .form-label {
+                font-size: 0.875rem;
+                font-weight: 500;
+            }
+            
+            .form-text {
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Mobile-friendly modals */
+        @media (max-width: 768px) {
+            .modal-dialog {
+                margin: 0.5rem;
+                max-width: calc(100% - 1rem);
+            }
+            
+            .modal-body {
+                padding: 1rem;
+            }
+            
+            .modal-header {
+                padding: 1rem;
+            }
+            
+            .modal-footer {
+                padding: 1rem;
+            }
+        }
+        
+        /* Mobile-friendly buttons */
+        @media (max-width: 576px) {
+            .btn-group .btn {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .btn-group {
+                width: 100%;
+            }
+        }
+        
+        /* Mobile-friendly navigation */
+        @media (max-width: 768px) {
+            .navbar-nav .nav-link {
+                padding: 0.5rem 1rem;
+            }
+            
+            .dropdown-menu {
+                border: none;
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            }
+        }
     </style>
     
     @stack('styles')
