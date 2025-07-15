@@ -26,6 +26,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
             line-height: 1.6;
         }
         
