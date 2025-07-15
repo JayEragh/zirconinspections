@@ -31,6 +31,12 @@ Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, '
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {
+    // Notification routes
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/unread-count', [App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::post('/notifications/{id}/mark-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    
     // Client routes
     Route::middleware(['role:client'])->group(function () {
         Route::get('/client/dashboard', [App\Http\Controllers\ClientController::class, 'dashboard'])->name('client.dashboard');
@@ -138,5 +144,8 @@ Route::middleware(['auth'])->group(function () {
         
         // Login logs export
         Route::get('/operations/login-logs/export', [App\Http\Controllers\OperationsController::class, 'exportLoginLogs'])->name('operations.login-logs.export');
+        
+        // Audit logs
+        Route::get('/operations/audit-logs', [App\Http\Controllers\OperationsController::class, 'auditLogs'])->name('operations.audit-logs');
     });
 });

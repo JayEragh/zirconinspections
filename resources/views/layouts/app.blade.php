@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Zircon Inspections') - Petroleum Stock Monitoring</title>
     
     <!-- Favicon -->
@@ -151,6 +152,28 @@
                             <a class="nav-link" href="{{ route('login') }}">Staff Login</a>
                         </li>
                     @else
+                        <!-- Notifications Dropdown -->
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" id="notification-badge" style="display: none;">
+                                    0
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end notification-dropdown" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                                <li><h6 class="dropdown-header">Notifications</h6></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <div id="notifications-list">
+                                    <li class="text-center py-3">
+                                        <i class="fas fa-bell-slash text-muted"></i>
+                                        <p class="text-muted mb-0">No notifications</p>
+                                    </li>
+                                </div>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center" href="#" onclick="markAllAsRead()">Mark all as read</a></li>
+                            </ul>
+                        </li>
+                        
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 {{ Auth::user()->name }}
@@ -229,6 +252,133 @@
             }
         });
     </script>
+    
+    <!-- Real-time Notifications Script -->
+    @auth
+    <script>
+        // Notification functionality
+        let notificationCount = 0;
+        let notifications = [];
+        
+        // Load notifications on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNotifications();
+            loadUnreadCount();
+            
+            // Poll for new notifications every 30 seconds
+            setInterval(function() {
+                loadUnreadCount();
+            }, 30000);
+        });
+        
+        function loadNotifications() {
+            fetch('{{ route("notifications.index") }}')
+                .then(response => response.json())
+                .then(data => {
+                    notifications = data.data || [];
+                    updateNotificationList();
+                })
+                .catch(error => console.error('Error loading notifications:', error));
+        }
+        
+        function loadUnreadCount() {
+            fetch('{{ route("notifications.unread-count") }}')
+                .then(response => response.json())
+                .then(data => {
+                    notificationCount = data.count || 0;
+                    updateNotificationBadge();
+                })
+                .catch(error => console.error('Error loading notification count:', error));
+        }
+        
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notification-badge');
+            if (notificationCount > 0) {
+                badge.textContent = notificationCount > 99 ? '99+' : notificationCount;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+        
+        function updateNotificationList() {
+            const list = document.getElementById('notifications-list');
+            
+            if (notifications.length === 0) {
+                list.innerHTML = `
+                    <li class="text-center py-3">
+                        <i class="fas fa-bell-slash text-muted"></i>
+                        <p class="text-muted mb-0">No notifications</p>
+                    </li>
+                `;
+                return;
+            }
+            
+            list.innerHTML = notifications.map(notification => `
+                <li>
+                    <a class="dropdown-item ${!notification.read ? 'fw-bold' : ''}" href="#" onclick="markAsRead(${notification.id})">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <strong class="text-truncate">${notification.title}</strong>
+                                    <small class="text-muted">${formatTime(notification.created_at)}</small>
+                                </div>
+                                <p class="mb-0 text-truncate">${notification.message}</p>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            `).join('');
+        }
+        
+        function markAsRead(notificationId) {
+            fetch('{{ route("notifications.mark-read", ["id" => ":id"]) }}'.replace(':id', notificationId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadUnreadCount();
+                    loadNotifications();
+                }
+            })
+            .catch(error => console.error('Error marking notification as read:', error));
+        }
+        
+        function markAllAsRead() {
+            fetch('{{ route("notifications.mark-all-read") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadUnreadCount();
+                    loadNotifications();
+                }
+            })
+            .catch(error => console.error('Error marking all notifications as read:', error));
+        }
+        
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+            
+            if (diffInMinutes < 1) return 'Just now';
+            if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+            if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+            return date.toLocaleDateString();
+        }
+    </script>
+    @endauth
     
     @stack('scripts')
 </body>

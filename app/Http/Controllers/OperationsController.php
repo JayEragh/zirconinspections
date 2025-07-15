@@ -13,6 +13,8 @@ use App\Models\Report;
 use App\Models\Invoice;
 use App\Models\Message;
 use App\Models\LoginLog;
+use App\Services\NotificationService;
+use App\Services\AuditService;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class OperationsController extends Controller
@@ -329,6 +331,16 @@ class OperationsController extends Controller
             'assigned_at' => now(),
         ]);
 
+        // Send notification to assigned inspector
+        $inspector = Inspector::find($request->inspector_id);
+        NotificationService::create(
+            $inspector->user_id,
+            'service_request_assigned',
+            'New Service Request Assigned',
+            'You have been assigned to Service Request #' . $serviceRequest->id . ' - ' . ucfirst($serviceRequest->service_type) . ' at ' . $serviceRequest->depot,
+            route('inspector.service-requests.show', $serviceRequest->id)
+        );
+
         return back()->with('success', 'Inspector assigned successfully!');
     }
 
@@ -362,6 +374,18 @@ class OperationsController extends Controller
             'approved_at' => now(),
         ]);
 
+        // Send notification to inspector
+        NotificationService::create(
+            $report->inspector->user_id,
+            'report_approved',
+            'Report Approved',
+            'Your report #' . $report->id . ' has been approved.',
+            route('inspector.reports.show', $report->id)
+        );
+
+        // Log audit trail
+        AuditService::logApproval($report, "Report #{$report->id} approved by operations");
+
         return back()->with('success', 'Report approved successfully!');
     }
 
@@ -374,6 +398,18 @@ class OperationsController extends Controller
             'status' => 'declined',
             'declined_at' => now(),
         ]);
+
+        // Send notification to inspector
+        NotificationService::create(
+            $report->inspector->user_id,
+            'report_declined',
+            'Report Declined - Requires Amendment',
+            'Your report #' . $report->id . ' has been declined and requires amendment.',
+            route('inspector.reports.edit', $report->id)
+        );
+
+        // Log audit trail
+        AuditService::logDecline($report, "Report #{$report->id} declined by operations");
 
         // Create notification message for inspector
         $message = Message::create([
@@ -447,6 +483,9 @@ class OperationsController extends Controller
     {
         $report->load(['serviceRequest.client.user', 'inspector.user', 'inspectionDataSets']);
         
+        // Log audit trail
+        AuditService::logExport($report, 'PDF', "Report #{$report->id} exported as PDF");
+        
         $pdf = PDF::loadView('reports.pdf', compact('report'));
         return $pdf->download('report-' . $report->id . '.pdf');
     }
@@ -457,6 +496,9 @@ class OperationsController extends Controller
     public function exportReportExcel(Report $report)
     {
         $report->load(['serviceRequest.client.user', 'inspector.user', 'inspectionDataSets']);
+
+        // Log audit trail
+        AuditService::logExport($report, 'Excel', "Report #{$report->id} inspection data exported as Excel");
 
         // Create CSV content (Excel-compatible)
         $filename = 'inspection-data-report-' . $report->id . '.csv';
@@ -652,13 +694,11 @@ class OperationsController extends Controller
     }
 
     /**
-     * Export login/logout logs as CSV.
+     * Export login logs as Excel.
      */
     public function exportLoginLogs(Request $request)
     {
         $query = LoginLog::with('user');
-        
-        // Apply the same filters as dashboard
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->whereHas('user', function($q) use ($search) {
@@ -676,35 +716,36 @@ class OperationsController extends Controller
             $query->whereDate('logged_at', '<=', $request->input('date_to'));
         }
         
-        $logs = $query->latest('logged_at')->get();
-        
-        $filename = 'login_logs_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        $loginLogs = $query->latest('logged_at')->get();
+
+        // Create CSV content
+        $filename = 'login-logs-' . date('Y-m-d') . '.csv';
         
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
-        
-        $callback = function() use ($logs) {
+
+        $callback = function() use ($loginLogs) {
             $file = fopen('php://output', 'w');
             
-            // Add CSV headers
+            // Add headers
             fputcsv($file, [
-                'User Name',
+                'Date/Time',
+                'User',
                 'Email',
                 'Action',
-                'Date & Time',
                 'IP Address',
                 'User Agent'
             ]);
             
             // Add data rows
-            foreach ($logs as $log) {
+            foreach ($loginLogs as $log) {
                 fputcsv($file, [
-                    $log->user->name ?? 'N/A',
-                    $log->user->email ?? 'N/A',
-                    ucfirst($log->action),
-                    $log->logged_at ? \Carbon\Carbon::parse($log->logged_at)->format('Y-m-d H:i:s') : '',
+                    $log->logged_at->format('Y-m-d H:i:s'),
+                    $log->user ? $log->user->name : 'N/A',
+                    $log->user ? $log->user->email : 'N/A',
+                    $log->action,
                     $log->ip_address,
                     $log->user_agent
                 ]);
@@ -712,7 +753,53 @@ class OperationsController extends Controller
             
             fclose($file);
         };
-        
+
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Show audit logs.
+     */
+    public function auditLogs(Request $request)
+    {
+        $query = \App\Models\AuditLog::with('user');
+        
+        // Filter by action
+        if ($request->filled('action')) {
+            $query->where('action', $request->input('action'));
+        }
+        
+        // Filter by model type
+        if ($request->filled('model_type')) {
+            $query->where('model_type', $request->input('model_type'));
+        }
+        
+        // Filter by user
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->input('user_id'));
+        }
+        
+        // Filter by date range
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->input('date_from'));
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->input('date_to'));
+        }
+        
+        // Search in description
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('description', 'like', "%$search%");
+        }
+        
+        $auditLogs = $query->latest()->paginate(20)->appends($request->except('page'));
+        
+        // Get available filter options
+        $actions = \App\Models\AuditLog::distinct()->pluck('action');
+        $modelTypes = \App\Models\AuditLog::distinct()->pluck('model_type')->filter();
+        $users = User::orderBy('name')->get();
+        
+        return view('operations.audit-logs', compact('auditLogs', 'actions', 'modelTypes', 'users'));
     }
 }
