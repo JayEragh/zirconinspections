@@ -135,5 +135,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/operations/profile', [App\Http\Controllers\OperationsController::class, 'updateProfile'])->name('operations.profile.update');
         Route::get('/operations/settings', [App\Http\Controllers\OperationsController::class, 'settings'])->name('operations.settings');
         Route::put('/operations/settings', [App\Http\Controllers\OperationsController::class, 'updateSettings'])->name('operations.settings.update');
+        
+        // Login logs export
+        Route::get('/operations/login-logs/export', [App\Http\Controllers\OperationsController::class, 'exportLoginLogs'])->name('operations.login-logs.export');
     });
 });

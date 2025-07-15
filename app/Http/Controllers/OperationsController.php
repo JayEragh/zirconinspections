@@ -12,6 +12,7 @@ use App\Models\ServiceRequest;
 use App\Models\Report;
 use App\Models\Invoice;
 use App\Models\Message;
+use App\Models\LoginLog;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class OperationsController extends Controller
@@ -19,7 +20,7 @@ class OperationsController extends Controller
     /**
      * Show the operations dashboard.
      */
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $stats = [
             'total_clients' => Client::count(),
@@ -40,7 +41,26 @@ class OperationsController extends Controller
             ->take(5)
             ->get();
 
-        return view('operations.dashboard', compact('stats', 'recentRequests', 'recentReports'));
+        $query = LoginLog::with('user');
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%");
+            })->orWhere('ip_address', 'like', "%$search%");
+        }
+        if ($request->filled('action')) {
+            $query->where('action', $request->input('action'));
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('logged_at', '>=', $request->input('date_from'));
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('logged_at', '<=', $request->input('date_to'));
+        }
+        $loginLogs = $query->latest('logged_at')->paginate(20)->appends($request->except('page'));
+
+        return view('operations.dashboard', compact('stats', 'recentRequests', 'recentReports', 'loginLogs'));
     }
 
     /**
@@ -629,5 +649,70 @@ class OperationsController extends Controller
         ]);
         
         return redirect()->back()->with('success', 'Settings updated successfully.');
+    }
+
+    /**
+     * Export login/logout logs as CSV.
+     */
+    public function exportLoginLogs(Request $request)
+    {
+        $query = LoginLog::with('user');
+        
+        // Apply the same filters as dashboard
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%");
+            })->orWhere('ip_address', 'like', "%$search%");
+        }
+        if ($request->filled('action')) {
+            $query->where('action', $request->input('action'));
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('logged_at', '>=', $request->input('date_from'));
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('logged_at', '<=', $request->input('date_to'));
+        }
+        
+        $logs = $query->latest('logged_at')->get();
+        
+        $filename = 'login_logs_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+        
+        $callback = function() use ($logs) {
+            $file = fopen('php://output', 'w');
+            
+            // Add CSV headers
+            fputcsv($file, [
+                'User Name',
+                'Email',
+                'Action',
+                'Date & Time',
+                'IP Address',
+                'User Agent'
+            ]);
+            
+            // Add data rows
+            foreach ($logs as $log) {
+                fputcsv($file, [
+                    $log->user->name ?? 'N/A',
+                    $log->user->email ?? 'N/A',
+                    ucfirst($log->action),
+                    $log->logged_at ? \Carbon\Carbon::parse($log->logged_at)->format('Y-m-d H:i:s') : '',
+                    $log->ip_address,
+                    $log->user_agent
+                ]);
+            }
+            
+            fclose($file);
+        };
+        
+        return response()->stream($callback, 200, $headers);
     }
 }

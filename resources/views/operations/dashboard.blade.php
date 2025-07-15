@@ -211,6 +211,94 @@
         </div>
     </div>
 
+    <!-- Login/Logout Logs -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Login & Logout Activity (Last 20)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Filter/Search Form -->
+                    <form method="GET" class="row g-2 mb-3">
+                        <div class="col-md-3">
+                            <input type="text" name="search" class="form-control" placeholder="Search user, email, or IP" value="{{ request('search') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <select name="action" class="form-select">
+                                <option value="">All Actions</option>
+                                <option value="login" {{ request('action') == 'login' ? 'selected' : '' }}>Login</option>
+                                <option value="logout" {{ request('action') == 'logout' ? 'selected' : '' }}>Logout</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}" placeholder="From">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}" placeholder="To">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i> Filter</button>
+                        </div>
+                        <div class="col-md-1">
+                            <a href="{{ route('operations.dashboard') }}#login-logs" class="btn btn-outline-secondary w-100">Reset</a>
+                        </div>
+                    </form>
+                    
+                    <!-- Export Button -->
+                    <div class="mb-3">
+                        <a href="{{ route('operations.login-logs.export', request()->query()) }}" class="btn btn-success">
+                            <i class="fas fa-file-excel me-2"></i>Export to Excel
+                        </a>
+                    </div>
+                    @if($loginLogs->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                        <th>Date & Time</th>
+                                        <th>IP Address</th>
+                                        <th>User Agent</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($loginLogs as $log)
+                                    <tr>
+                                        <td>{{ $log->user->name ?? 'N/A' }}</td>
+                                        <td>{{ $log->user->email ?? 'N/A' }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ $log->action === 'login' ? 'success' : 'danger' }}">
+                                                {{ ucfirst($log->action) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $log->logged_at ? \Carbon\Carbon::parse($log->logged_at)->format('M d, Y H:i:s') : '' }}</td>
+                                        <td>{{ $log->ip_address }}</td>
+                                        <td class="text-truncate" style="max-width: 200px;">{{ $log->user_agent }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            {{ $loginLogs->links() }}
+                        </div>
+                    @else
+                        <div class="text-center py-3">
+                            <i class="fas fa-sign-in-alt fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No login or logout activity found.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Activity -->
     <div class="row">
         <div class="col-lg-6">
