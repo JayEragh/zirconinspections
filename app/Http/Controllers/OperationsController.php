@@ -16,6 +16,8 @@ use App\Models\LoginLog;
 use App\Services\NotificationService;
 use App\Services\AuditService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportExport;
 
 class OperationsController extends Controller
 {
@@ -498,59 +500,158 @@ class OperationsController extends Controller
         $report->load(['serviceRequest.client.user', 'inspector.user', 'inspectionDataSets']);
 
         // Log audit trail
-        AuditService::logExport($report, 'Excel', "Report #{$report->id} inspection data exported as Excel");
+        AuditService::logExport($report, 'Excel', "Report #{$report->id} exported as Excel");
 
-        // Create CSV content (Excel-compatible)
-        $filename = 'inspection-data-report-' . $report->id . '.csv';
+        return Excel::download(new ReportExport($report), 'report-' . $report->id . '.xlsx');
+    }
+
+    /**
+     * Show all outturn reports.
+     */
+    public function outturnReports()
+    {
+        $outturnReports = \App\Models\OutturnReport::with(['serviceRequest.client.user', 'inspector.user'])
+            ->latest()
+            ->paginate(15);
+        return view('operations.outturn-reports', compact('outturnReports'));
+    }
+
+    /**
+     * Show outturn report details.
+     */
+    public function showOutturnReport(\App\Models\OutturnReport $outturnReport)
+    {
+        $outturnReport->load(['serviceRequest.client.user', 'inspector.user', 'outturnDataSets']);
+        return view('operations.outturn-report-details', compact('outturnReport'));
+    }
+
+    /**
+     * Approve an outturn report.
+     */
+    public function approveOutturnReport(\App\Models\OutturnReport $outturnReport)
+    {
+        $outturnReport->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+        ]);
+
+        // Send notification to inspector
+        NotificationService::create(
+            $outturnReport->inspector->user_id,
+            'outturn_report_approved',
+            'Outturn Report Approved',
+            'Your outturn report #' . $outturnReport->id . ' has been approved.',
+            route('inspector.outturn-reports.show', $outturnReport->id)
+        );
+
+        // Log audit trail
+        AuditService::logApproval($outturnReport, "Outturn Report #{$outturnReport->id} approved by operations");
+
+        return back()->with('success', 'Outturn report approved successfully!');
+    }
+
+    /**
+     * Decline an outturn report for amendment.
+     */
+    public function declineOutturnReport(\App\Models\OutturnReport $outturnReport)
+    {
+        $outturnReport->update([
+            'status' => 'declined',
+            'declined_at' => now(),
+        ]);
+
+        // Send notification to inspector
+        NotificationService::create(
+            $outturnReport->inspector->user_id,
+            'outturn_report_declined',
+            'Outturn Report Declined - Requires Amendment',
+            'Your outturn report #' . $outturnReport->id . ' has been declined and requires amendment.',
+            route('inspector.outturn-reports.show', $outturnReport->id)
+        );
+
+        // Log audit trail
+        AuditService::logDecline($outturnReport, "Outturn Report #{$outturnReport->id} declined by operations");
+
+        // Create notification message for inspector
+        $message = Message::create([
+            'sender_id' => Auth::id(), // Operations user
+            'recipient_id' => $outturnReport->inspector->user_id,
+            'subject' => 'Outturn Report Declined - Requires Amendment - Report #' . $outturnReport->id,
+            'content' => "Dear " . $outturnReport->inspector->user->name . ",\n\n" .
+                        "Your outturn report #" . $outturnReport->id . " for Service Request #" . $outturnReport->serviceRequest->id . " has been declined and requires amendment.\n\n" .
+                        "Report Details:\n" .
+                        "- Report #: " . $outturnReport->id . "\n" .
+                        "- Report Title: " . $outturnReport->report_title . "\n" .
+                        "- Service Type: " . ucfirst($outturnReport->serviceRequest->service_type) . "\n" .
+                        "- Depot: " . $outturnReport->serviceRequest->depot . "\n" .
+                        "- Product: " . $outturnReport->serviceRequest->product . "\n" .
+                        "- Client: " . $outturnReport->serviceRequest->client->user->name . "\n\n" .
+                        "Please review the outturn report and make the necessary amendments. You can view the report from your inspector portal.\n\n" .
+                        "Thank you for your attention to this matter.\n\n" .
+                        "Best regards,\n" .
+                        "Operations Team\n" .
+                        "Zircon Inspections",
+            'service_request_id' => $outturnReport->serviceRequest->id,
+            'read' => false,
+        ]);
+
+        return back()->with('success', 'Outturn report declined successfully! Inspector has been notified to make amendments.');
+    }
+
+    /**
+     * Send approved outturn report notification to client.
+     */
+    public function sendOutturnReportToClient(\App\Models\OutturnReport $outturnReport)
+    {
+        // Ensure outturn report is approved
+        if ($outturnReport->status !== 'approved') {
+            return back()->with('error', 'Only approved outturn reports can be sent to clients.');
+        }
+
+        // Create notification message for client
+        $message = Message::create([
+            'sender_id' => Auth::id(), // Operations user
+            'recipient_id' => $outturnReport->client->user_id,
+            'subject' => 'Outturn Report Approved - Service Request #' . $outturnReport->serviceRequest->id,
+            'content' => "Dear " . $outturnReport->client->user->name . ",\n\n" .
+                        "Your outturn report for Service Request #" . $outturnReport->serviceRequest->id . " has been approved and is ready for review.\n\n" .
+                        "Report Details:\n" .
+                        "- Report #: " . $outturnReport->id . "\n" .
+                        "- Report Title: " . $outturnReport->report_title . "\n" .
+                        "- Service Type: " . ucfirst($outturnReport->serviceRequest->service_type) . "\n" .
+                        "- Depot: " . $outturnReport->serviceRequest->depot . "\n" .
+                        "- Product: " . $outturnReport->serviceRequest->product . "\n" .
+                        "- Inspector: " . $outturnReport->inspector->user->name . "\n\n" .
+                        "You can view the complete outturn report in your client portal.\n\n" .
+                        "Thank you for choosing Zircon Inspections.\n\n" .
+                        "Best regards,\n" .
+                        "Operations Team\n" .
+                        "Zircon Inspections",
+            'service_request_id' => $outturnReport->serviceRequest->id,
+            'read' => false,
+        ]);
+
+        // Update outturn report to mark as sent to client
+        $outturnReport->update([
+            'sent_to_client_at' => now(),
+        ]);
+
+        return back()->with('success', 'Outturn report notification sent to client successfully!');
+    }
+
+    /**
+     * Export outturn report as PDF.
+     */
+    public function exportOutturnReportPDF(\App\Models\OutturnReport $outturnReport)
+    {
+        $outturnReport->load(['serviceRequest.client.user', 'inspector.user', 'outturnDataSets']);
         
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ];
-
-        $callback = function() use ($report) {
-            $file = fopen('php://output', 'w');
-            
-            // Add headers
-            fputcsv($file, [
-                'Date',
-                'Time', 
-                'Tank #',
-                'Product Gauge',
-                'Water Gauge',
-                'Temperature (°C)',
-                'Density',
-                'VCF',
-                'TOV',
-                'Water Vol',
-                'GOV',
-                'GSV',
-                'MT Air'
-            ]);
-            
-            // Add data rows
-            foreach ($report->inspectionDataSets as $dataSet) {
-                fputcsv($file, [
-                    $dataSet->inspection_date && is_object($dataSet->inspection_date) ? $dataSet->inspection_date->format('M d, Y') : ($dataSet->inspection_date ? $dataSet->inspection_date : 'N/A'),
-                    $dataSet->inspection_time && is_object($dataSet->inspection_time) ? $dataSet->inspection_time->format('H:i') : ($dataSet->inspection_time ? $dataSet->inspection_time : 'N/A'),
-                    $dataSet->tank_number,
-                    number_format($dataSet->product_gauge, 3),
-                    number_format($dataSet->water_gauge, 3),
-                    number_format($dataSet->temperature, 1),
-                    number_format($dataSet->density, 4),
-                    number_format($dataSet->vcf, 4),
-                    number_format($dataSet->tov, 3),
-                    number_format($dataSet->water_volume, 3),
-                    number_format($dataSet->gov, 3),
-                    number_format($dataSet->gsv, 3),
-                    number_format($dataSet->mt_air, 3)
-                ]);
-            }
-            
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        // Log audit trail
+        AuditService::logExport($outturnReport, 'PDF', "Outturn Report #{$outturnReport->id} exported as PDF");
+        
+        $pdf = PDF::loadView('outturn-reports.pdf', compact('outturnReport'));
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->download('outturn-report-' . $outturnReport->id . '.pdf');
     }
 
     /**

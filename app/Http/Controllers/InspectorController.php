@@ -42,6 +42,13 @@ class InspectorController extends Controller
             ->take(5)
             ->get();
         
+        // Get recent outturn reports
+        $recentOutturnReports = \App\Models\OutturnReport::where('inspector_id', $inspector->id)
+            ->with(['serviceRequest.client.user'])
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+        
         // Get unread messages
         $unreadMessages = Message::where('recipient_id', $user->id)
             ->where('read', false)
@@ -63,6 +70,7 @@ class InspectorController extends Controller
         return view('inspector.dashboard', compact(
             'assignedRequests',
             'recentReports',
+            'recentOutturnReports',
             'unreadMessages',
             'totalRequests',
             'completedRequests',

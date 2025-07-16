@@ -116,6 +116,35 @@
                 </div>
             </div>
 
+            <!-- Outturn Reports -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-warning">Outturn Reports</h6>
+                </div>
+                <div class="card-body">
+                    @php
+                        $outturnReports = \App\Models\OutturnReport::where('service_request_id', $serviceRequest->id)->get();
+                    @endphp
+                    
+                    @if($outturnReports->count() > 0)
+                        @foreach($outturnReports as $outturnReport)
+                        <div class="mb-3">
+                            <h6>{{ $outturnReport->report_title }}</h6>
+                            <p class="text-muted mb-1">{{ $outturnReport->report_date->format('M d, Y') }}</p>
+                            <span class="badge badge-warning">Outturn Report</span>
+                            <a href="{{ route('inspector.outturn-reports.show', $outturnReport) }}" class="btn btn-sm btn-info ml-2">View</a>
+                        </div>
+                        @endforeach
+                    @else
+                        <p class="text-muted">No outturn reports created yet.</p>
+                        <a href="{{ route('inspector.outturn-reports.create', $serviceRequest->id) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-plus me-2"></i>
+                            Create Outturn Report
+                        </a>
+                    @endif
+                </div>
+            </div>
+
             <!-- Timeline -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">

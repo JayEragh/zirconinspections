@@ -181,6 +181,48 @@
     </div>
 
     <div class="row">
+        <!-- Outturn Reports -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-warning">Recent Outturn Reports</h6>
+                    <a href="{{ route('inspector.outturn-reports') }}" class="btn btn-sm btn-warning">View All</a>
+                </div>
+                <div class="card-body">
+                    @if(isset($recentOutturnReports) && $recentOutturnReports->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Report #</th>
+                                        <th>Title</th>
+                                        <th>BDC</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($recentOutturnReports as $outturnReport)
+                                    <tr>
+                                        <td>#{{ $outturnReport->id }}</td>
+                                        <td>{{ $outturnReport->report_title }}</td>
+                                        <td>{{ $outturnReport->bdc_name }}</td>
+                                        <td>{{ $outturnReport->report_date->format('M d, Y') }}</td>
+                                        <td>
+                                            <a href="{{ route('inspector.outturn-reports.show', $outturnReport) }}" class="btn btn-sm btn-info">View</a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <p class="text-muted">No outturn reports created yet.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         <!-- Unread Messages -->
         <div class="col-xl-6 col-lg-6">
             <div class="card shadow mb-4">

@@ -81,6 +81,13 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/inspector/reports/{id}', [App\Http\Controllers\InspectorController::class, 'updateReport'])->name('inspector.reports.update');
         Route::get('/inspector/reports/{id}/pdf', [App\Http\Controllers\InspectorController::class, 'exportReportPDF'])->name('inspector.reports.pdf');
         
+        // Outturn Reports
+        Route::get('/inspector/outturn-reports', [App\Http\Controllers\InspectorOutturnController::class, 'outturnReports'])->name('inspector.outturn-reports');
+        Route::get('/inspector/outturn-reports/create/{serviceRequestId}', [App\Http\Controllers\InspectorOutturnController::class, 'createOutturnReport'])->name('inspector.outturn-reports.create');
+        Route::post('/inspector/outturn-reports/{serviceRequestId}', [App\Http\Controllers\InspectorOutturnController::class, 'storeOutturnReport'])->name('inspector.outturn-reports.store');
+        Route::get('/inspector/outturn-reports/{outturnReport}', [App\Http\Controllers\InspectorOutturnController::class, 'showOutturnReport'])->name('inspector.outturn-reports.show');
+        Route::get('/inspector/outturn-reports/{outturnReport}/pdf', [App\Http\Controllers\InspectorOutturnController::class, 'exportOutturnReportPDF'])->name('inspector.outturn-reports.pdf');
+        
         // Messages
         Route::get('/inspector/messages', [App\Http\Controllers\InspectorController::class, 'messages'])->name('inspector.messages');
         Route::get('/inspector/messages/{id}', [App\Http\Controllers\InspectorController::class, 'showMessage'])->name('inspector.messages.show');
@@ -129,6 +136,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/operations/reports/{report}/approve', [App\Http\Controllers\OperationsController::class, 'approveReport'])->name('operations.reports.approve');
         Route::post('/operations/reports/{report}/decline', [App\Http\Controllers\OperationsController::class, 'declineReport'])->name('operations.reports.decline');
         Route::post('/operations/reports/{report}/send-to-client', [App\Http\Controllers\OperationsController::class, 'sendReportToClient'])->name('operations.reports.send-to-client');
+        
+        // Outturn Reports
+        Route::get('/operations/outturn-reports', [App\Http\Controllers\OperationsController::class, 'outturnReports'])->name('operations.outturn-reports');
+        Route::get('/operations/outturn-reports/{outturnReport}', [App\Http\Controllers\OperationsController::class, 'showOutturnReport'])->name('operations.outturn-reports.show');
+        Route::get('/operations/outturn-reports/{outturnReport}/pdf', [App\Http\Controllers\OperationsController::class, 'exportOutturnReportPDF'])->name('operations.outturn-reports.pdf');
+        Route::post('/operations/outturn-reports/{outturnReport}/approve', [App\Http\Controllers\OperationsController::class, 'approveOutturnReport'])->name('operations.outturn-reports.approve');
+        Route::post('/operations/outturn-reports/{outturnReport}/decline', [App\Http\Controllers\OperationsController::class, 'declineOutturnReport'])->name('operations.outturn-reports.decline');
+        Route::post('/operations/outturn-reports/{outturnReport}/send-to-client', [App\Http\Controllers\OperationsController::class, 'sendOutturnReportToClient'])->name('operations.outturn-reports.send-to-client');
         
         // Invoices
         Route::get('/operations/invoices', [App\Http\Controllers\OperationsController::class, 'invoices'])->name('operations.invoices');

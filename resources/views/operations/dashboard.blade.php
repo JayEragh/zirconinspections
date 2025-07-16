@@ -194,6 +194,12 @@
                             </a>
                         </div>
                         <div class="col-md-2 mb-3">
+                            <a href="{{ route('operations.outturn-reports') }}" class="btn btn-outline-warning w-100">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Outturn Reports
+                            </a>
+                        </div>
+                        <div class="col-md-2 mb-3">
                             <a href="{{ route('operations.invoices') }}" class="btn btn-outline-danger w-100">
                                 <i class="fas fa-dollar-sign me-2"></i>
                                 Invoices
