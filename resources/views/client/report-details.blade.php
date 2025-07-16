@@ -12,6 +12,10 @@
                     Report Details
                 </h2>
                 <div>
+                    <a href="{{ route('client.dashboard') }}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Back to Dashboard
+                    </a>
                     <a href="{{ route('client.reports') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left me-2"></i>
                         Back to Reports

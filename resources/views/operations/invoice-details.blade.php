@@ -9,6 +9,9 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">Invoice Details</h1>
                 <div>
+                    <a href="{{ route('operations.dashboard') }}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-tachometer-alt"></i> Back to Dashboard
+                    </a>
                     <a href="{{ route('operations.invoices.edit', $invoice) }}" class="btn btn-warning me-2">
                         <i class="fas fa-edit"></i> Edit Invoice
                     </a>

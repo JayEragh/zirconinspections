@@ -8,9 +8,14 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">Invoice Details</h1>
-                <a href="{{ route('client.invoices') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Invoices
-                </a>
+                <div>
+                    <a href="{{ route('client.dashboard') }}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-tachometer-alt"></i> Back to Dashboard
+                    </a>
+                    <a href="{{ route('client.invoices') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Invoices
+                    </a>
+                </div>
             </div>
         </div>
     </div>
