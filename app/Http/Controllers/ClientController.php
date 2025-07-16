@@ -461,19 +461,29 @@ class ClientController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
+        $client = $user->client;
         
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
+            'company_name' => 'required|string|max:255',
+            'contact_person' => 'required|string|max:255',
         ]);
         
+        // Update user fields
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
+        ]);
+        
+        // Update client fields
+        $client->update([
+            'company_name' => $request->company_name,
+            'contact_person' => $request->contact_person,
         ]);
         
         return redirect()->back()->with('success', 'Profile updated successfully.');
