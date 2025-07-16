@@ -275,6 +275,44 @@
                 box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
             }
         }
+        
+        /* Smaller navigation icons */
+        .fas.fa-arrow-left,
+        .fas.fa-arrow-right,
+        .fas.fa-chevron-left,
+        .fas.fa-chevron-right {
+            font-size: 0.875rem !important;
+        }
+        
+        /* Smaller button icons */
+        .btn .fas,
+        .btn .fa,
+        .btn svg {
+            font-size: 0.875rem !important;
+            width: 0.875rem !important;
+            height: 0.875rem !important;
+        }
+        
+        /* Smaller navigation icons in buttons */
+        .btn .fas.fa-arrow-left,
+        .btn .fas.fa-arrow-right,
+        .btn .fas.fa-chevron-left,
+        .btn .fas.fa-chevron-right {
+            font-size: 0.75rem !important;
+        }
+        
+        /* Reduce size of large icons in buttons and navigation */
+        .btn .fa-2x,
+        .nav-link .fa-2x,
+        .dropdown-item .fa-2x {
+            font-size: 1rem !important;
+        }
+        
+        /* Ensure navigation buttons have smaller icons */
+        .btn .fas,
+        .btn .fa {
+            font-size: 0.875rem !important;
+        }
     </style>
     
     @stack('styles')

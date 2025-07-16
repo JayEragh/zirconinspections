@@ -62,7 +62,7 @@ class OperationsController extends Controller
         if ($request->filled('date_to')) {
             $query->whereDate('logged_at', '<=', $request->input('date_to'));
         }
-        $loginLogs = $query->latest('logged_at')->paginate(20)->appends($request->except('page'));
+        $loginLogs = $query->latest('logged_at')->paginate(5)->appends($request->except('page'));
 
         return view('operations.dashboard', compact('stats', 'recentRequests', 'recentReports', 'loginLogs'));
     }

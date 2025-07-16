@@ -327,7 +327,7 @@
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-sign-in-alt me-2"></i>
-                        Login & Logout Activity (Last 20)
+                        Login & Logout Activity (Last 5)
                     </h5>
                 </div>
                 <div class="card-body">
