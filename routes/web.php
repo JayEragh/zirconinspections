@@ -51,6 +51,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/client/reports/{report}', [App\Http\Controllers\ClientController::class, 'showReport'])->name('client.reports.show');
         Route::get('/client/reports/{report}/pdf', [App\Http\Controllers\ClientController::class, 'exportReportPDF'])->name('client.reports.pdf');
         Route::get('/client/reports/{report}/excel', [App\Http\Controllers\ClientController::class, 'exportReportExcel'])->name('client.reports.excel');
+        Route::get('/client/outturn-reports', [App\Http\Controllers\ClientController::class, 'outturnReports'])->name('client.outturn-reports');
+        Route::get('/client/outturn-reports/{outturnReport}', [App\Http\Controllers\ClientController::class, 'showOutturnReport'])->name('client.outturn-reports.show');
+        Route::get('/client/outturn-reports/{outturnReport}/pdf', [App\Http\Controllers\ClientController::class, 'exportOutturnReportPDF'])->name('client.outturn-reports.pdf');
         Route::get('/client/invoices', [App\Http\Controllers\ClientController::class, 'invoices'])->name('client.invoices');
         Route::get('/client/invoices/{invoice}', [App\Http\Controllers\ClientController::class, 'showInvoice'])->name('client.invoices.show');
         Route::post('/client/invoices/{invoice}/payment-evidence', [App\Http\Controllers\ClientController::class, 'uploadPaymentEvidence'])->name('client.invoices.payment-evidence');

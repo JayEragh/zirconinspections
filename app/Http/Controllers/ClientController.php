@@ -193,6 +193,69 @@ class ClientController extends Controller
     }
 
     /**
+     * Show the client's outturn reports.
+     */
+    public function outturnReports()
+    {
+        $user = Auth::user();
+        $outturnReports = $user->client->serviceRequests()
+            ->with(['outturnReports.inspector.user', 'outturnReports.serviceRequest'])
+            ->get()
+            ->pluck('outturnReports')
+            ->flatten()
+            ->sortByDesc('created_at');
+        
+        return view('client.outturn-reports', compact('outturnReports'));
+    }
+
+    /**
+     * Show a specific outturn report.
+     */
+    public function showOutturnReport(\App\Models\OutturnReport $outturnReport)
+    {
+        // Ensure the client can only view their own outturn reports
+        $user = Auth::user();
+        $clientOutturnReports = $user->client->serviceRequests()
+            ->with('outturnReports')
+            ->get()
+            ->pluck('outturnReports')
+            ->flatten()
+            ->pluck('id');
+
+        if (!$clientOutturnReports->contains($outturnReport->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $outturnReport->load(['serviceRequest.client.user', 'inspector.user', 'outturnDataSets']);
+        return view('client.outturn-report-details', compact('outturnReport'));
+    }
+
+    /**
+     * Export outturn report as PDF.
+     */
+    public function exportOutturnReportPDF(\App\Models\OutturnReport $outturnReport)
+    {
+        // Ensure the client can only download their own outturn reports
+        $user = Auth::user();
+        $clientOutturnReports = $user->client->serviceRequests()
+            ->with('outturnReports')
+            ->get()
+            ->pluck('outturnReports')
+            ->flatten()
+            ->pluck('id');
+
+        if (!$clientOutturnReports->contains($outturnReport->id)) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $outturnReport->load(['serviceRequest.client.user', 'inspector.user', 'outturnDataSets']);
+        
+        $pdf = PDF::loadView('outturn-reports.pdf', compact('outturnReport'));
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->download('outturn-report-' . $outturnReport->id . '.pdf');
+    }
+
+    /**
      * Show the client's invoices.
      */
     public function invoices()
