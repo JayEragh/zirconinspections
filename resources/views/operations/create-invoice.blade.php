@@ -34,7 +34,8 @@
                                     <option value="{{ $serviceRequest->id }}" 
                                             data-client-id="{{ $serviceRequest->client_id }}"
                                             data-service-type="{{ $serviceRequest->service_type }}"
-                                            data-depot="{{ $serviceRequest->depot }}">
+                                            data-depot="{{ $serviceRequest->depot }}"
+                                            data-specific-instructions="{{ $serviceRequest->specific_instructions ?? '' }}">
                                         #{{ $serviceRequest->id }} - {{ ucfirst($serviceRequest->service_type) }} at {{ $serviceRequest->depot }}
                                     </option>
                                     @endforeach
@@ -78,7 +79,7 @@
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <textarea name="description" id="description" class="form-control" rows="4" required></textarea>
+                            <textarea name="description" id="description" class="form-control" rows="4" required placeholder="Service description will be auto-populated when you select a service request..."></textarea>
                             @error('description')
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
@@ -132,13 +133,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const amountInput = document.getElementById('amount');
     const serviceRequestSelect = document.getElementById('service_request_id');
     const clientSelect = document.getElementById('client_id');
+    const descriptionTextarea = document.getElementById('description');
     
-    // Auto-fill client when service request is selected
+    // Auto-fill client and description when service request is selected
     serviceRequestSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
         if (selectedOption.value) {
             const clientId = selectedOption.getAttribute('data-client-id');
+            const specificInstructions = selectedOption.getAttribute('data-specific-instructions');
+            
+            // Auto-fill client
             clientSelect.value = clientId;
+            
+            // Auto-populate description with service request details
+            const serviceType = selectedOption.getAttribute('data-service-type');
+            const depot = selectedOption.getAttribute('data-depot');
+            
+            let description = `Service Type: ${serviceType}\nDepot: ${depot}`;
+            
+            if (specificInstructions && specificInstructions.trim() !== '') {
+                description += `\n\nSpecific Instructions:\n${specificInstructions}`;
+            }
+            
+            descriptionTextarea.value = description;
+        } else {
+            // Clear fields if no service request is selected
+            clientSelect.value = '';
+            descriptionTextarea.value = '';
         }
     });
     
