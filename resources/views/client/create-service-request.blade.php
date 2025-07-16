@@ -106,20 +106,20 @@
                                 <select class="form-select @error('service_type') is-invalid @enderror" 
                                         id="service_type" name="service_type" required>
                                     <option value="">Select Service Type</option>
-                                    <option value="quantity_verification" {{ old('service_type') == 'quantity_verification' ? 'selected' : '' }}>
-                                        Quantity Verification
+                                    <option value="in_tank_stock_monitoring" {{ old('service_type') == 'in_tank_stock_monitoring' ? 'selected' : '' }}>
+                                        In Tank Stock Monitoring
                                     </option>
-                                    <option value="quality_inspection" {{ old('service_type') == 'quality_inspection' ? 'selected' : '' }}>
-                                        Quality Inspection
+                                    <option value="inter_depot_product_transfer" {{ old('service_type') == 'inter_depot_product_transfer' ? 'selected' : '' }}>
+                                        Inter Depot Product Transfer
                                     </option>
-                                    <option value="sampling" {{ old('service_type') == 'sampling' ? 'selected' : '' }}>
-                                        Sampling
+                                    <option value="in_tank_product_transfer" {{ old('service_type') == 'in_tank_product_transfer' ? 'selected' : '' }}>
+                                        In Tank Product Transfer
                                     </option>
-                                    <option value="tank_calibration" {{ old('service_type') == 'tank_calibration' ? 'selected' : '' }}>
-                                        Tank Calibration
+                                    <option value="product_transfer_audit" {{ old('service_type') == 'product_transfer_audit' ? 'selected' : '' }}>
+                                        Product Transfer Audit
                                     </option>
-                                    <option value="other" {{ old('service_type') == 'other' ? 'selected' : '' }}>
-                                        Other
+                                    <option value="customized_request" {{ old('service_type') == 'customized_request' ? 'selected' : '' }}>
+                                        Customized Request
                                     </option>
                                 </select>
                                 @error('service_type')
