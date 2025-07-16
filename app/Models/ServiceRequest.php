@@ -67,6 +67,14 @@ class ServiceRequest extends Model
     }
 
     /**
+     * Get the outturn reports for this service request.
+     */
+    public function outturnReports()
+    {
+        return $this->hasMany(OutturnReport::class);
+    }
+
+    /**
      * Generate a unique service ID.
      */
     public static function generateServiceId()
