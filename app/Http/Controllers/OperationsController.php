@@ -835,6 +835,41 @@ class OperationsController extends Controller
     }
 
     /**
+     * Undo approval for an invoice.
+     */
+    public function undoApproval(Invoice $invoice)
+    {
+        // Check if invoice is approved
+        if ($invoice->status !== 'approved') {
+            return back()->with('error', 'Only approved invoices can have their approval undone.');
+        }
+
+        // Check if invoice has been paid
+        if ($invoice->status === 'paid') {
+            return back()->with('error', 'Cannot undo approval for paid invoices.');
+        }
+
+        // Undo approval
+        $invoice->undoApproval();
+        
+        // Create notification for client about approval being revoked
+        Message::create([
+            'sender_id' => Auth::id(),
+            'recipient_id' => $invoice->client->user_id,
+            'subject' => 'Invoice Approval Revoked: ' . $invoice->invoice_number,
+            'content' => "The approval for invoice #{$invoice->invoice_number} has been revoked.\n\n" .
+                        "The invoice is now back in draft status and will need to be re-approved before payment can be processed.\n\n" .
+                        "We apologize for any inconvenience this may cause.",
+            'service_request_id' => $invoice->service_request_id,
+        ]);
+        
+        // Log audit trail
+        AuditService::log('undo_approval', "Invoice #{$invoice->invoice_number} approval undone", $invoice);
+
+        return back()->with('success', 'Invoice approval undone successfully! Client has been notified.');
+    }
+
+    /**
      * Send overdue notification for invoice.
      */
     public function sendOverdueNotification(Invoice $invoice)

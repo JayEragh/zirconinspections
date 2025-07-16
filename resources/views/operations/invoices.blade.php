@@ -135,6 +135,15 @@
                                                     </button>
                                                 </form>
                                                 @endif
+                                                @if($invoice->status === 'approved' && $invoice->status !== 'paid')
+                                                <form action="{{ route('operations.invoices.undo-approval', $invoice) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning" title="Undo Approval" 
+                                                            onclick="return confirm('Are you sure you want to undo the approval for this invoice? This will revert it to draft status and notify the client.')">
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
                                                 @if($invoice->status === 'approved' && $invoice->isOverdue() && !$invoice->overdue_notification_sent)
                                                 <form action="{{ route('operations.invoices.send-overdue-notification', $invoice) }}" method="POST" class="d-inline">
                                                     @csrf

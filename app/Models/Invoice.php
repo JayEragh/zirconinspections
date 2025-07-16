@@ -142,6 +142,21 @@ class Invoice extends Model
     }
 
     /**
+     * Undo approval and revert to draft status.
+     */
+    public function undoApproval()
+    {
+        $this->update([
+            'status' => 'draft',
+            'approved_at' => null,
+            'payment_deadline' => null,
+            'sent_to_client_at' => null,
+        ]);
+        
+        return $this;
+    }
+
+    /**
      * Send invoice to client.
      */
     public function sendToClient()

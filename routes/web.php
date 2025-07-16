@@ -155,6 +155,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/operations/invoices/{invoice}', [App\Http\Controllers\OperationsController::class, 'deleteInvoice'])->name('operations.invoices.delete');
         Route::post('/operations/invoices/{invoice}/mark-paid', [App\Http\Controllers\OperationsController::class, 'markAsPaid'])->name('operations.invoices.mark-paid');
         Route::post('/operations/invoices/{invoice}/approve', [App\Http\Controllers\OperationsController::class, 'approveInvoice'])->name('operations.invoices.approve');
+        Route::post('/operations/invoices/{invoice}/undo-approval', [App\Http\Controllers\OperationsController::class, 'undoApproval'])->name('operations.invoices.undo-approval');
         Route::post('/operations/invoices/{invoice}/send-overdue-notification', [App\Http\Controllers\OperationsController::class, 'sendOverdueNotification'])->name('operations.invoices.send-overdue-notification');
         
         // Messages

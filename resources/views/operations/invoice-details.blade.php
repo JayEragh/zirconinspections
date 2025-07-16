@@ -199,6 +199,23 @@
             </div>
             @endif
 
+            @if($invoice->status === 'approved' && $invoice->status !== 'paid')
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Approval Actions</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('operations.invoices.undo-approval', $invoice) }}" method="POST" class="d-grid">
+                        @csrf
+                        <button type="submit" class="btn btn-warning" 
+                                onclick="return confirm('Are you sure you want to undo the approval for this invoice? This will revert it to draft status and notify the client.')">
+                            <i class="fas fa-undo"></i> Undo Approval
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @endif
+
             @if($invoice->status === 'approved' && $invoice->isOverdue() && !$invoice->overdue_notification_sent)
             <div class="card border-0 shadow-sm mt-3">
                 <div class="card-header bg-transparent border-0">
