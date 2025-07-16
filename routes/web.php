@@ -130,7 +130,13 @@ Route::middleware(['auth'])->group(function () {
         
         // Invoices
         Route::get('/operations/invoices', [App\Http\Controllers\OperationsController::class, 'invoices'])->name('operations.invoices');
+        Route::get('/operations/invoices/create', [App\Http\Controllers\OperationsController::class, 'createInvoice'])->name('operations.invoices.create');
+        Route::post('/operations/invoices', [App\Http\Controllers\OperationsController::class, 'storeInvoice'])->name('operations.invoices.store');
         Route::get('/operations/invoices/{invoice}', [App\Http\Controllers\OperationsController::class, 'showInvoice'])->name('operations.invoices.show');
+        Route::get('/operations/invoices/{invoice}/edit', [App\Http\Controllers\OperationsController::class, 'editInvoice'])->name('operations.invoices.edit');
+        Route::put('/operations/invoices/{invoice}', [App\Http\Controllers\OperationsController::class, 'updateInvoice'])->name('operations.invoices.update');
+        Route::delete('/operations/invoices/{invoice}', [App\Http\Controllers\OperationsController::class, 'deleteInvoice'])->name('operations.invoices.delete');
+        Route::post('/operations/invoices/{invoice}/mark-paid', [App\Http\Controllers\OperationsController::class, 'markAsPaid'])->name('operations.invoices.mark-paid');
         
         // Messages
         Route::get('/operations/messages', [App\Http\Controllers\OperationsController::class, 'messages'])->name('operations.messages');

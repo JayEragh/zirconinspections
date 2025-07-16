@@ -11,10 +11,16 @@
                     <i class="fas fa-dollar-sign me-2"></i>
                     Invoices Management
                 </h1>
-                <a href="{{ route('operations.dashboard') }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>
-                    Back to Dashboard
-                </a>
+                <div>
+                    <a href="{{ route('operations.invoices.create') }}" class="btn btn-primary me-2">
+                        <i class="fas fa-plus me-2"></i>
+                        Create Invoice
+                    </a>
+                    <a href="{{ route('operations.dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -38,6 +44,7 @@
                                         <th>Service Request</th>
                                         <th>Client</th>
                                         <th>Amount</th>
+                                        <th>Total (with taxes)</th>
                                         <th>Status</th>
                                         <th>Due Date</th>
                                         <th>Created</th>
@@ -51,11 +58,22 @@
                                             <strong>{{ $invoice->invoice_number }}</strong>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info">{{ $invoice->serviceRequest->service_id }}</span>
+                                            <span class="badge bg-info">#{{ $invoice->serviceRequest->id }}</span>
+                                            <br>
+                                            <small class="text-muted">{{ ucfirst($invoice->serviceRequest->service_type) }}</small>
                                         </td>
                                         <td>{{ $invoice->serviceRequest->client->user->name }}</td>
                                         <td>
-                                            <strong>${{ number_format($invoice->total_amount, 2) }}</strong>
+                                            <strong>{{ $invoice->formatted_amount }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ $invoice->formatted_total }}</strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                NHIL: {{ $invoice->formatted_nhil_tax }} | 
+                                                GETFUND: {{ $invoice->formatted_getfund_tax }} | 
+                                                COVID: {{ $invoice->formatted_covid_tax }}
+                                            </small>
                                         </td>
                                         <td>
                                             @php
@@ -79,9 +97,26 @@
                                                    class="btn btn-sm btn-outline-primary" title="View Invoice">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="#" class="btn btn-sm btn-outline-success" title="Download PDF">
-                                                    <i class="fas fa-download"></i>
+                                                <a href="{{ route('operations.invoices.edit', $invoice) }}" 
+                                                   class="btn btn-sm btn-outline-warning" title="Edit Invoice">
+                                                    <i class="fas fa-edit"></i>
                                                 </a>
+                                                @if($invoice->status === 'pending')
+                                                <form action="{{ route('operations.invoices.mark-paid', $invoice) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Mark as Paid">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
+                                                <form action="{{ route('operations.invoices.delete', $invoice) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Invoice" 
+                                                            onclick="return confirm('Are you sure you want to delete this invoice?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
@@ -98,6 +133,10 @@
                             <i class="fas fa-dollar-sign fa-3x text-muted mb-3"></i>
                             <h5 class="text-muted">No invoices found</h5>
                             <p class="text-muted">Invoices will appear here once service requests are completed.</p>
+                            <a href="{{ route('operations.invoices.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>
+                                Create Your First Invoice
+                            </a>
                         </div>
                     @endif
                 </div>

@@ -574,6 +574,137 @@ class OperationsController extends Controller
     }
 
     /**
+     * Show the create invoice form.
+     */
+    public function createInvoice()
+    {
+        $serviceRequests = ServiceRequest::with(['client.user'])
+            ->where('status', 'completed')
+            ->whereDoesntHave('invoice')
+            ->get();
+        
+        $clients = Client::with('user')->get();
+        
+        return view('operations.create-invoice', compact('serviceRequests', 'clients'));
+    }
+
+    /**
+     * Store a new invoice.
+     */
+    public function storeInvoice(Request $request)
+    {
+        $request->validate([
+            'service_request_id' => 'required|exists:service_requests,id',
+            'client_id' => 'required|exists:clients,id',
+            'amount' => 'required|numeric|min:0',
+            'description' => 'required|string|max:1000',
+            'due_date' => 'required|date|after:today',
+        ]);
+
+        // Check if invoice already exists for this service request
+        $existingInvoice = Invoice::where('service_request_id', $request->service_request_id)->first();
+        if ($existingInvoice) {
+            return back()->with('error', 'An invoice already exists for this service request.');
+        }
+
+        // Create invoice
+        $invoice = Invoice::create([
+            'invoice_number' => Invoice::generateInvoiceNumber(),
+            'service_request_id' => $request->service_request_id,
+            'client_id' => $request->client_id,
+            'amount' => $request->amount,
+            'description' => $request->description,
+            'status' => 'pending',
+            'due_date' => $request->due_date,
+        ]);
+
+        // Calculate taxes and total
+        $invoice->calculateTaxes()->save();
+
+        // Log audit trail
+        AuditService::logCreate($invoice, "Invoice #{$invoice->invoice_number} created for Service Request #{$invoice->service_request_id}");
+
+        return redirect()->route('operations.invoices')->with('success', 'Invoice created successfully!');
+    }
+
+    /**
+     * Show the edit invoice form.
+     */
+    public function editInvoice(Invoice $invoice)
+    {
+        $serviceRequests = ServiceRequest::with(['client.user'])->get();
+        $clients = Client::with('user')->get();
+        
+        return view('operations.edit-invoice', compact('invoice', 'serviceRequests', 'clients'));
+    }
+
+    /**
+     * Update an invoice.
+     */
+    public function updateInvoice(Request $request, Invoice $invoice)
+    {
+        $request->validate([
+            'service_request_id' => 'required|exists:service_requests,id',
+            'client_id' => 'required|exists:clients,id',
+            'amount' => 'required|numeric|min:0',
+            'description' => 'required|string|max:1000',
+            'due_date' => 'required|date',
+            'status' => 'required|in:pending,paid,overdue,cancelled',
+        ]);
+
+        $oldValues = $invoice->toArray();
+
+        // Update invoice
+        $invoice->update([
+            'service_request_id' => $request->service_request_id,
+            'client_id' => $request->client_id,
+            'amount' => $request->amount,
+            'description' => $request->description,
+            'status' => $request->status,
+            'due_date' => $request->due_date,
+        ]);
+
+        // Recalculate taxes and total
+        $invoice->calculateTaxes()->save();
+
+        // Log audit trail
+        AuditService::logUpdate($invoice, $oldValues, $invoice->toArray(), "Invoice #{$invoice->invoice_number} updated");
+
+        return redirect()->route('operations.invoices')->with('success', 'Invoice updated successfully!');
+    }
+
+    /**
+     * Delete an invoice.
+     */
+    public function deleteInvoice(Invoice $invoice)
+    {
+        $invoiceNumber = $invoice->invoice_number;
+        
+        // Log audit trail before deletion
+        AuditService::logDelete($invoice, "Invoice #{$invoiceNumber} deleted");
+        
+        $invoice->delete();
+
+        return redirect()->route('operations.invoices')->with('success', 'Invoice deleted successfully!');
+    }
+
+    /**
+     * Mark invoice as paid.
+     */
+    public function markAsPaid(Invoice $invoice)
+    {
+        $invoice->update([
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+
+        // Log audit trail
+        AuditService::log('mark_paid', "Invoice #{$invoice->invoice_number} marked as paid", $invoice);
+
+        return back()->with('success', 'Invoice marked as paid successfully!');
+    }
+
+    /**
      * Show all messages.
      */
     public function messages()
