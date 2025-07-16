@@ -180,6 +180,10 @@
                         <div class="col-8">COVID (1%):</div>
                         <div class="col-4 text-end">{{ $invoice->formatted_covid_tax }}</div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-8">VAT (15%):</div>
+                        <div class="col-4 text-end">{{ $invoice->formatted_vat }}</div>
+                    </div>
                     <hr>
                     <div class="row">
                         <div class="col-8"><strong>Total Amount:</strong></div>

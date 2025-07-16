@@ -117,6 +117,10 @@
                         <div class="col-8">COVID (1%):</div>
                         <div class="col-4 text-end" id="covid-tax">GH₵ 0.00</div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-8">VAT (15%):</div>
+                        <div class="col-4 text-end" id="vat-tax">GH₵ 0.00</div>
+                    </div>
                     <hr>
                     <div class="row">
                         <div class="col-8"><strong>Total Amount:</strong></div>
@@ -171,12 +175,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const nhilTax = amount * 0.025;
         const getfundTax = amount * 0.025;
         const covidTax = amount * 0.01;
-        const total = amount + nhilTax + getfundTax + covidTax;
+        const vatTax = amount * 0.15;
+        const total = amount + nhilTax + getfundTax + covidTax + vatTax;
         
         document.getElementById('subtotal').textContent = 'GH₵ ' + amount.toFixed(2);
         document.getElementById('nhil-tax').textContent = 'GH₵ ' + nhilTax.toFixed(2);
         document.getElementById('getfund-tax').textContent = 'GH₵ ' + getfundTax.toFixed(2);
         document.getElementById('covid-tax').textContent = 'GH₵ ' + covidTax.toFixed(2);
+        document.getElementById('vat-tax').textContent = 'GH₵ ' + vatTax.toFixed(2);
         document.getElementById('total-amount').textContent = 'GH₵ ' + total.toFixed(2);
     }
     

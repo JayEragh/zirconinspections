@@ -22,6 +22,7 @@ class Invoice extends Model
         'nhil_tax',
         'getfund_tax',
         'covid_tax',
+        'vat',
         'subtotal',
         'total_amount',
         'approved_at',
@@ -35,6 +36,7 @@ class Invoice extends Model
         'nhil_tax' => 'decimal:2',
         'getfund_tax' => 'decimal:2',
         'covid_tax' => 'decimal:2',
+        'vat' => 'decimal:2',
         'subtotal' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'due_date' => 'date',
@@ -81,8 +83,9 @@ class Invoice extends Model
         $this->nhil_tax = $this->amount * 0.025; // 2.5%
         $this->getfund_tax = $this->amount * 0.025; // 2.5%
         $this->covid_tax = $this->amount * 0.01; // 1%
+        $this->vat = $this->amount * 0.15; // 15%
         $this->subtotal = $this->amount;
-        $this->total_amount = $this->subtotal + $this->nhil_tax + $this->getfund_tax + $this->covid_tax;
+        $this->total_amount = $this->subtotal + $this->nhil_tax + $this->getfund_tax + $this->covid_tax + $this->vat;
         
         return $this;
     }
@@ -125,6 +128,14 @@ class Invoice extends Model
     public function getFormattedCovidTaxAttribute()
     {
         return 'GH₵ ' . number_format($this->covid_tax, 2);
+    }
+
+    /**
+     * Get formatted VAT with currency.
+     */
+    public function getFormattedVatAttribute()
+    {
+        return 'GH₵ ' . number_format($this->vat, 2);
     }
 
     /**
