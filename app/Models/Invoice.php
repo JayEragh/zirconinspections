@@ -18,6 +18,7 @@ class Invoice extends Model
         'status',
         'due_date',
         'paid_at',
+        'payment_evidence',
         'nhil_tax',
         'getfund_tax',
         'covid_tax',
@@ -215,5 +216,29 @@ class Invoice extends Model
         }
         
         return ucfirst($this->status);
+    }
+
+    /**
+     * Get payment evidence URL.
+     */
+    public function getPaymentEvidenceUrlAttribute()
+    {
+        if ($this->payment_evidence) {
+            return asset('storage/' . $this->payment_evidence);
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get payment evidence filename.
+     */
+    public function getPaymentEvidenceFilenameAttribute()
+    {
+        if ($this->payment_evidence) {
+            return basename($this->payment_evidence);
+        }
+        
+        return null;
     }
 }

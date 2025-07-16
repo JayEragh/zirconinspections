@@ -114,6 +114,34 @@
                     <p>{{ $invoice->description }}</p>
                 </div>
             </div>
+
+            @if($invoice->payment_evidence)
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Payment Evidence</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <h6><i class="fas fa-check-circle"></i> Payment Evidence Uploaded</h6>
+                        <p class="mb-2">Client has uploaded payment evidence for this invoice.</p>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-file-alt me-2"></i>
+                            <span>{{ $invoice->payment_evidence_filename }}</span>
+                            <a href="{{ $invoice->payment_evidence_url }}" target="_blank" class="btn btn-sm btn-outline-primary ms-3">
+                                <i class="fas fa-download"></i> View File
+                            </a>
+                        </div>
+                        @if($invoice->paid_at)
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-clock"></i> Marked as paid on {{ $invoice->paid_at->format('M d, Y H:i') }}
+                            </small>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
 
         <div class="col-lg-4">

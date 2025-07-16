@@ -52,6 +52,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/client/reports/{report}/pdf', [App\Http\Controllers\ClientController::class, 'exportReportPDF'])->name('client.reports.pdf');
         Route::get('/client/reports/{report}/excel', [App\Http\Controllers\ClientController::class, 'exportReportExcel'])->name('client.reports.excel');
         Route::get('/client/invoices', [App\Http\Controllers\ClientController::class, 'invoices'])->name('client.invoices');
+        Route::get('/client/invoices/{invoice}', [App\Http\Controllers\ClientController::class, 'showInvoice'])->name('client.invoices.show');
+        Route::post('/client/invoices/{invoice}/payment-evidence', [App\Http\Controllers\ClientController::class, 'uploadPaymentEvidence'])->name('client.invoices.payment-evidence');
         Route::get('/client/messages', [App\Http\Controllers\ClientController::class, 'messages'])->name('client.messages');
         
         // Profile and Settings

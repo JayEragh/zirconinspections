@@ -219,6 +219,39 @@ class ClientController extends Controller
     }
 
     /**
+     * Upload payment evidence for an invoice.
+     */
+    public function uploadPaymentEvidence(Request $request, Invoice $invoice)
+    {
+        // Ensure the client can only upload evidence for their own invoices
+        $user = Auth::user();
+        if ($invoice->client_id !== $user->client->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'payment_evidence' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB max
+        ]);
+
+        // Handle file upload
+        if ($request->hasFile('payment_evidence')) {
+            $file = $request->file('payment_evidence');
+            $fileName = 'payment_evidence_' . $invoice->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('payment_evidence', $fileName, 'public');
+            
+            $invoice->update([
+                'payment_evidence' => 'payment_evidence/' . $fileName,
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
+
+            return redirect()->back()->with('success', 'Payment evidence uploaded successfully. Invoice marked as paid.');
+        }
+
+        return redirect()->back()->with('error', 'No file was uploaded.');
+    }
+
+    /**
      * Show the client's messages.
      */
     public function messages()
