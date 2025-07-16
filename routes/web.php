@@ -137,6 +137,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/operations/invoices/{invoice}', [App\Http\Controllers\OperationsController::class, 'updateInvoice'])->name('operations.invoices.update');
         Route::delete('/operations/invoices/{invoice}', [App\Http\Controllers\OperationsController::class, 'deleteInvoice'])->name('operations.invoices.delete');
         Route::post('/operations/invoices/{invoice}/mark-paid', [App\Http\Controllers\OperationsController::class, 'markAsPaid'])->name('operations.invoices.mark-paid');
+        Route::post('/operations/invoices/{invoice}/approve', [App\Http\Controllers\OperationsController::class, 'approveInvoice'])->name('operations.invoices.approve');
+        Route::post('/operations/invoices/{invoice}/send-overdue-notification', [App\Http\Controllers\OperationsController::class, 'sendOverdueNotification'])->name('operations.invoices.send-overdue-notification');
         
         // Messages
         Route::get('/operations/messages', [App\Http\Controllers\OperationsController::class, 'messages'])->name('operations.messages');

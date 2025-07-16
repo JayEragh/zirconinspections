@@ -46,7 +46,7 @@
                                         <th>Amount</th>
                                         <th>Total (with taxes)</th>
                                         <th>Status</th>
-                                        <th>Due Date</th>
+                                        <th>Payment Deadline</th>
                                         <th>Created</th>
                                         <th>Actions</th>
                                     </tr>
@@ -79,6 +79,7 @@
                                             @php
                                                 $statusColors = [
                                                     'pending' => 'warning',
+                                                    'approved' => 'info',
                                                     'paid' => 'success',
                                                     'overdue' => 'danger',
                                                     'cancelled' => 'secondary'
@@ -86,10 +87,35 @@
                                                 $statusColor = $statusColors[$invoice->status] ?? 'secondary';
                                             @endphp
                                             <span class="badge bg-{{ $statusColor }}">
-                                                {{ ucfirst($invoice->status) }}
+                                                {{ $invoice->getStatusWithOverdue() }}
                                             </span>
+                                            @if($invoice->approved_at)
+                                            <br>
+                                            <small class="text-muted">Approved: {{ $invoice->approved_at->format('M d, Y') }}</small>
+                                            @endif
                                         </td>
-                                        <td>{{ $invoice->due_date ? $invoice->due_date->format('M d, Y') : 'N/A' }}</td>
+                                        <td>
+                                            @if($invoice->payment_deadline)
+                                                @if($invoice->isOverdue())
+                                                    <span class="text-danger">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                        {{ $invoice->payment_deadline->format('M d, Y') }}
+                                                        <br>
+                                                        <small>Overdue by {{ $invoice->getOverdueDays() }} days</small>
+                                                    </span>
+                                                @else
+                                                    <span class="{{ $invoice->getDaysUntilDeadline() <= 2 ? 'text-warning' : '' }}">
+                                                        {{ $invoice->payment_deadline->format('M d, Y') }}
+                                                        @if($invoice->getDaysUntilDeadline() > 0)
+                                                        <br>
+                                                        <small>{{ $invoice->getDaysUntilDeadline() }} days left</small>
+                                                        @endif
+                                                    </span>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">Not set</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $invoice->created_at->format('M d, Y') }}</td>
                                         <td>
                                             <div class="btn-group" role="group">
@@ -101,6 +127,22 @@
                                                    class="btn btn-sm btn-outline-warning" title="Edit Invoice">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
+                                                @if($invoice->status === 'pending')
+                                                <form action="{{ route('operations.invoices.approve', $invoice) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-info" title="Approve & Send to Client">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
+                                                @if($invoice->status === 'approved' && $invoice->isOverdue() && !$invoice->overdue_notification_sent)
+                                                <form action="{{ route('operations.invoices.send-overdue-notification', $invoice) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Send Overdue Notification">
+                                                        <i class="fas fa-bell"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
                                                 @if($invoice->status === 'pending')
                                                 <form action="{{ route('operations.invoices.mark-paid', $invoice) }}" method="POST" class="d-inline">
                                                     @csrf

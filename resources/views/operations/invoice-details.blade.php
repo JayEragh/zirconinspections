@@ -34,17 +34,43 @@
                                 @php
                                     $statusColors = [
                                         'pending' => 'warning',
+                                        'approved' => 'info',
                                         'paid' => 'success',
                                         'overdue' => 'danger',
                                         'cancelled' => 'secondary'
                                     ];
                                     $statusColor = $statusColors[$invoice->status] ?? 'secondary';
                                 @endphp
-                                <span class="badge bg-{{ $statusColor }}">{{ ucfirst($invoice->status) }}</span>
+                                <span class="badge bg-{{ $statusColor }}">
+                                    {{ $invoice->getStatusWithOverdue() }}
+                                </span>
                             </p>
                             <p><strong>Due Date:</strong> {{ $invoice->due_date ? $invoice->due_date->format('M d, Y') : 'N/A' }}</p>
+                            @if($invoice->payment_deadline)
+                            <p><strong>Payment Deadline:</strong> 
+                                @if($invoice->isOverdue())
+                                    <span class="text-danger">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ $invoice->payment_deadline->format('M d, Y') }} (Overdue by {{ $invoice->getOverdueDays() }} days)
+                                    </span>
+                                @else
+                                    <span class="{{ $invoice->getDaysUntilDeadline() <= 2 ? 'text-warning' : '' }}">
+                                        {{ $invoice->payment_deadline->format('M d, Y') }}
+                                        @if($invoice->getDaysUntilDeadline() > 0)
+                                            ({{ $invoice->getDaysUntilDeadline() }} days left)
+                                        @endif
+                                    </span>
+                                @endif
+                            </p>
+                            @endif
                             @if($invoice->paid_at)
                             <p><strong>Paid Date:</strong> {{ $invoice->paid_at->format('M d, Y H:i') }}</p>
+                            @endif
+                            @if($invoice->approved_at)
+                            <p><strong>Approved Date:</strong> {{ $invoice->approved_at->format('M d, Y H:i') }}</p>
+                            @endif
+                            @if($invoice->sent_to_client_at)
+                            <p><strong>Sent to Client:</strong> {{ $invoice->sent_to_client_at->format('M d, Y H:i') }}</p>
                             @endif
                         </div>
                         <div class="col-md-6">
@@ -126,10 +152,32 @@
                     <h5 class="mb-0">Actions</h5>
                 </div>
                 <div class="card-body">
+                    <form action="{{ route('operations.invoices.approve', $invoice) }}" method="POST" class="d-grid mb-2">
+                        @csrf
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-check-circle"></i> Approve & Send to Client
+                        </button>
+                    </form>
                     <form action="{{ route('operations.invoices.mark-paid', $invoice) }}" method="POST" class="d-grid">
                         @csrf
                         <button type="submit" class="btn btn-success">
                             <i class="fas fa-check"></i> Mark as Paid
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @endif
+
+            @if($invoice->status === 'approved' && $invoice->isOverdue() && !$invoice->overdue_notification_sent)
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="mb-0">Overdue Actions</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('operations.invoices.send-overdue-notification', $invoice) }}" method="POST" class="d-grid">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-bell"></i> Send Overdue Notification
                         </button>
                     </form>
                 </div>

@@ -23,6 +23,10 @@ class Invoice extends Model
         'covid_tax',
         'subtotal',
         'total_amount',
+        'approved_at',
+        'sent_to_client_at',
+        'payment_deadline',
+        'overdue_notification_sent',
     ];
 
     protected $casts = [
@@ -34,6 +38,10 @@ class Invoice extends Model
         'total_amount' => 'decimal:2',
         'due_date' => 'date',
         'paid_at' => 'datetime',
+        'approved_at' => 'datetime',
+        'sent_to_client_at' => 'datetime',
+        'payment_deadline' => 'date',
+        'overdue_notification_sent' => 'boolean',
     ];
 
     /**
@@ -116,5 +124,96 @@ class Invoice extends Model
     public function getFormattedCovidTaxAttribute()
     {
         return 'GH₵ ' . number_format($this->covid_tax, 2);
+    }
+
+    /**
+     * Approve the invoice and set payment deadline.
+     */
+    public function approve()
+    {
+        $this->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+            'payment_deadline' => now()->addWeekdays(5), // 5 working days
+        ]);
+        
+        return $this;
+    }
+
+    /**
+     * Send invoice to client.
+     */
+    public function sendToClient()
+    {
+        $this->update([
+            'sent_to_client_at' => now(),
+        ]);
+        
+        return $this;
+    }
+
+    /**
+     * Check if invoice is overdue.
+     */
+    public function isOverdue()
+    {
+        return $this->payment_deadline && now()->isAfter($this->payment_deadline) && $this->status !== 'paid';
+    }
+
+    /**
+     * Get days until payment deadline.
+     */
+    public function getDaysUntilDeadline()
+    {
+        if (!$this->payment_deadline) {
+            return null;
+        }
+        
+        return now()->diffInDays($this->payment_deadline, false);
+    }
+
+    /**
+     * Get overdue days.
+     */
+    public function getOverdueDays()
+    {
+        if (!$this->isOverdue()) {
+            return 0;
+        }
+        
+        return now()->diffInDays($this->payment_deadline);
+    }
+
+    /**
+     * Mark overdue notification as sent.
+     */
+    public function markOverdueNotificationSent()
+    {
+        $this->update(['overdue_notification_sent' => true]);
+        
+        return $this;
+    }
+
+    /**
+     * Get status with overdue information.
+     */
+    public function getStatusWithOverdue()
+    {
+        if ($this->status === 'paid') {
+            return 'Paid';
+        }
+        
+        if ($this->isOverdue()) {
+            return 'Overdue (' . $this->getOverdueDays() . ' days)';
+        }
+        
+        if ($this->status === 'approved' && $this->payment_deadline) {
+            $daysLeft = $this->getDaysUntilDeadline();
+            if ($daysLeft > 0) {
+                return 'Approved (' . $daysLeft . ' days left)';
+            }
+        }
+        
+        return ucfirst($this->status);
     }
 }

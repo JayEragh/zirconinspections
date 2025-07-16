@@ -705,6 +705,65 @@ class OperationsController extends Controller
     }
 
     /**
+     * Approve invoice and send to client.
+     */
+    public function approveInvoice(Invoice $invoice)
+    {
+        // Approve the invoice and set payment deadline
+        $invoice->approve();
+        
+        // Send to client
+        $invoice->sendToClient();
+        
+        // Create notification for client
+        Message::create([
+            'sender_id' => Auth::id(),
+            'recipient_id' => $invoice->client->user_id,
+            'subject' => 'Invoice Approved: ' . $invoice->invoice_number,
+            'content' => "Your invoice #{$invoice->invoice_number} has been approved and is ready for payment.\n\n" .
+                        "Amount: {$invoice->formatted_total}\n" .
+                        "Payment Deadline: {$invoice->payment_deadline->format('M d, Y')}\n\n" .
+                        "Please log in to your dashboard to view the complete invoice details.",
+            'service_request_id' => $invoice->service_request_id,
+        ]);
+        
+        // Log audit trail
+        AuditService::log('approve_invoice', "Invoice #{$invoice->invoice_number} approved and sent to client", $invoice);
+
+        return back()->with('success', 'Invoice approved and sent to client successfully!');
+    }
+
+    /**
+     * Send overdue notification for invoice.
+     */
+    public function sendOverdueNotification(Invoice $invoice)
+    {
+        if (!$invoice->isOverdue()) {
+            return back()->with('error', 'Invoice is not overdue.');
+        }
+        
+        // Send notification to client
+        Message::create([
+            'sender_id' => Auth::id(),
+            'recipient_id' => $invoice->client->user_id,
+            'subject' => 'URGENT: Overdue Invoice - ' . $invoice->invoice_number,
+            'content' => "Your invoice #{$invoice->invoice_number} is overdue by {$invoice->getOverdueDays()} days.\n\n" .
+                        "Amount Due: {$invoice->formatted_total}\n" .
+                        "Original Deadline: {$invoice->payment_deadline->format('M d, Y')}\n\n" .
+                        "Please make payment immediately to avoid any additional charges.",
+            'service_request_id' => $invoice->service_request_id,
+        ]);
+        
+        // Mark notification as sent
+        $invoice->markOverdueNotificationSent();
+        
+        // Log audit trail
+        AuditService::log('send_overdue_notification', "Overdue notification sent for Invoice #{$invoice->invoice_number}", $invoice);
+
+        return back()->with('success', 'Overdue notification sent to client successfully!');
+    }
+
+    /**
      * Show all messages.
      */
     public function messages()
