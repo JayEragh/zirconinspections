@@ -148,6 +148,12 @@
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
+                            <a href="{{ route('client.invoices') }}" class="btn btn-outline-warning w-100">
+                                <i class="fas fa-dollar-sign me-2"></i>
+                                View Invoices
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
                             <a href="{{ route('client.messages') }}" class="btn btn-outline-info w-100">
                                 <i class="fas fa-envelope me-2"></i>
                                 Messages
@@ -219,7 +225,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card shadow">
+            <div class="card shadow mb-4">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">
                         <i class="fas fa-building me-2"></i>
@@ -247,6 +253,86 @@
                     <div class="mb-3">
                         <strong>Tax ID:</strong> {{ $client->tax_id }}
                     </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-dollar-sign me-2"></i>
+                        Recent Invoices
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if($client->invoices()->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice #</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Due Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($client->invoices()->latest()->take(5)->get() as $invoice)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('client.invoices.show', $invoice) }}" class="text-decoration-none">
+                                                {{ $invoice->invoice_number }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <strong>{{ $invoice->formatted_total }}</strong>
+                                        </td>
+                                        <td>
+                                            @php
+                                                $statusColors = [
+                                                    'pending' => 'warning',
+                                                    'approved' => 'info',
+                                                    'paid' => 'success',
+                                                    'overdue' => 'danger',
+                                                    'cancelled' => 'secondary'
+                                                ];
+                                                $statusColor = $statusColors[$invoice->status] ?? 'secondary';
+                                            @endphp
+                                            <span class="badge bg-{{ $statusColor }}">
+                                                {{ $invoice->getStatusWithOverdue() }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if($invoice->payment_deadline)
+                                                @if($invoice->isOverdue())
+                                                    <span class="text-danger">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                        {{ $invoice->payment_deadline->format('M d') }}
+                                                    </span>
+                                                @else
+                                                    <span class="{{ $invoice->getDaysUntilDeadline() <= 2 ? 'text-warning' : '' }}">
+                                                        {{ $invoice->payment_deadline->format('M d') }}
+                                                    </span>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{{ route('client.invoices') }}" class="btn btn-outline-primary btn-sm">
+                                View All Invoices
+                            </a>
+                        </div>
+                    @else
+                        <div class="text-center py-3">
+                            <i class="fas fa-dollar-sign fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No invoices yet</p>
+                        </div>
                     @endif
                 </div>
             </div>

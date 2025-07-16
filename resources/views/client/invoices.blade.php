@@ -33,8 +33,9 @@
                                         <th>Invoice #</th>
                                         <th>Service Request</th>
                                         <th>Amount</th>
+                                        <th>Total (with taxes)</th>
                                         <th>Status</th>
-                                        <th>Due Date</th>
+                                        <th>Payment Deadline</th>
                                         <th>Created</th>
                                         <th>Actions</th>
                                     </tr>
@@ -45,14 +46,28 @@
                                         <td>
                                             <strong>{{ $invoice->invoice_number }}</strong>
                                         </td>
-                                        <td>{{ $invoice->serviceRequest->service_id }}</td>
                                         <td>
-                                            <strong>${{ number_format($invoice->total_amount, 2) }}</strong>
+                                            <span class="badge bg-info">#{{ $invoice->serviceRequest->id }}</span>
+                                            <br>
+                                            <small class="text-muted">{{ ucfirst($invoice->serviceRequest->service_type) }}</small>
+                                        </td>
+                                        <td>
+                                            <strong>{{ $invoice->formatted_amount }}</strong>
+                                        </td>
+                                        <td>
+                                            <strong>{{ $invoice->formatted_total }}</strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                NHIL: {{ $invoice->formatted_nhil_tax }} | 
+                                                GETFUND: {{ $invoice->formatted_getfund_tax }} | 
+                                                COVID: {{ $invoice->formatted_covid_tax }}
+                                            </small>
                                         </td>
                                         <td>
                                             @php
                                                 $statusColors = [
                                                     'pending' => 'warning',
+                                                    'approved' => 'info',
                                                     'paid' => 'success',
                                                     'overdue' => 'danger',
                                                     'cancelled' => 'secondary'
@@ -60,21 +75,39 @@
                                                 $statusColor = $statusColors[$invoice->status] ?? 'secondary';
                                             @endphp
                                             <span class="badge bg-{{ $statusColor }}">
-                                                {{ ucfirst($invoice->status) }}
+                                                {{ $invoice->getStatusWithOverdue() }}
                                             </span>
                                         </td>
-                                        <td>{{ $invoice->due_date ? $invoice->due_date->format('M d, Y') : 'N/A' }}</td>
+                                        <td>
+                                            @if($invoice->payment_deadline)
+                                                @if($invoice->isOverdue())
+                                                    <span class="text-danger">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                        {{ $invoice->payment_deadline->format('M d, Y') }}
+                                                        <br>
+                                                        <small>Overdue by {{ $invoice->getOverdueDays() }} days</small>
+                                                    </span>
+                                                @else
+                                                    <span class="{{ $invoice->getDaysUntilDeadline() <= 2 ? 'text-warning' : '' }}">
+                                                        {{ $invoice->payment_deadline->format('M d, Y') }}
+                                                        @if($invoice->getDaysUntilDeadline() > 0)
+                                                        <br>
+                                                        <small>{{ $invoice->getDaysUntilDeadline() }} days left</small>
+                                                        @endif
+                                                    </span>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">Not set</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $invoice->created_at->format('M d, Y') }}</td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="#" class="btn btn-sm btn-outline-primary" title="View Invoice">
+                                                <a href="{{ route('client.invoices.show', $invoice) }}" class="btn btn-sm btn-outline-primary" title="View Invoice">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="#" class="btn btn-sm btn-outline-success" title="Download PDF">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                                @if($invoice->status === 'pending')
-                                                <a href="#" class="btn btn-sm btn-outline-info" title="Pay Now">
+                                                @if($invoice->status === 'approved' || $invoice->status === 'overdue')
+                                                <a href="#" class="btn btn-sm btn-outline-success" title="Pay Now">
                                                     <i class="fas fa-credit-card"></i>
                                                 </a>
                                                 @endif

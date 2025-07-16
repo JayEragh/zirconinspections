@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Report;
+use App\Models\Invoice;
 use PDF;
 
 class ClientController extends Controller
@@ -200,6 +201,21 @@ class ClientController extends Controller
         $invoices = $user->client->invoices()->latest()->paginate(10);
         
         return view('client.invoices', compact('invoices'));
+    }
+
+    /**
+     * Show a specific invoice.
+     */
+    public function showInvoice(Invoice $invoice)
+    {
+        // Ensure the client can only view their own invoices
+        $user = Auth::user();
+        if ($invoice->client_id !== $user->client->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $invoice->load(['serviceRequest.client.user']);
+        return view('client.invoice-details', compact('invoice'));
     }
 
     /**
