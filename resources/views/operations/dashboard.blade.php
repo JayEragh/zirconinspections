@@ -170,6 +170,12 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2 mb-3">
+                            <a href="{{ route('operations.users') }}" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-users-cog me-2"></i>
+                                Manage Users
+                            </a>
+                        </div>
+                        <div class="col-md-2 mb-3">
                             <a href="{{ route('operations.clients') }}" class="btn btn-outline-primary w-100">
                                 <i class="fas fa-users me-2"></i>
                                 Manage Clients

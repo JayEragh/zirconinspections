@@ -1128,4 +1128,300 @@ class OperationsController extends Controller
         
         return view('operations.audit-logs', compact('auditLogs', 'actions', 'modelTypes', 'users'));
     }
+
+    // User Management Methods
+
+    /**
+     * Show all users.
+     */
+    public function users(Request $request)
+    {
+        $query = User::query();
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhere('phone', 'like', "%$search%");
+            });
+        }
+
+        // Filter by role
+        if ($request->filled('role')) {
+            $query->where('role', $request->input('role'));
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $isActive = $request->input('status') === 'active';
+            $query->where('is_active', $isActive);
+        }
+
+        // Filter by email verification
+        if ($request->filled('verified')) {
+            if ($request->input('verified') === 'verified') {
+                $query->whereNotNull('email_verified_at');
+            } else {
+                $query->whereNull('email_verified_at');
+            }
+        }
+
+        $users = $query->latest()->paginate(15)->appends($request->except('page'));
+
+        return view('operations.users', compact('users'));
+    }
+
+    /**
+     * Show user details.
+     */
+    public function showUser(User $user)
+    {
+        $user->load(['client', 'inspector']);
+        
+        // Get related data
+        $serviceRequests = [];
+        $reports = [];
+        $invoices = [];
+        
+        if ($user->isClient() && $user->client) {
+            $serviceRequests = $user->client->serviceRequests()->with('inspector.user')->latest()->take(10)->get();
+            $invoices = $user->client->invoices()->latest()->take(10)->get();
+        }
+        
+        if ($user->isInspector() && $user->inspector) {
+            $serviceRequests = $user->inspector->serviceRequests()->with('client.user')->latest()->take(10)->get();
+            $reports = $user->inspector->reports()->with('serviceRequest.client.user')->latest()->take(10)->get();
+        }
+
+        // Get login logs
+        $loginLogs = LoginLog::where('user_id', $user->id)->latest()->take(10)->get();
+
+        return view('operations.user-details', compact('user', 'serviceRequests', 'reports', 'invoices', 'loginLogs'));
+    }
+
+    /**
+     * Show the create user form.
+     */
+    public function createUser()
+    {
+        return view('operations.create-user');
+    }
+
+    /**
+     * Store a new user.
+     */
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:client,inspector,operations',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'is_active' => 'boolean',
+            'email_verified' => 'boolean',
+            'notifications_email' => 'boolean',
+            'notifications_sms' => 'boolean',
+            // Role-specific fields
+            'company_name' => 'required_if:role,client|string|max:255',
+            'specialization' => 'required_if:role,inspector|string|max:255',
+            'license_number' => 'nullable|string|max:100',
+        ]);
+
+        $userData = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'is_active' => $request->boolean('is_active', true),
+            'email_verified_at' => $request->boolean('email_verified') ? now() : null,
+            'notifications_email' => $request->boolean('notifications_email', true),
+            'notifications_sms' => $request->boolean('notifications_sms', false),
+        ];
+
+        $user = User::create($userData);
+
+        // Create role-specific records
+        if ($request->role === 'client') {
+            Client::create([
+                'user_id' => $user->id,
+                'company_name' => $request->company_name,
+            ]);
+        } elseif ($request->role === 'inspector') {
+            Inspector::create([
+                'user_id' => $user->id,
+                'specialization' => $request->specialization,
+                'license_number' => $request->license_number,
+            ]);
+        }
+
+        // Audit log
+        app(AuditService::class)->log(
+            'created',
+            User::class,
+            $user->id,
+            "User '{$user->name}' was created with role '{$user->role}'"
+        );
+
+        return redirect()->route('operations.users')->with('success', 'User created successfully.');
+    }
+
+    /**
+     * Show the edit user form.
+     */
+    public function editUser(User $user)
+    {
+        $user->load(['client', 'inspector']);
+        return view('operations.edit-user', compact('user'));
+    }
+
+    /**
+     * Update a user.
+     */
+    public function updateUser(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'role' => 'required|in:client,inspector,operations',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'is_active' => 'boolean',
+            'email_verified' => 'boolean',
+            'notifications_email' => 'boolean',
+            'notifications_sms' => 'boolean',
+            // Role-specific fields
+            'company_name' => 'required_if:role,client|string|max:255',
+            'specialization' => 'required_if:role,inspector|string|max:255',
+            'license_number' => 'nullable|string|max:100',
+        ]);
+
+        $userData = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'is_active' => $request->boolean('is_active', true),
+            'email_verified_at' => $request->boolean('email_verified') ? ($user->email_verified_at ?: now()) : null,
+            'notifications_email' => $request->boolean('notifications_email', true),
+            'notifications_sms' => $request->boolean('notifications_sms', false),
+        ];
+
+        if ($request->filled('password')) {
+            $userData['password'] = Hash::make($request->password);
+        }
+
+        $user->update($userData);
+
+        // Handle role-specific updates
+        if ($request->role === 'client') {
+            // Delete inspector record if exists
+            if ($user->inspector) {
+                $user->inspector->delete();
+            }
+            
+            // Create or update client record
+            $user->client()->updateOrCreate(
+                ['user_id' => $user->id],
+                ['company_name' => $request->company_name]
+            );
+        } elseif ($request->role === 'inspector') {
+            // Delete client record if exists
+            if ($user->client) {
+                $user->client->delete();
+            }
+            
+            // Create or update inspector record
+            $user->inspector()->updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'specialization' => $request->specialization,
+                    'license_number' => $request->license_number,
+                ]
+            );
+        } else {
+            // Operations role - delete both client and inspector records
+            if ($user->client) {
+                $user->client->delete();
+            }
+            if ($user->inspector) {
+                $user->inspector->delete();
+            }
+        }
+
+        // Audit log
+        app(AuditService::class)->log(
+            'updated',
+            User::class,
+            $user->id,
+            "User '{$user->name}' was updated"
+        );
+
+        return redirect()->route('operations.users')->with('success', 'User updated successfully.');
+    }
+
+    /**
+     * Delete a user.
+     */
+    public function deleteUser(User $user)
+    {
+        // Prevent deleting the current user
+        if ($user->id === Auth::id()) {
+            return redirect()->route('operations.users')->with('error', 'You cannot delete your own account.');
+        }
+
+        $userName = $user->name;
+
+        // Delete related records
+        if ($user->client) {
+            $user->client->delete();
+        }
+        if ($user->inspector) {
+            $user->inspector->delete();
+        }
+
+        $user->delete();
+
+        // Audit log
+        app(AuditService::class)->log(
+            'deleted',
+            User::class,
+            $user->id,
+            "User '{$userName}' was deleted"
+        );
+
+        return redirect()->route('operations.users')->with('success', 'User deleted successfully.');
+    }
+
+    /**
+     * Toggle user active status.
+     */
+    public function toggleUserStatus(User $user)
+    {
+        // Prevent deactivating the current user
+        if ($user->id === Auth::id()) {
+            return redirect()->route('operations.users')->with('error', 'You cannot deactivate your own account.');
+        }
+
+        $user->update(['is_active' => !$user->is_active]);
+
+        $status = $user->is_active ? 'activated' : 'deactivated';
+
+        // Audit log
+        app(AuditService::class)->log(
+            'updated',
+            User::class,
+            $user->id,
+            "User '{$user->name}' was {$status}"
+        );
+
+        return redirect()->route('operations.users')->with('success', "User {$status} successfully.");
+    }
 }

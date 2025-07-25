@@ -115,6 +115,16 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/operations/clients/{client}', [App\Http\Controllers\OperationsController::class, 'updateClient'])->name('operations.clients.update');
         Route::delete('/operations/clients/{client}', [App\Http\Controllers\OperationsController::class, 'deleteClient'])->name('operations.clients.delete');
         
+        // User management
+        Route::get('/operations/users', [App\Http\Controllers\OperationsController::class, 'users'])->name('operations.users');
+        Route::get('/operations/users/create', [App\Http\Controllers\OperationsController::class, 'createUser'])->name('operations.users.create');
+        Route::post('/operations/users', [App\Http\Controllers\OperationsController::class, 'storeUser'])->name('operations.users.store');
+        Route::get('/operations/users/{user}', [App\Http\Controllers\OperationsController::class, 'showUser'])->name('operations.users.show');
+        Route::get('/operations/users/{user}/edit', [App\Http\Controllers\OperationsController::class, 'editUser'])->name('operations.users.edit');
+        Route::put('/operations/users/{user}', [App\Http\Controllers\OperationsController::class, 'updateUser'])->name('operations.users.update');
+        Route::delete('/operations/users/{user}', [App\Http\Controllers\OperationsController::class, 'deleteUser'])->name('operations.users.delete');
+        Route::post('/operations/users/{user}/toggle-status', [App\Http\Controllers\OperationsController::class, 'toggleUserStatus'])->name('operations.users.toggle-status');
+
         // Inspector management
         Route::get('/operations/inspectors', [App\Http\Controllers\OperationsController::class, 'inspectors'])->name('operations.inspectors');
         Route::get('/operations/inspectors/create', [App\Http\Controllers\OperationsController::class, 'createInspector'])->name('operations.inspectors.create');
